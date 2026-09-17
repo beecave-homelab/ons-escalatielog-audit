@@ -27,7 +27,7 @@ In [Berekeningen, tellingen en patroonherkenning](docs/berekeningen-en-patroonhe
 
 Je hoeft niets te installeren en hebt geen webserver nodig.
 
-1. Open `escalatielog-audit-webui.html` in een recente versie van Edge, Chrome of Firefox.
+1. Open `escalatielog-audit-webui.html` in een recente versie van Edge, Chrome, Firefox of Safari (minimaal Edge/Chrome 80, Firefox 113 of Safari 16.4).
 2. Kies een `.xlsx`-export of sleep het bestand naar het uploadvak.
 3. Klik op **Analyse uitvoeren**.
 4. Controleer eerst **Auditlogica** en **Datakwaliteit**.

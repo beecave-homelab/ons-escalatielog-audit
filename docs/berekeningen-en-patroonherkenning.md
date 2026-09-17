@@ -21,6 +21,8 @@ Zoeken, sorteren en filteren in een tabel verandert uitsluitend de zichtbare tab
 
 Deze referentie beschrijft het geïmplementeerde gedrag. Zij bevestigt geen leveranciersspecificaties, wettelijke verplichtingen of volledige naleving van normen. Controleer de inrichting en beschikbare logging van Nedap Ons voordat uitkomsten inhoudelijk worden beoordeeld.
 
+De ingebouwde XLSX-lezer is bedoeld voor de Nedap Ons-export: één werkblad met tekst- of getalcellen. Foutcellen (`#N/A` en vergelijkbaar), fonetische tekst in gedeelde tekenreeksen en ZIP64-bestanden worden niet ondersteund. De webui heeft een browser nodig met `DecompressionStream`: Edge/Chrome 80+, Firefox 113+ of Safari 16.4+.
+
 ## 2. Technische uitgangspunten
 
 De populatie waarop een getal is gebaseerd, is onderdeel van de definitie:
@@ -181,7 +183,7 @@ Het getoonde datumbereik loopt van het eerste tot het laatste gevonden geldige s
 
 ## 7. Tijdstippen en toegangstermijn
 
-De parser ondersteunt numerieke Excel-datums in het 1900-datumsysteem, datumtijdtekst zoals `01-05-2026, 09:30:00` en de ondersteunde ISO-vorm zonder tijdzone. Onmogelijke kalenderdatums en kloktijden worden afgewezen. Een bestand met het 1904-datumsysteem wordt geweigerd met een melding.
+De parser ondersteunt numerieke Excel-datums in het 1900-datumsysteem, datumtijdtekst zoals `01-05-2026, 09:30:00` en de ondersteunde ISO-vorm zonder tijdzone. Onmogelijke kalenderdatums en kloktijden worden afgewezen. Een datum zonder tijd (bijvoorbeeld `01-05-2026`) wordt niet herkend en geldt als ongeldige startdatum. Een bestand met het 1904-datumsysteem wordt geweigerd met een melding.
 
 De tijdstippen worden als geëxporteerde kloktijden behandeld, onafhankelijk van de tijdzone van de browser. Er wordt geen bron-tijdzone vastgesteld of omgerekend. Tijdverschillen rond de overgang tussen zomer- en wintertijd kunnen daardoor onzeker zijn. Ook gebeurtenissen vóór het begin van de export zijn onbekend.
 
@@ -376,7 +378,7 @@ Details bevatten Excel-rijnummers, de bronvelden, auditcontext en waar van toepa
 
 De scatterplot toont volume tegenover herkenbare unieke cliënten. Punten kunnen overlappen; gebruik het medewerkersoverzicht om alle personen afzonderlijk te zien. Balken in het overzicht tonen een topselectie, niet noodzakelijk alle categorieën.
 
-**Aandachtspunten CSV** exporteert alle aandachtspunten van de analyse, niet alleen een gefilterde tabelweergave. **Bronregels CSV** exporteert alle regels van de geopende detailselectie; het zoekveld in de dialoog beperkt de export niet. Verdachte formuleprefixen krijgen bij CSV-export een voorafgaand apostrof om interpretatie als formule te beperken.
+**Aandachtspunten CSV** exporteert alle aandachtspunten van de analyse, niet alleen een gefilterde tabelweergave. **Bronregels CSV** exporteert alle regels van de geopende detailselectie; het zoekveld in de dialoog beperkt de export niet. Waarden die met `=`, `+`, `@` of `-` beginnen krijgen bij CSV-export een voorafgaande apostrof om interpretatie als formule te beperken. De losse plaatshouder `-` en gewone (negatieve) getallen worden niet aangepast.
 
 Het HTML-rapport bevat de toegepaste instellingen, definities en analysetabellen. Sommige tabellen hebben een weergavelimiet; bij afkapping staat vermeld hoeveel regels zijn getoond. Het rapport is daardoor niet altijd een volledige export van alle onderliggende bronregels.
 
@@ -446,7 +448,7 @@ De webui accepteert gehele getallen. Uren lopen van 0 tot en met 23; de activati
 
 ## 15. Controle-uitkomsten voor het gebruikte testbestand
 
-Referentiebestand: `979de7ca-57d5-468d-8596-fec9a675106e.xlsx`, met waargenomen datums van 1 tot en met 31 mei 2026. Onderstaande resultaten zijn tijdens de controle vastgesteld met de standaardinstellingen. Het zijn referentie-uitkomsten voor dit bestand, geen verwachting voor andere maanden.
+Referentiebestand: de export `Escalatielogs 01-05-2026 tot 31-05-2026.xlsx` (lokaal bewaard in `escalatielogs/`, niet in de repository), met waargenomen datums van 1 tot en met 31 mei 2026. Onderstaande resultaten zijn tijdens de controle vastgesteld met de standaardinstellingen. Het zijn referentie-uitkomsten voor dit bestand, geen verwachting voor andere maanden.
 
 | Controle | Uitkomst |
 | -- | -: |
