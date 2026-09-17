@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 650" role="img" aria-labelledby="peervergelijking-title peervergelijking-desc">
+  <title id="peervergelijking-title">Beslisroute voor een peer-ratio</title>
+  <desc id="peervergelijking-desc">Flowchart die controleert of een medewerker één team en één deskundigheid heeft, voldoende andere peers kent en een niet-nulmediaan heeft voordat een peer-ratio wordt berekend.</desc>
+  <defs>
+    <marker id="peer-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#6B7280"/></marker>
+    <marker id="peer-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#A02A85"/></marker>
+    <style>
+      .pv-title{font:700 22px Inter,system-ui,sans-serif;fill:#333}.pv-sub{font:400 12px Inter,system-ui,sans-serif;fill:#6B7280}.pv-name{font:700 13px Inter,system-ui,sans-serif;fill:#333}.pv-meta{font:500 10px ui-monospace,SFMono-Regular,Consolas,monospace;fill:#6B7280}.pv-line{fill:none;stroke:#6B7280;stroke-width:1.5;marker-end:url(#peer-arrow)}
+    </style>
+  </defs>
+  <rect width="1000" height="650" fill="#F6F7F9"/>
+  <text x="40" y="42" class="pv-title">Wanneer verschijnt een peer-ratio?</text>
+  <text x="40" y="64" class="pv-sub">De medewerker zelf telt nooit mee als peer.</text>
+  <line x1="500" y1="142" x2="500" y2="184" class="pv-line"/>
+  <path d="M500 280 V304 Q500 312 492 312 H274 Q266 312 266 320 V350" class="pv-line"/>
+  <path d="M500 280 V304 Q500 312 508 312 H726 Q734 312 734 320 V350" class="pv-line"/>
+  <line x1="734" y1="422" x2="734" y2="464" class="pv-line"/>
+  <path d="M734 536 V560 Q734 568 726 568 H508 Q500 568 500 576 V594" fill="none" stroke="#A02A85" stroke-width="2" marker-end="url(#peer-arrow-accent)"/>
+  <rect x="380" y="94" width="240" height="48" rx="8" fill="#fff" stroke="#333"/>
+  <text x="500" y="123" text-anchor="middle" class="pv-name">Medewerker in auditpopulatie</text>
+  <polygon points="500,184 620,232 500,280 380,232" fill="#fff" stroke="#00A0C8" stroke-width="1.5"/>
+  <text x="500" y="225" text-anchor="middle" class="pv-name">Precies één team én</text><text x="500" y="243" text-anchor="middle" class="pv-name">één deskundigheid?</text>
+  <rect x="146" y="350" width="240" height="72" rx="8" fill="#fff4e5" stroke="#A15C00"/>
+  <text x="266" y="380" text-anchor="middle" class="pv-name">Geen vergelijking</text><text x="266" y="400" text-anchor="middle" class="pv-meta">ratio blijft leeg</text>
+  <rect x="614" y="350" width="240" height="72" rx="8" fill="#fff" stroke="#6B7280"/>
+  <text x="734" y="378" text-anchor="middle" class="pv-name">Vorm drie groepen</text>
+  <text x="734" y="398" text-anchor="middle" class="pv-meta">team · deskundigheid · combinatie</text>
+  <polygon points="734,464 854,500 734,536 614,500" fill="#fff" stroke="#00A0C8" stroke-width="1.5"/>
+  <text x="734" y="494" text-anchor="middle" class="pv-name">Genoeg andere peers</text><text x="734" y="512" text-anchor="middle" class="pv-name">en mediaan &gt; 0?</text>
+  <rect x="380" y="594" width="240" height="48" rx="8" fill="#FAF4F9" stroke="#A02A85" stroke-width="1.5"/>
+  <text x="500" y="616" text-anchor="middle" class="pv-name" fill="#7F1F69">ratio = eigen waarde / mediaan</text><text x="500" y="633" text-anchor="middle" class="pv-meta">standaard minimaal 3 andere peers</text>
+  <text x="392" y="302" class="pv-meta">NEE</text><text x="590" y="302" class="pv-meta">JA</text>
+  <path d="M614 500 H410 Q402 500 402 492 V394 Q402 386 394 386 H386" class="pv-line"/>
+  <text x="474" y="486" class="pv-meta">NEE</text><text x="748" y="556" class="pv-meta" fill="#7F1F69">JA</text>
+</svg>

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" role="img" aria-labelledby="her-escalatie-title her-escalatie-desc">
+  <title id="her-escalatie-title">Selectie van een her-escalatie tijdens actieve toegang</title>
+  <desc id="her-escalatie-desc">Sequentiediagram waarin een eerdere regel A wordt geactiveerd en een latere regel B van dezelfde medewerker en cliënt binnen de ingestelde toegangstermijn valt.</desc>
+  <defs>
+    <marker id="her-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#6B7280"/></marker>
+    <marker id="her-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#A02A85"/></marker>
+    <style>
+      .he-title{font:700 22px Inter,system-ui,sans-serif;fill:#333}.he-sub{font:400 12px Inter,system-ui,sans-serif;fill:#6B7280}.he-name{font:700 13px Inter,system-ui,sans-serif;fill:#333}.he-meta{font:500 10px ui-monospace,SFMono-Regular,Consolas,monospace;fill:#6B7280}.he-life{stroke:#CBD0D6;stroke-width:1;stroke-dasharray:4 4}.he-msg{stroke:#6B7280;stroke-width:1.5;marker-end:url(#her-arrow)}
+    </style>
+  </defs>
+  <rect width="1000" height="600" fill="#F6F7F9"/>
+  <text x="40" y="42" class="he-title">Wanneer regel B een her-escalatie wordt</text>
+  <text x="40" y="64" class="he-sub">De koppeling gebruikt dezelfde medewerkersleutel en dezelfde herkenbare cliënt-ID.</text>
+  <line x1="180" y1="138" x2="180" y2="516" class="he-life"/>
+  <line x1="500" y1="138" x2="500" y2="516" class="he-life"/>
+  <line x1="820" y1="138" x2="820" y2="516" class="he-life"/>
+  <line x1="180" y1="204" x2="500" y2="204" class="he-msg"/>
+  <line x1="500" y1="280" x2="820" y2="280" class="he-msg"/>
+  <line x1="180" y1="388" x2="500" y2="388" class="he-msg"/>
+  <line x1="500" y1="464" x2="820" y2="464" stroke="#A02A85" stroke-width="2" marker-end="url(#her-arrow-accent)"/>
+  <rect x="92" y="98" width="176" height="56" rx="8" fill="#fff" stroke="#333"/>
+  <text x="180" y="124" text-anchor="middle" class="he-name">Excelregels</text><text x="180" y="141" text-anchor="middle" class="he-meta">bronvolgorde</text>
+  <rect x="412" y="98" width="176" height="56" rx="8" fill="#fff" stroke="#00A0C8"/>
+  <text x="500" y="124" text-anchor="middle" class="he-name">Tijdlijn per combinatie</text><text x="500" y="141" text-anchor="middle" class="he-meta">medewerker + cliënt</text>
+  <rect x="732" y="98" width="176" height="56" rx="8" fill="#FAF4F9" stroke="#A02A85"/>
+  <text x="820" y="124" text-anchor="middle" class="he-name">Her-escalatiecontrole</text><text x="820" y="141" text-anchor="middle" class="he-meta">activeAccessMinutes</text>
+  <rect x="286" y="180" width="108" height="14" rx="2" fill="#F6F7F9"/><text x="340" y="190" text-anchor="middle" class="he-meta">START REGEL A</text>
+  <rect x="606" y="256" width="108" height="14" rx="2" fill="#F6F7F9"/><text x="660" y="266" text-anchor="middle" class="he-meta">ACTIVATIE A</text>
+  <rect x="286" y="364" width="108" height="14" rx="2" fill="#F6F7F9"/><text x="340" y="374" text-anchor="middle" class="he-meta">START REGEL B</text>
+  <rect x="602" y="440" width="116" height="14" rx="2" fill="#F6F7F9"/><text x="660" y="450" text-anchor="middle" class="he-meta" fill="#7F1F69">SELECTEER REGEL B</text>
+  <rect x="604" y="308" width="232" height="56" rx="6" fill="#fff" stroke="#E5E7EB"/>
+  <text x="720" y="330" text-anchor="middle" class="he-meta">start A ≤ activatie A ≤ start B</text>
+  <text x="720" y="348" text-anchor="middle" class="he-meta">start B − activatie A ≤ termijn</text>
+  <text x="40" y="548" class="he-sub">Bij gelijke starttijd geldt de lagere Excel-rij als eerder. Regel B hoeft zelf niet geactiveerd te zijn.</text>
+  <line x1="40" y1="568" x2="960" y2="568" stroke="#E5E7EB"/>
+  <circle cx="52" cy="584" r="5" fill="#A02A85"/><text x="66" y="588" class="he-meta">de geselecteerde relatie A/B wordt als één controlecontext bewaard</text>
+</svg>

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 430" role="img" aria-labelledby="analyseketen-title analyseketen-desc">
+  <title id="analyseketen-title">Lokale analyseketen van XLSX-bestand tot controle-uitkomst</title>
+  <desc id="analyseketen-desc">De browser leest een lokaal XLSX-bestand, vormt de auditpopulatie, voert analyses uit en toont of exporteert de resultaten zonder gegevens te uploaden.</desc>
+  <defs>
+    <marker id="analyseketen-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#6B7280"/></marker>
+    <marker id="analyseketen-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#A02A85"/></marker>
+    <style>
+      .ak-title{font:700 22px Inter,system-ui,sans-serif;fill:#333}.ak-sub{font:400 12px Inter,system-ui,sans-serif;fill:#6B7280}.ak-phase{font:700 10px Inter,system-ui,sans-serif;letter-spacing:1.2px;fill:#fff}.ak-name{font:700 14px Inter,system-ui,sans-serif;fill:#333}.ak-meta{font:400 10px ui-monospace,SFMono-Regular,Consolas,monospace;fill:#6B7280}.ak-line{fill:none;stroke:#6B7280;stroke-width:1.5;marker-end:url(#analyseketen-arrow)}
+    </style>
+  </defs>
+  <rect width="1000" height="430" fill="#F6F7F9"/>
+  <text x="40" y="42" class="ak-title">Van Excel-export naar controleerbare uitkomst</text>
+  <text x="40" y="64" class="ak-sub">Alle verwerking blijft in het geheugen van de browser.</text>
+  <rect x="190" y="92" width="620" height="224" rx="8" fill="#fff" stroke="#00A0C8" stroke-width="1.2" stroke-dasharray="6 4"/>
+  <text x="210" y="116" class="ak-meta" fill="#007F9F">BROWSERGRENS · GEEN UPLOAD</text>
+  <line x1="160" y1="190" x2="220" y2="190" class="ak-line"/>
+  <line x1="360" y1="190" x2="420" y2="190" class="ak-line"/>
+  <line x1="560" y1="190" x2="620" y2="190" class="ak-line"/>
+  <path d="M780 166 H804 Q812 166 812 158 V128 Q812 120 820 120 H840" class="ak-line"/>
+  <line x1="780" y1="190" x2="840" y2="190" class="ak-line"/>
+  <path d="M780 214 H804 Q812 214 812 222 V252 Q812 260 820 260 H840" class="ak-line"/>
+  <rect x="40" y="150" width="120" height="80" rx="8" fill="#fff" stroke="#333"/>
+  <rect x="48" y="158" width="34" height="14" rx="2" fill="#F2FBFD" stroke="#00A0C8"/>
+  <text x="65" y="168" text-anchor="middle" class="ak-meta" fill="#007F9F">INVOER</text>
+  <text x="100" y="193" text-anchor="middle" class="ak-name">XLSX-export</text>
+  <text x="100" y="211" text-anchor="middle" class="ak-meta">lokaal bestand</text>
+  <rect x="220" y="150" width="140" height="80" rx="8" fill="#fff" stroke="#6B7280"/>
+  <text x="290" y="184" text-anchor="middle" class="ak-name">ZIP + XML lezen</text>
+  <text x="290" y="204" text-anchor="middle" class="ak-meta">werkblad · kopregel · rijen</text>
+  <rect x="420" y="150" width="140" height="80" rx="8" fill="#fff" stroke="#6B7280"/>
+  <text x="490" y="184" text-anchor="middle" class="ak-name">Populatie vormen</text>
+  <text x="490" y="204" text-anchor="middle" class="ak-meta">filter · ontdubbeling</text>
+  <rect x="620" y="150" width="160" height="80" rx="8" fill="#FAF4F9" stroke="#A02A85" stroke-width="1.5"/>
+  <text x="700" y="184" text-anchor="middle" class="ak-name" fill="#7F1F69">Analyseren</text>
+  <text x="700" y="204" text-anchor="middle" class="ak-meta">signalen · vensters · peers</text>
+  <rect x="840" y="92" width="120" height="56" rx="8" fill="#fff" stroke="#00A0C8"/>
+  <text x="900" y="116" text-anchor="middle" class="ak-name">Overzichten</text>
+  <text x="900" y="133" text-anchor="middle" class="ak-meta">grafieken + tabellen</text>
+  <rect x="840" y="162" width="120" height="56" rx="8" fill="#fff" stroke="#A02A85"/>
+  <text x="900" y="186" text-anchor="middle" class="ak-name">Doorklikken</text>
+  <text x="900" y="203" text-anchor="middle" class="ak-meta">bijdragende bronregels</text>
+  <rect x="840" y="232" width="120" height="56" rx="8" fill="#fff" stroke="#16794C"/>
+  <text x="900" y="256" text-anchor="middle" class="ak-name">Exporteren</text>
+  <text x="900" y="273" text-anchor="middle" class="ak-meta">CSV + HTML-rapport</text>
+  <rect x="40" y="344" width="920" height="1" fill="#E5E7EB"/>
+  <circle cx="52" cy="376" r="5" fill="#00A0C8"/><text x="66" y="380" class="ak-sub">lokale verwerking</text>
+  <circle cx="218" cy="376" r="5" fill="#A02A85"/><text x="232" y="380" class="ak-sub">inhoudelijke analyse</text>
+  <circle cx="400" cy="376" r="5" fill="#16794C"/><text x="414" y="380" class="ak-sub">bestand blijft pas bestaan na bewuste export</text>
+</svg>

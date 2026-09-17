@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 540" role="img" aria-labelledby="signaaloverlap-title signaaloverlap-desc">
+  <title id="signaaloverlap-title">Overlap tussen auditsignalen en unieke aandachtspunten</title>
+  <desc id="signaaloverlap-desc">Venn-diagram met drie van de vier overlappende controlethema's waarin één auditregel meerdere signalen kan hebben maar binnen aandachtspunten slechts eenmaal telt.</desc>
+  <defs>
+    <style>
+      .so-title{font:700 22px Inter,system-ui,sans-serif;fill:#333}.so-sub{font:400 12px Inter,system-ui,sans-serif;fill:#6B7280}.so-set{font:700 14px Inter,system-ui,sans-serif;fill:#333}.so-meta{font:500 10px ui-monospace,SFMono-Regular,Consolas,monospace;fill:#6B7280}.so-focus{font:700 14px Inter,system-ui,sans-serif;fill:#7F1F69}
+    </style>
+  </defs>
+  <rect width="1000" height="540" fill="#F6F7F9"/>
+  <text x="40" y="42" class="so-title">Signalen overlappen, aandachtspunten niet</text>
+  <text x="40" y="64" class="so-sub">Een auditregel kan tegelijk bijdragen aan verschillende signaal- en thematellingen.</text>
+  <circle cx="410" cy="254" r="154" fill="#A02A85" fill-opacity=".08" stroke="#A02A85" stroke-width="1.5"/>
+  <circle cx="590" cy="254" r="154" fill="#00A0C8" fill-opacity=".09" stroke="#00A0C8" stroke-width="1.5"/>
+  <circle cx="500" cy="354" r="154" fill="#A15C00" fill-opacity=".07" stroke="#A15C00" stroke-width="1.5"/>
+  <text x="312" y="120" text-anchor="middle" class="so-set">Toegang en activatie</text>
+  <text x="688" y="120" text-anchor="middle" class="so-set">Volume en spreiding</text>
+  <text x="500" y="520" text-anchor="middle" class="so-set">Tijdpatronen</text>
+  <rect x="408" y="272" width="184" height="72" rx="8" fill="#fff" stroke="#A02A85" stroke-width="1.5"/>
+  <text x="500" y="298" text-anchor="middle" class="so-focus">Eén auditregel</text>
+  <text x="500" y="318" text-anchor="middle" class="so-meta">meerdere signalen mogelijk</text>
+  <text x="500" y="334" text-anchor="middle" class="so-meta">één uniek aandachtspunt</text>
+  <text x="348" y="226" text-anchor="middle" class="so-meta">her-escalatie</text>
+  <text x="652" y="226" text-anchor="middle" class="so-meta">hoog dagvolume</text>
+  <text x="500" y="430" text-anchor="middle" class="so-meta">nacht · weekend</text>
+  <line x1="40" y1="478" x2="280" y2="478" stroke="#E5E7EB"/>
+  <text x="40" y="498" class="so-meta">Frequenties: tellen per signaal</text>
+  <line x1="720" y1="478" x2="960" y2="478" stroke="#E5E7EB"/>
+  <text x="720" y="498" class="so-meta">Aandachtspunten: unieke regels</text>
+</svg>

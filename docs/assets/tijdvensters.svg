@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 520" role="img" aria-labelledby="tijdvensters-title tijdvensters-desc">
+  <title id="tijdvensters-title">Schuivende tijdvensters voor bursts en cliëntclusters</title>
+  <desc id="tijdvensters-desc">Tijdlijndiagram waarin een venster over gebeurtenissen schuift en per medewerker of cliënt alleen het sterkste kwalificerende venster wordt bewaard.</desc>
+  <defs>
+    <marker id="tijd-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#6B7280"/></marker>
+    <style>
+      .tv-title{font:700 22px Inter,system-ui,sans-serif;fill:#333}.tv-sub{font:400 12px Inter,system-ui,sans-serif;fill:#6B7280}.tv-name{font:700 13px Inter,system-ui,sans-serif;fill:#333}.tv-meta{font:500 10px ui-monospace,SFMono-Regular,Consolas,monospace;fill:#6B7280}.tv-axis{stroke:#6B7280;stroke-width:1.5;marker-end:url(#tijd-arrow)}
+    </style>
+  </defs>
+  <rect width="1000" height="520" fill="#F6F7F9"/>
+  <text x="40" y="42" class="tv-title">Zo kiest de webui één tijdvenster</text>
+  <text x="40" y="64" class="tv-sub">Het linkeruiteinde schuift vooruit zodra een gebeurtenis buiten de ingestelde duur valt.</text>
+  <line x1="100" y1="230" x2="920" y2="230" class="tv-axis"/>
+  <rect x="248" y="146" width="360" height="168" rx="8" fill="#F2FBFD" stroke="#00A0C8" stroke-width="1.5"/>
+  <text x="428" y="168" text-anchor="middle" class="tv-meta" fill="#007F9F">HUIDIG VENSTER · GRENS TELT MEE</text>
+  <g fill="#6B7280"><circle cx="140" cy="230" r="5"/><circle cx="220" cy="230" r="5"/><circle cx="280" cy="230" r="5"/><circle cx="360" cy="230" r="5"/><circle cx="460" cy="230" r="5"/><circle cx="580" cy="230" r="5"/><circle cx="700" cy="230" r="5"/><circle cx="840" cy="230" r="5"/></g>
+  <circle cx="280" cy="230" r="8" fill="#A02A85"/><circle cx="360" cy="230" r="8" fill="#A02A85"/><circle cx="460" cy="230" r="8" fill="#A02A85"/><circle cx="580" cy="230" r="8" fill="#A02A85"/>
+  <line x1="280" y1="230" x2="280" y2="332" stroke="#A02A85"/>
+  <line x1="580" y1="230" x2="580" y2="332" stroke="#A02A85"/>
+  <text x="280" y="352" text-anchor="middle" class="tv-meta">BEGIN</text><text x="580" y="352" text-anchor="middle" class="tv-meta">EINDE</text>
+  <text x="140" y="214" text-anchor="middle" class="tv-meta">t₁</text><text x="220" y="214" text-anchor="middle" class="tv-meta">t₂</text><text x="280" y="214" text-anchor="middle" class="tv-meta">t₃</text><text x="360" y="214" text-anchor="middle" class="tv-meta">t₄</text><text x="460" y="214" text-anchor="middle" class="tv-meta">t₅</text><text x="580" y="214" text-anchor="middle" class="tv-meta">t₆</text><text x="700" y="214" text-anchor="middle" class="tv-meta">t₇</text><text x="840" y="214" text-anchor="middle" class="tv-meta">t₈</text>
+  <rect x="96" y="392" width="248" height="72" rx="8" fill="#fff" stroke="#E5E7EB"/>
+  <text x="220" y="418" text-anchor="middle" class="tv-name">Burst per medewerker</text>
+  <text x="220" y="438" text-anchor="middle" class="tv-meta">meeste regels → meeste doelen</text>
+  <text x="220" y="454" text-anchor="middle" class="tv-meta">→ eerste gevonden venster</text>
+  <rect x="376" y="392" width="248" height="72" rx="8" fill="#fff" stroke="#E5E7EB"/>
+  <text x="500" y="418" text-anchor="middle" class="tv-name">Cluster per cliënt</text>
+  <text x="500" y="438" text-anchor="middle" class="tv-meta">meeste medewerkers → teams</text>
+  <text x="500" y="454" text-anchor="middle" class="tv-meta">→ regels → eerste gevonden</text>
+  <rect x="656" y="392" width="248" height="72" rx="8" fill="#FAF4F9" stroke="#A02A85"/>
+  <text x="780" y="418" text-anchor="middle" class="tv-name" fill="#7F1F69">Bewaarde uitkomst</text>
+  <text x="780" y="438" text-anchor="middle" class="tv-meta">één sterkste venster</text>
+  <text x="780" y="454" text-anchor="middle" class="tv-meta">niet alle mogelijke incidenten</text>
+</svg>
