@@ -86,6 +86,10 @@ Het testbestand bevat 946 cliëntgerichte auditregels: 832 met herkenbaar cliën
 
 De naam `manualRows` betekent hier dat het systeemfilter de regel niet heeft herkend. Een onbekende nieuwe systeemreden kan dus voorlopig in deze verzameling terechtkomen.
 
+![Verdeling van bronregels over systeemregels, auditregels en aandachtspunten](assets/auditpopulatie.svg)
+
+Het diagram gebruikt de gecontroleerde mei-export als voorbeeld. De bandbreedtes en aantallen gelden alleen voor dat referentiebestand; de verzamelingen en rekenregels gelden voor iedere analyse.
+
 De aantallen moeten aansluiten volgens:
 
 ```text
@@ -197,6 +201,8 @@ Laat FAB controleren of de gebruikte toegangstermijn overeenkomt met de inrichti
 
 Voor een nieuwe regel B zoekt de webui binnen de auditpopulatie naar een eerdere regel A van dezelfde medewerkersleutel en dezelfde herkenbare cliënt-ID. Beide starttijdstippen moeten geldig zijn. Regel A moet een leesbare activatie hebben die niet vóór de eigen start ligt.
 
+![Sequentie waarin regel B aan een eerdere activatie van regel A wordt gekoppeld](assets/her-escalatie.svg)
+
 De tijdsvoorwaarden zijn:
 
 ```text
@@ -271,6 +277,10 @@ De webui groepeert signalen in vier thema's:
 | Tijdpatronen | Nacht en weekend |
 | Datakwaliteit | Ontbrekende kernvelden of cliëntgegevens, ongeldige start, activatie of duur |
 
+![Overlap tussen controlethema's en unieke aandachtspunten](assets/signaaloverlap.svg)
+
+Het diagram toont drie van de vier thema's om de overlap leesbaar te houden. Ook datakwaliteit kan met deze thema's op dezelfde auditregel voorkomen. Signaal- en thematellingen mogen die regel ieder tellen, maar bij **Aandachtspunten** telt hij eenmaal.
+
 De webui bepaalt de controleprioriteit alleen voor aandachtspunten:
 
 | Prioriteit | Regel |
@@ -298,6 +308,8 @@ Voor iedere vergelijkbare medewerker maakt de webui drie groepen met andere verg
 3. hetzelfde team én dezelfde deskundigheid.
 
 De medewerker zelf telt niet mee in deze groepen. Per groep zijn standaard minimaal drie **andere** medewerkers nodig. Na het sorteren is de mediaan het middelste persoonsaantal. Bij een even aantal peers neemt de webui het gemiddelde van de twee middelste waarden.
+
+![Beslisroute van medewerkerscontext naar een beschikbare peer-ratio](assets/peervergelijking.svg)
 
 | Getoonde ratio | Teller | Noemer |
 | -- | -- | -- |
@@ -331,6 +343,10 @@ Uit de passende vensters kiest de webui per cliënt het sterkste. Eerst kijkt he
 Voorbeeld bij een medewerkersdrempel van 4: een ochtendvenster met 3 medewerkers uit 1 team voldoet niet. Een middagvenster met 2 medewerkers uit 2 teams voldoet wel aan de teamdrempel van 2 en verschijnt daarom in de tabel.
 
 Dit patroon bewijst niet dat medewerkers buiten hun werkgebied handelden. Het kan bijvoorbeeld samenhangen met acute zorg, een opname, een overdracht of tijdelijke inzet. De webui toont ook hier maar één geselecteerd venster, niet alle clusters in het bestand.
+
+![Schuivend tijdvenster en de selectie van de sterkste burst of het sterkste cliëntcluster](assets/tijdvensters.svg)
+
+Hetzelfde schuivende-vensterprincipe ondersteunt beide analyses. De rangschikking bij een gelijke stand verschilt: een burst kijkt na het aantal regels naar verschillende doelen, terwijl een cliëntcluster achtereenvolgens medewerkers, teams en regels vergelijkt.
 
 ### 11.4 Concentratie per medewerker
 
