@@ -7,6 +7,12 @@ Ons Escalatielog Audit is een losse webpagina waarmee je `.xlsx`-exports met esc
 
 De analyse draait volledig in de browser. Het Excelbestand wordt niet geüpload en de webui maakt geen verbinding met externe diensten.
 
+## Zo werkt de analyse
+
+![Lokale analyseketen van Excel-export naar overzichten, bronregels en exports](docs/assets/analyseketen.svg)
+
+De browser leest het werkblad, verwijdert bekende systeemregels en exacte duplicaten en vormt zo de auditpopulatie. Daarna berekent de webui aggregaties, signalen, tijdvensters en peervergelijkingen. Elk resultaat blijft gekoppeld aan de bronregels die eraan bijdragen.
+
 > [!IMPORTANT]
 > Een signaal bewijst niet dat iemand onrechtmatig toegang had of een dossier heeft ingezien. Gebruik de uitkomsten alleen als aanleiding voor menselijke controle.
 
