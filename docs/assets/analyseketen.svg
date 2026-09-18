@@ -25,23 +25,23 @@
   <text x="100" y="193" text-anchor="middle" class="ak-name">XLSX-export</text>
   <text x="100" y="211" text-anchor="middle" class="ak-meta">lokaal bestand</text>
   <rect x="220" y="150" width="140" height="80" rx="8" fill="#fff" stroke="#6B7280"/>
-  <text x="290" y="184" text-anchor="middle" class="ak-name">ZIP + XML lezen</text>
-  <text x="290" y="204" text-anchor="middle" class="ak-meta">werkblad · kopregel · rijen</text>
+  <text x="290" y="180" text-anchor="middle" class="ak-name">ZIP + XML lezen</text>
+  <text text-anchor="middle" class="ak-meta"><tspan x="290" y="200">werkblad · kopregel</tspan><tspan x="290" y="214">rijen</tspan></text>
   <rect x="420" y="150" width="140" height="80" rx="8" fill="#fff" stroke="#6B7280"/>
   <text x="490" y="184" text-anchor="middle" class="ak-name">Populatie vormen</text>
   <text x="490" y="204" text-anchor="middle" class="ak-meta">filter · ontdubbeling</text>
   <rect x="620" y="150" width="160" height="80" rx="8" fill="#FAF4F9" stroke="#A02A85" stroke-width="1.5"/>
-  <text x="700" y="184" text-anchor="middle" class="ak-name" fill="#7F1F69">Analyseren</text>
-  <text x="700" y="204" text-anchor="middle" class="ak-meta">signalen · vensters · peers</text>
-  <rect x="840" y="92" width="120" height="56" rx="8" fill="#fff" stroke="#00A0C8"/>
-  <text x="900" y="116" text-anchor="middle" class="ak-name">Overzichten</text>
-  <text x="900" y="133" text-anchor="middle" class="ak-meta">grafieken + tabellen</text>
-  <rect x="840" y="162" width="120" height="56" rx="8" fill="#fff" stroke="#A02A85"/>
-  <text x="900" y="186" text-anchor="middle" class="ak-name">Doorklikken</text>
-  <text x="900" y="203" text-anchor="middle" class="ak-meta">bijdragende bronregels</text>
-  <rect x="840" y="232" width="120" height="56" rx="8" fill="#fff" stroke="#16794C"/>
-  <text x="900" y="256" text-anchor="middle" class="ak-name">Exporteren</text>
-  <text x="900" y="273" text-anchor="middle" class="ak-meta">CSV + HTML-rapport</text>
+  <text x="700" y="180" text-anchor="middle" class="ak-name" fill="#7F1F69">Analyseren</text>
+  <text text-anchor="middle" class="ak-meta"><tspan x="700" y="200">signalen · vensters</tspan><tspan x="700" y="214">peers</tspan></text>
+  <rect x="840" y="88" width="120" height="64" rx="8" fill="#fff" stroke="#00A0C8"/>
+  <text x="900" y="112" text-anchor="middle" class="ak-name">Overzichten</text>
+  <text text-anchor="middle" class="ak-meta"><tspan x="900" y="130">grafieken +</tspan><tspan x="900" y="144">tabellen</tspan></text>
+  <rect x="840" y="158" width="120" height="64" rx="8" fill="#fff" stroke="#A02A85"/>
+  <text x="900" y="182" text-anchor="middle" class="ak-name">Doorklikken</text>
+  <text text-anchor="middle" class="ak-meta"><tspan x="900" y="200">bijdragende</tspan><tspan x="900" y="214">bronregels</tspan></text>
+  <rect x="840" y="228" width="120" height="64" rx="8" fill="#fff" stroke="#16794C"/>
+  <text x="900" y="252" text-anchor="middle" class="ak-name">Exporteren</text>
+  <text text-anchor="middle" class="ak-meta"><tspan x="900" y="270">CSV +</tspan><tspan x="900" y="284">HTML-rapport</tspan></text>
   <rect x="40" y="344" width="920" height="1" fill="#E5E7EB"/>
   <circle cx="52" cy="376" r="5" fill="#00A0C8"/><text x="66" y="380" class="ak-sub">lokale verwerking</text>
   <circle cx="218" cy="376" r="5" fill="#A02A85"/><text x="232" y="380" class="ak-sub">inhoudelijke analyse</text>

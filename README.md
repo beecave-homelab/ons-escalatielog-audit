@@ -44,7 +44,7 @@ Je hoeft niets te installeren en hebt geen webserver nodig.
 
 ## Vereiste invoer
 
-De webui verwacht een `.xlsx`-export met deze 14 kolommen:
+Gebruik het [Excel-rapport van het escalatielog](https://support.nedap-ons.nl/support/solutions/articles/103000265692-ons-autorisatie-uitgevoerde-escalaties-in-het-escalatielog-bekijken#excel-rapport). De webui verwacht daarin deze 14 kolommen:
 
 - `Gebruiker`
 - `Medewerkernummer`
