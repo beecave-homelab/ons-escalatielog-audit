@@ -1,0 +1,63 @@
+[project]
+name = "ons-escalatielog-audit"
+version = "0.6.1"
+description = "Lokale webui voor controle van Nedap Ons-escalatielogs"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[dependency-groups]
+dev = [
+  "mdformat==1.0.0",
+  "mdformat-frontmatter==2.1.2",
+  "mdformat-gfm==1.0.0",
+  "playwright==1.52.0",
+  "pytest==9.0.2",
+  "pytest-cov==7.0.0",
+  "ruff==0.16.6",
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.dependency-groups]
+dev = { requires-python = ">=3.10" }
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "lf"
+
+[tool.ruff.lint]
+select = [
+  "B",
+  "E",
+  "F",
+  "FA",
+  "I",
+  "N",
+  "RUF",
+  "SIM",
+  "TID",
+  "UP",
+  "W",
+]
+
+[tool.pytest.ini_options]
+addopts = "--maxfail=1 -q --import-mode=append"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+concurrency = ["greenlet"]
+
+[tool.coverage.report]
+fail_under = 85
+precision = 2
+show_missing = true
+skip_covered = true

@@ -12,4 +12,12 @@ venv/
 # to-do/**
 to-do/add-explanatory-diagrams.md
 to-do/fix-exported-report-table-alignment.md
-to-do/add-quality-tooling-and-report-regression-test.md
+# to-do/add-quality-tooling-and-report-regression-test.md
+*.pyc
+__pycache__/
+__pycache__/*
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
