@@ -8,6 +8,7 @@ dependencies = []
 
 [dependency-groups]
 dev = [
+  "djlint==1.44.2",
   "mdformat==1.0.0",
   "mdformat-frontmatter==2.1.2",
   "mdformat-gfm==1.0.0",
@@ -22,6 +23,14 @@ package = false
 
 [tool.uv.dependency-groups]
 dev = { requires-python = ">=3.10" }
+
+[tool.djlint]
+profile = "html"
+indent = 2
+max_line_length = 120
+use_gitignore = true
+format_css = false
+format_js = false
 
 [tool.ruff]
 target-version = "py310"
