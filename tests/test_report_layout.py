@@ -1,0 +1,165 @@
+import sys
+from pathlib import Path
+
+import pytest
+from generate_synthetic_escalatielog import create_workbook, main, synthetic_rows
+from playwright.sync_api import Error, Playwright, sync_playwright
+
+ROOT = Path(__file__).resolve().parents[1]
+STANDARD_FIXTURE = ROOT / "tests/fixtures/synthetic-escalatielog.xlsx"
+
+
+def launch_browser(playwright: Playwright):
+    failures = []
+    for channel in ("chrome", "msedge"):
+        try:
+            return playwright.chromium.launch(channel=channel, headless=True)
+        except Error as error:
+            failures.append(f"{channel}: {error.message.splitlines()[0]}")
+    pytest.fail("Geen lokale Chrome- of Edge-installatie gevonden. " + "; ".join(failures))
+
+
+def inspect_layout(page, width: int, media: str) -> dict:
+    page.set_viewport_size({"width": width, "height": 900})
+    page.emulate_media(media=media)
+    page.reload(wait_until="load")
+    return page.evaluate(
+        """() => {
+          const wrappers = [...document.querySelectorAll('.table-scroll')];
+          const tables = [...document.querySelectorAll('table')];
+          return {
+            bodyContained: document.body.scrollWidth <= innerWidth,
+            wrapperCount: wrappers.length,
+            wrappersContained: wrappers.every(
+              wrapper => wrapper.getBoundingClientRect().right <= innerWidth
+            ),
+            malformedTables: tables.filter(
+              table => [...table.tBodies[0].rows].some(
+                row => row.cells.length !== table.tHead.rows[0].cells.length
+              )
+            ).length,
+            wideTables: wrappers
+              .filter(wrapper => wrapper.scrollWidth > wrapper.clientWidth)
+              .map(wrapper => wrapper.previousElementSibling?.textContent.trim()),
+            printTablesFit: wrappers.every(
+              wrapper => wrapper.querySelector('table').getBoundingClientRect().width
+                <= wrapper.clientWidth + 1
+            ),
+          };
+        }"""
+    )
+
+
+def test_synthetic_export_is_reproducible(tmp_path: Path) -> None:
+    first = tmp_path / "first.xlsx"
+    second = tmp_path / "second.xlsx"
+    different = tmp_path / "different.xlsx"
+
+    standard = tmp_path / "standard.xlsx"
+    first_digest = create_workbook(first, 200, 20260918)
+    second_digest = create_workbook(second, 200, 20260918)
+    different_digest = create_workbook(different, 200, 20260919)
+    create_workbook(standard, 2000, 20260918)
+
+    assert first_digest == second_digest
+    assert first.read_bytes() == second.read_bytes()
+    assert first_digest != different_digest
+    assert standard.read_bytes() == STANDARD_FIXTURE.read_bytes()
+    assert len(synthetic_rows(5, 1)) == 6
+    with pytest.raises(ValueError, match="minimaal 1"):
+        synthetic_rows(0, 1)
+
+
+def test_generator_cli(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys) -> None:
+    output = tmp_path / "cli.xlsx"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "generate_synthetic_escalatielog.py",
+            "--output",
+            str(output),
+            "--rows",
+            "10",
+            "--seed",
+            "42",
+            "--profile",
+            "mixed",
+        ],
+    )
+
+    main()
+
+    result = capsys.readouterr().out
+    assert output.is_file()
+    assert "Regels: 10" in result
+    assert "Seed: 42" in result
+    assert "SHA-256:" in result
+
+
+def test_exported_report_tables_stay_aligned(tmp_path: Path) -> None:
+    workbook = tmp_path / "synthetisch-escalatielog.xlsx"
+    report = tmp_path / "synthetisch-rapport.html"
+    create_workbook(workbook, 24, 20260918, "layout")
+
+    with sync_playwright() as playwright:
+        browser = launch_browser(playwright)
+        page = browser.new_page(viewport={"width": 1280, "height": 900}, accept_downloads=True)
+        console_errors = []
+        page.on(
+            "console",
+            lambda message: (
+                console_errors.append(message.text) if message.type == "error" else None
+            ),
+        )
+        page.on("pageerror", lambda error: console_errors.append(str(error)))
+        app_url = (ROOT / "escalatielog-audit-webui.html").as_uri()
+        page.goto(app_url, wait_until="load")
+        page.locator("#fileInput").set_input_files(STANDARD_FIXTURE)
+        page.locator("#analyzeBtn").click()
+        page.locator("#workspace.show").wait_for(timeout=30_000)
+        assert page.locator("#kpis .value").all_text_contents() == [
+            "1.802",
+            "1.790",
+            "250",
+            "558",
+            "0",
+            "310",
+        ]
+        assert "2.000 logregels ingelezen" in page.locator("#status").text_content()
+
+        page.goto(app_url, wait_until="load")
+        page.locator("#fileInput").set_input_files(workbook)
+        page.locator("#analyzeBtn").click()
+        page.locator("#workspace.show").wait_for(timeout=30_000)
+
+        assert page.locator("#kpis .value").all_text_contents() == [
+            "24",
+            "24",
+            "12",
+            "24",
+            "0",
+            "24",
+        ]
+
+        with page.expect_download() as download_info:
+            page.locator("#reportBtn").click()
+        download_info.value.save_as(report)
+        page.goto(report.as_uri(), wait_until="load")
+
+        screen_results = [inspect_layout(page, width, "screen") for width in (1280, 800)]
+        print_results = [inspect_layout(page, width, "print") for width in (1280, 800)]
+        browser.close()
+
+    assert not console_errors
+    for result in screen_results:
+        assert result["bodyContained"]
+        assert result["wrapperCount"] >= 8
+        assert result["wrappersContained"]
+        assert result["malformedTables"] == 0
+        assert {"Aandachtspunten", "Peeranalyse"} <= set(result["wideTables"])
+    for result in print_results:
+        assert result["bodyContained"]
+        assert result["wrappersContained"]
+        assert result["malformedTables"] == 0
+        assert result["printTablesFit"]
