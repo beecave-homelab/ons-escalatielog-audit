@@ -6,7 +6,7 @@ Guidance for coding agents working in this repository. Read this first; then `RE
 
 A **single-file, offline web app** (`escalatielog-audit-webui.html`) that audits Nedap Ons *escalatielog* exports (`.xlsx`). A functioneel beheerder opens the file in a browser, drops in the export, and gets counts, signals ("aandachtspunten"), drilldowns, a CSV export and a standalone HTML report. Language of UI, docs and commit messages is **Dutch**.
 
-There is no build step, no package manager, no server, no framework, no tests directory and no external dependency. Everything is inline HTML/CSS/JS (~820 lines, long lines, dense style).
+The webui has no build step, server, framework or runtime dependency. Everything is inline HTML/CSS/JS (~820 lines, long lines, dense style). Development-only checks use Python, uv, mdformat, Ruff, pytest and Playwright.
 
 ## Repository layout
 
@@ -15,6 +15,11 @@ There is no build step, no package manager, no server, no framework, no tests di
 | `escalatielog-audit-webui.html` | The entire application. Version constant `APP_VERSION` near the top of the `<script>`. |
 | `README.md` | User-facing intro, usage, required input columns, privacy. Contains the version badge. |
 | `CHANGELOG.md` | Release history with user-visible changes grouped by SemVer version. |
+| `pyproject.toml` / `.mdformat.toml` | Development dependencies and configuration for Ruff, pytest, coverage and mdformat. |
+| `uv.lock` | Reproducible lockfile for development-only Python tooling. |
+| `tests/generate_synthetic_escalatielog.py` | Seeded CLI generator for deterministic, data-free XLSX exports. |
+| `tests/fixtures/synthetic-escalatielog.xlsx` | Standard synthetic export: 2,000 rows generated with seed `20260918`; safe to commit. |
+| `tests/test_report_layout.py` | Synthetic Playwright regression test for exported report tables; contains no personal data. |
 | `docs/berekeningen-en-patroonherkenning.md` | Authoritative functional/technical reference (16 sections): populations, signals, thresholds, tie-breaks, defaults (§14), reference results (§15). Has frontmatter with `updated:` date. |
 | `docs/assets/` | SVG diagrams used by README/docs. |
 | `escalatielogs/` | Local test exports (**gitignored**, contain personal data). Reference file: `Escalatielogs 01-05-2026 tot 31-05-2026.xlsx` (the local copy may carry a download suffix such as `(1)`). |
@@ -47,11 +52,13 @@ Always HTML-escape with `esc()` before inserting data into the DOM or the report
 - A row can carry several signals but counts **once** as an aandachtspunt.
 - Wording: signals are triage indicators, never proof of unlawful access or dossier viewing. Keep such disclaimers in UI, report and docs.
 - **Docs follow code**: the docs state that the implementation wins on conflict and must be updated. Any behavioural change ⇒ update the relevant section in `docs/berekeningen-en-patroonherkenning.md` (and its `updated:` date) and, if user-visible, `README.md`.
-- **Version**: semver only (`0.6.0` style). Keep `APP_VERSION` in the HTML and the badge in `README.md` equal, and record each release in `CHANGELOG.md`. Never write `v6`, `v6.0`, etc.
+- **Version**: semver only (`0.6.0` style). Keep `APP_VERSION` in the HTML, `project.version` in `pyproject.toml` and the badge in `README.md` equal, and record each release in `CHANGELOG.md`. Never write `v6`, `v6.0`, etc.
 
 ## Verifying changes
 
-There is no automated test suite. Regression check = re-run the reference export with default settings and compare to docs §15. Key figures:
+Run the development checks with `uv sync --locked`, `uv run mdformat --check README.md CHANGELOG.md AGENTS.md docs`, `uv run ruff check .`, `uv run ruff format --check .`, `uv run pytest` and `uv run pytest --cov=tests --cov-report=term-missing:skip-covered`. Coverage follows Playwright greenlets and must remain at or above 85%. The pytest suite verifies the committed standard synthetic export, builds a temporary layout-focused XLSX file and checks exported report tables in a locally installed Chrome or Edge browser; it must not use files from `escalatielogs/`.
+
+For the full analysis regression, re-run the reference export with default settings and compare to docs §15. Key figures:
 
 | Controle | Uitkomst |
 | -- | -: |
@@ -62,7 +69,7 @@ There is no automated test suite. Regression check = re-run the reference export
 | Unieke aandachtspunten | 482 (28,5 %) |
 | Bursts / cliëntclusters | 11 / 11 |
 
-Practical approach: open the HTML in Chromium/Chrome (needs `DecompressionStream`; Edge/Chrome 80+, Firefox 113+, Safari 16.4+) or drive it headless with Playwright (Python venv outside the repo works; local Node may be broken on this machine). Check the console for errors, verify the figures above, exercise one drilldown, one CSV export and the HTML report. If figures change intentionally, update docs §15 in the same change.
+For the manual reference check, open the HTML in Chromium/Chrome (needs `DecompressionStream`; Edge/Chrome 80+, Firefox 113+, Safari 16.4+). Check the console for errors, verify the figures above, exercise one drilldown, one CSV export and the HTML report. If figures change intentionally, update docs §15 in the same change.
 
 For synthetic edge cases, call `analyze()`/`analyzeQuality()` directly in the page context with hand-built row objects.
 
