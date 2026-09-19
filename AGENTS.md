@@ -15,7 +15,7 @@ The webui has no build step, server, framework or runtime dependency. Everything
 | `escalatielog-audit-webui.html` | The entire application. Version constant `APP_VERSION` near the top of the `<script>`. |
 | `README.md` | User-facing intro, usage, required input columns, privacy. Contains the version badge. |
 | `CHANGELOG.md` | Release history with user-visible changes grouped by SemVer version. |
-| `pyproject.toml` / `.mdformat.toml` | Development dependencies and configuration for Ruff, pytest, coverage and mdformat. |
+| `pyproject.toml` / `.mdformat.toml` | Development dependencies and configuration for djLint, Ruff, pytest, coverage and mdformat. |
 | `uv.lock` | Reproducible lockfile for development-only Python tooling. |
 | `tests/generate_synthetic_escalatielog.py` | Seeded CLI generator for deterministic, data-free XLSX exports. |
 | `tests/fixtures/synthetic-escalatielog.xlsx` | Standard synthetic export: 2,000 rows generated with seed `20260918`; safe to commit. |
@@ -56,7 +56,7 @@ Always HTML-escape with `esc()` before inserting data into the DOM or the report
 
 ## Verifying changes
 
-Run the development checks with `uv sync --locked`, `uv run mdformat --check README.md CHANGELOG.md AGENTS.md docs`, `uv run ruff check .`, `uv run ruff format --check .`, `uv run pytest` and `uv run pytest --cov=tests --cov-report=term-missing:skip-covered`. Coverage follows Playwright greenlets and must remain at or above 85%. The pytest suite verifies the committed standard synthetic export, builds a temporary layout-focused XLSX file and checks exported report tables in a locally installed Chrome or Edge browser; it must not use files from `escalatielogs/`.
+Run the development checks with `uv sync --locked`, `uv run mdformat --check README.md CHANGELOG.md AGENTS.md docs`, `uv run djlint . --check`, `uv run ruff check .`, `uv run ruff format --check .`, `uv run pytest` and `uv run pytest --cov=tests --cov-report=term-missing:skip-covered`. Coverage follows Playwright greenlets and must remain at or above 85%. The pytest suite verifies the committed standard synthetic export, builds a temporary layout-focused XLSX file and checks exported report tables in a locally installed Chrome or Edge browser; it must not use files from `escalatielogs/`.
 
 For the full analysis regression, re-run the reference export with default settings and compare to docs §15. Key figures:
 
@@ -76,7 +76,7 @@ For synthetic edge cases, call `analyze()`/`analyzeQuality()` directly in the pa
 ## Conventions
 
 - Keep the single-file architecture; do not split into modules or introduce a bundler.
-- Match the existing compact code style (one-line functions, `const` maps, minimal comments). Don't reformat unrelated lines — diffs on this file are already hard to read.
+- Format HTML markup with `uv run djlint . --reformat`. The configured formatter leaves embedded CSS and JavaScript compact; keep their one-line functions, `const` maps and minimal comments, and don't reformat unrelated lines.
 - Commit messages follow `type emoji: Dutch imperative summary`, e.g. `docs 📝: Voeg uitleg over de analyseketen toe aan de README`, `chore 📦: …`.
 - Never commit anything from `escalatielogs/` or `exports/`; both contain real personal data.
 - Do not create commits or PRs unless explicitly asked.
