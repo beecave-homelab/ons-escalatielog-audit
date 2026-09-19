@@ -326,6 +326,8 @@ Medewerkers zonder auditregels zijn niet zichtbaar. De vergelijking selecteert d
 
 Bij doorklikken zie je de bronregels van de medewerker en alle gebruikte team- en deskundigheidspeers. De combinatiegroep is de overlap tussen deze groepen. Daardoor bevat het venster met bronregels meer regels dan alleen de teller van één ratio.
 
+De webui en het HTML-rapport tonen deze formule, de vier teller-noemercombinaties, een rekenvoorbeeld en de betekenis van `0,50`, `1,00` en `2,00` direct bij de peeranalysetabel. In het rapport valt de uitleg binnen dezelfde inklapbare sectie als de tabel. De beperkingen blijven daar eveneens zichtbaar. Het doorklikvenster heet **Bronregels achter peeranalyse** en dient om de onderliggende regels te controleren; de ratio-uitleg staat bij de tabel zelf.
+
 ### 11.2 Bursts per medewerker
 
 Een burst is een groot aantal pogingen van één medewerker binnen een voortschrijdend tijdvenster. Alleen regels met een medewerkersleutel en een geldige starttijd tellen mee. Alle doeltypen kunnen bijdragen. Een onbekend doel-ID telt wel als poging, maar niet als herkenbaar uniek doel.
