@@ -80,6 +80,39 @@ Niet alle schermen gebruiken dezelfde regels. **Datakwaliteit** kijkt bijvoorbee
 
 De webui verwerkt de export alleen in het geheugen van de browser. Als je de pagina sluit of vernieuwt, worden de ingelezen gegevens gewist. Gedownloade CSV- en HTML-bestanden blijven wel op het apparaat staan en kunnen persoonsgegevens bevatten. Bewaar en deel deze bestanden volgens de interne afspraken van je organisatie.
 
+## Ontwikkelen
+
+De webui zelf heeft geen buildstap of runtime-afhankelijkheden. De ontwikkelcontroles gebruiken [uv](https://docs.astral.sh/uv/), Python 3.10 of nieuwer en een lokale installatie van Chrome of Edge.
+
+Installeer de vastgezette ontwikkelafhankelijkheden:
+
+```bash
+uv sync
+```
+
+Voer daarna de kwaliteitscontroles uit:
+
+```bash
+uv run mdformat --check README.md CHANGELOG.md AGENTS.md docs
+uv run ruff check .
+uv run ruff format --check .
+uv run pytest
+uv run pytest --cov=tests --cov-report=term-missing:skip-covered
+```
+
+De coverage-controle volgt ook de greenlets van Playwright en faalt onder 85%. Deze dekking meet alleen de Python-testcode en zegt niets over de JavaScript-code van de webui.
+
+De repository bevat een standaard testexport met 2.000 verzonnen regels. Maak deze met dezelfde seed opnieuw via:
+
+```bash
+uv run python tests/generate_synthetic_escalatielog.py \
+  --output tests/fixtures/synthetic-escalatielog.xlsx \
+  --rows 2000 \
+  --seed 20260918
+```
+
+Dezelfde seed levert byte-voor-byte hetzelfde bestand op. De pytest-suite controleert dit bestand in de echte webui en maakt daarnaast tijdelijk een kleiner rapport om de tabelopmaak op scherm- en printbreedte te controleren.
+
 ## Licentie
 
 Dit project valt onder de [MIT-licentie](LICENSE).

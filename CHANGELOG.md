@@ -4,6 +4,14 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [0.6.1] - 2026-09-18
 
+### Toegevoegd in v0.6.1
+
+- Voeg reproduceerbare ontwikkeltooling toe met uv, mdformat, Ruff, pytest en pytest-cov.
+- Voeg een gegevensvrije Playwright-regressietest toe voor de scherm- en printopmaak van rapporttabellen.
+- Voeg een reproduceerbare generator en een standaard synthetische testexport met 2.000 regels toe.
+- Stel minimaal 85% branch-aware dekking verplicht voor de Python-testcode en meet Playwright-greenlets mee.
+- Leg de ontwikkelafhankelijkheden vast in `uv.lock` zonder runtime-afhankelijkheden aan de webui toe te voegen.
+
 ### Opgelost in v0.6.1
 
 - Voorkom dat brede tabellen het geëxporteerde HTML-rapport buiten de paginabreedte trekken.
