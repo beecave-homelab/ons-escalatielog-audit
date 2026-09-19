@@ -2,5 +2,14 @@ escalatielogs/
 escalatielogs/**
 .DS_Store
 project-overview.md
-to-do/
-to-do/**
+exports/
+exports/**
+.env
+.venv
+.venv/
+venv/
+# to-do/
+# to-do/**
+to-do/add-explanatory-diagrams.md
+to-do/fix-exported-report-table-alignment.md
+to-do/add-quality-tooling-and-report-regression-test.md
