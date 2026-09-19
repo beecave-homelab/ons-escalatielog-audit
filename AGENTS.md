@@ -14,9 +14,10 @@ There is no build step, no package manager, no server, no framework, no tests di
 | -- | -- |
 | `escalatielog-audit-webui.html` | The entire application. Version constant `APP_VERSION` near the top of the `<script>`. |
 | `README.md` | User-facing intro, usage, required input columns, privacy. Contains the version badge. |
+| `CHANGELOG.md` | Release history with user-visible changes grouped by SemVer version. |
 | `docs/berekeningen-en-patroonherkenning.md` | Authoritative functional/technical reference (16 sections): populations, signals, thresholds, tie-breaks, defaults (§14), reference results (§15). Has frontmatter with `updated:` date. |
 | `docs/assets/` | SVG diagrams used by README/docs. |
-| `escalatielogs/` | Local test exports (**gitignored**, contain personal data). Reference file: `Escalatielogs 01-05-2026 tot 31-05-2026.xlsx` (the local copy may carry a download suffix such as ` (1)`). |
+| `escalatielogs/` | Local test exports (**gitignored**, contain personal data). Reference file: `Escalatielogs 01-05-2026 tot 31-05-2026.xlsx` (the local copy may carry a download suffix such as `(1)`). |
 | `exports/` | Output written during manual testing (**gitignored**; contains personal data — never commit). |
 | `to-do/` | Gitignored local scratch/todo directory; not used by the webui. |
 | `project-overview.md` | Gitignored; not present in this repo. |
@@ -46,7 +47,7 @@ Always HTML-escape with `esc()` before inserting data into the DOM or the report
 - A row can carry several signals but counts **once** as an aandachtspunt.
 - Wording: signals are triage indicators, never proof of unlawful access or dossier viewing. Keep such disclaimers in UI, report and docs.
 - **Docs follow code**: the docs state that the implementation wins on conflict and must be updated. Any behavioural change ⇒ update the relevant section in `docs/berekeningen-en-patroonherkenning.md` (and its `updated:` date) and, if user-visible, `README.md`.
-- **Version**: semver only (`0.6.0` style). Single source: `APP_VERSION` in the HTML and the badge in `README.md`. Never write `v6`, `v6.0`, etc.
+- **Version**: semver only (`0.6.0` style). Keep `APP_VERSION` in the HTML and the badge in `README.md` equal, and record each release in `CHANGELOG.md`. Never write `v6`, `v6.0`, etc.
 
 ## Verifying changes
 
