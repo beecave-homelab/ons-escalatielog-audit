@@ -23,11 +23,18 @@ def inspect_layout(page, width: int, media: str) -> dict:
     page.set_viewport_size({"width": width, "height": 900})
     page.emulate_media(media=media)
     page.reload(wait_until="load")
+    closed_before_print = page.locator("details:not([open])").count()
+    if media == "print":
+        page.evaluate("window.dispatchEvent(new Event('beforeprint'))")
+    else:
+        page.evaluate("document.querySelectorAll('details').forEach(d => d.open = true)")
     return page.evaluate(
-        """() => {
+        """closedBeforePrint => {
           const wrappers = [...document.querySelectorAll('.table-scroll')];
           const tables = [...document.querySelectorAll('table')];
           return {
+            closedBeforePrint,
+            allDetailsOpen: [...document.querySelectorAll('details')].every(detail => detail.open),
             bodyContained: document.body.scrollWidth <= innerWidth,
             wrapperCount: wrappers.length,
             wrappersContained: wrappers.every(
@@ -40,11 +47,29 @@ def inspect_layout(page, width: int, media: str) -> dict:
             ).length,
             wideTables: wrappers
               .filter(wrapper => wrapper.scrollWidth > wrapper.clientWidth)
-              .map(wrapper => wrapper.previousElementSibling?.textContent.trim()),
+              .map(wrapper => (
+                wrapper.closest('details')?.querySelector('summary')?.textContent
+                || wrapper.previousElementSibling?.textContent || ''
+              ).trim()),
             printTablesFit: wrappers.every(
               wrapper => wrapper.querySelector('table').getBoundingClientRect().width
                 <= wrapper.clientWidth + 1
             ),
+          };
+        }""",
+        closed_before_print,
+    )
+
+
+def inspect_toc(page) -> dict:
+    return page.evaluate(
+        """() => {
+          const links = [...document.querySelectorAll('.toc a')];
+          const targets = links.map(link => document.querySelector(link.hash));
+          return {
+            linkCount: links.length,
+            uniqueTargetCount: new Set(targets).size,
+            allTargetsExist: targets.every(Boolean),
           };
         }"""
     )
@@ -147,18 +172,31 @@ def test_exported_report_tables_stay_aligned(tmp_path: Path) -> None:
         download_info.value.save_as(report)
         page.goto(report.as_uri(), wait_until="load")
 
+        toc_result = inspect_toc(page)
+        page.locator('.toc a[href="#s-peer"]').click()
+        page.wait_for_function("location.hash === '#s-peer'")
+        toc_hash = page.evaluate("location.hash")
         screen_results = [inspect_layout(page, width, "screen") for width in (1280, 800)]
         print_results = [inspect_layout(page, width, "print") for width in (1280, 800)]
         browser.close()
 
     assert not console_errors
+    assert toc_result == {
+        "linkCount": 18,
+        "uniqueTargetCount": 18,
+        "allTargetsExist": True,
+    }
+    assert toc_hash == "#s-peer"
     for result in screen_results:
         assert result["bodyContained"]
         assert result["wrapperCount"] >= 8
         assert result["wrappersContained"]
         assert result["malformedTables"] == 0
-        assert {"Aandachtspunten", "Peeranalyse"} <= set(result["wideTables"])
+        assert any(t.startswith("Aandachtspunten") for t in result["wideTables"])
+        assert any(t.startswith("Peeranalyse") for t in result["wideTables"])
     for result in print_results:
+        assert result["closedBeforePrint"] > 0
+        assert result["allDetailsOpen"]
         assert result["bodyContained"]
         assert result["wrappersContained"]
         assert result["malformedTables"] == 0
