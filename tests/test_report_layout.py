@@ -152,6 +152,19 @@ def test_exported_report_tables_stay_aligned(tmp_path: Path) -> None:
             "310",
         ]
         assert "2.000 logregels ingelezen" in page.locator("#status").text_content()
+        peer_guidance = page.locator("#peerGuidance")
+        assert "waarde van de medewerker gedeeld door de mediaan" in peer_guidance.text_content()
+        assert all(ratio in peer_guidance.text_content() for ratio in ("0,50", "1,00", "2,00"))
+        assert peer_guidance.locator("tbody tr").count() == 4
+        peer_guidance.locator("details").evaluate("detail => detail.open = true")
+        assert "13 escalaties ÷ mediaan 6 = ratio 2,17" in peer_guidance.text_content()
+
+        page.locator('.tab[data-view="deepdive"]').click()
+        page.locator("#peerTable tbody tr").first.click()
+        assert (
+            page.locator("#drillTitle").text_content().startswith("Bronregels achter peeranalyse ·")
+        )
+        page.locator("#drillCloseBtn").click()
 
         page.goto(app_url, wait_until="load")
         page.locator("#fileInput").set_input_files(workbook)
@@ -171,6 +184,19 @@ def test_exported_report_tables_stay_aligned(tmp_path: Path) -> None:
             page.locator("#reportBtn").click()
         download_info.value.save_as(report)
         page.goto(report.as_uri(), wait_until="load")
+
+        report_guidance = page.locator(".peer-ratio-guidance")
+        assert report_guidance.count() == 1
+        assert report_guidance.locator("tbody tr").count() == 4
+        assert "geen oordeel of risicoscore" in report_guidance.text_content()
+        assert "13 escalaties ÷ mediaan 6 = ratio 2,17" in report_guidance.text_content()
+        peer_section = page.locator("#s-peer")
+        assert peer_section.locator(":scope > .peer-ratio-guidance").count() == 1
+        assert report_guidance.evaluate("guidance => guidance.parentElement?.id") == "s-peer"
+        peer_section.evaluate("section => section.open = false")
+        assert not report_guidance.is_visible()
+        peer_section.locator(":scope > summary").click()
+        assert report_guidance.is_visible()
 
         toc_result = inspect_toc(page)
         page.locator('.toc a[href="#s-peer"]').click()
