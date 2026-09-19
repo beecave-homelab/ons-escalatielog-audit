@@ -94,11 +94,14 @@ Voer daarna de kwaliteitscontroles uit:
 
 ```bash
 uv run mdformat --check README.md CHANGELOG.md AGENTS.md docs
+uv run djlint . --check
 uv run ruff check .
 uv run ruff format --check .
 uv run pytest
 uv run pytest --cov=tests --cov-report=term-missing:skip-covered
 ```
+
+Formatteer gewijzigde HTML met `uv run djlint . --reformat`. djLint formatteert de HTML-structuur, maar laat de compacte CSS en JavaScript in de ingebedde `<style>`- en `<script>`-blokken ongemoeid.
 
 De coverage-controle volgt ook de greenlets van Playwright en faalt onder 85%. Deze dekking meet alleen de Python-testcode en zegt niets over de JavaScript-code van de webui.
 

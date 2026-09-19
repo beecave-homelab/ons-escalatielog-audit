@@ -6,7 +6,8 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ### Toegevoegd in v0.6.1
 
-- Voeg reproduceerbare ontwikkeltooling toe met uv, mdformat, Ruff, pytest en pytest-cov.
+- Voeg reproduceerbare ontwikkeltooling toe met uv, mdformat, djLint, Ruff, pytest en pytest-cov.
+- Voeg pyproject-regels toe voor consistente HTML-opmaak zonder de ingebedde CSS en JavaScript te herschrijven.
 - Voeg een gegevensvrije Playwright-regressietest toe voor de scherm- en printopmaak van rapporttabellen.
 - Voeg een reproduceerbare generator en een standaard synthetische testexport met 2.000 regels toe.
 - Stel minimaal 85% branch-aware dekking verplicht voor de Python-testcode en meet Playwright-greenlets mee.
