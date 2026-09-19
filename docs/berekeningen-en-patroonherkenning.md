@@ -2,7 +2,7 @@
 title: Berekeningen, tellingen en patroonherkenning
 applies_to: escalatielog-audit-webui.html
 tags: [escalatielogs, audit, functioneel-beheer]
-updated: 2026-09-17
+updated: 2026-09-19
 ---
 
 ## Berekeningen, tellingen en patroonherkenning
@@ -396,7 +396,7 @@ De scatterplot zet het volume af tegen het aantal herkenbare unieke cliënten. P
 
 **Aandachtspunten CSV** exporteert alle aandachtspunten uit de analyse, niet alleen de regels die na filteren zichtbaar zijn. **Bronregels CSV** exporteert de volledige geopende detailselectie; zoeken in het dialoogvenster beperkt deze export niet. Begint een waarde met `=`, `+`, `@` of `-`, dan zet de webui er bij de CSV-export een apostrof voor om interpretatie als formule te beperken. De losse plaatshouder `-` en gewone, ook negatieve, getallen blijven ongewijzigd.
 
-Het HTML-rapport bevat de gebruikte instellingen, definities en analysetabellen. Voor sommige tabellen geldt een weergavelimiet. Kapt de webui een tabel af, dan vermeldt het rapport hoeveel regels het toont. Het rapport bevat daardoor niet altijd alle onderliggende bronregels.
+Het HTML-rapport bevat de gebruikte instellingen, definities en analysetabellen. Onder de samenvatting staat een inhoudsopgave met regeltellingen die naar elke sectie verwijst. De tabellen staan gegroepeerd in inklapbare secties: tabellen met weinig regels staan open en uitgebreide tabellen zijn dichtgeklapt. De aandachtspunten zijn gesplitst per controleprioriteit. Bij afdrukken opent het rapport alle secties. Voor sommige tabellen geldt een weergavelimiet. Kapt de webui een tabel af, dan vermeldt het rapport hoeveel regels het toont. Het rapport bevat daardoor niet altijd alle onderliggende bronregels.
 
 De analyse draait lokaal. De webui verstuurt geen gegevens via het netwerk en slaat de ingelezen data niet op in de browseropslag. Als je de pagina sluit of vernieuwt, verdwijnen de sessiegegevens. Gedownloade rapporten en CSV-bestanden blijven wel bestaan en kunnen persoonsgegevens bevatten. Bewaar en deel ze volgens de interne afspraken.
 
