@@ -89,7 +89,7 @@ De webui zelf heeft geen buildstap of runtime-afhankelijkheden. De ontwikkelcont
 Gebruik in een nieuwe Linux Codex Cloud-omgeving het installatiescript vanuit de hoofdmap van de repository:
 
 ```bash
-./scripts/setup-codex-cloud.sh --check
+./scripts/install-dependencies.sh --check
 ```
 
 Het script installeert uv wanneer dat nog ontbreekt, voert `uv sync --locked` uit en installeert zo nodig Chromium via `apt`. Hierdoor is de testomgeving niet afhankelijk van de Playwright-browserdownload. Met `--skip-browser` sla je de browserinstallatie over; zonder `--check` richt het script alleen de omgeving in.

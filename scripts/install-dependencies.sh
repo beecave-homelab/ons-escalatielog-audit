@@ -7,7 +7,7 @@ set -euo pipefail
 # License: MIT
 # Creation Date: 20/09/2026
 # Last Modified: 20/09/2026
-# Usage: scripts/setup-codex-cloud.sh [OPTIONS]
+# Usage: scripts/install-dependencies.sh [OPTIONS]
 
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
