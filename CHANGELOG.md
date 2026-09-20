@@ -2,6 +2,37 @@
 
 Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgelegd. Versies volgen [Semantic Versioning](https://semver.org/lang/nl/).
 
+## [0.8.0] - 2026-09-19
+
+### Toegevoegd in v0.8.0
+
+- Leg in de webui en binnen de inklapbare peeranalyse van het HTML-rapport uit hoe de vier ratio's worden berekend en geïnterpreteerd.
+- Toon een rekenvoorbeeld en maak zichtbaar wat ratio's van 0,50, 1,00 en 2,00 betekenen.
+- Voeg een installatiescript toe voor reproduceerbare Codex Cloud-omgevingen met uv, de vastgezette ontwikkelafhankelijkheden en Chromium.
+
+### Gewijzigd in v0.8.0
+
+- Benoem het doorklikvenster van de peeranalyse als bronregels achter de vergelijking, zodat duidelijk is dat het geen nadere ratio-uitleg bevat.
+- Presenteer de beperkingen van de peervergelijking nadrukkelijk als context en niet als risico- of werklastcorrectie.
+- Laat de Playwright-regressietest naast Chrome en Edge ook een systeembrede of reeds door Playwright geïnstalleerde Chromium gebruiken.
+
+### Opgelost in v0.8.0
+
+- Accepteer een gevonden browser pas nadat de executable met `--version` succesvol is uitgevoerd, zodat een Ubuntu snap-placeholder de installatie niet voortijdig stopt.
+
+## [0.7.0] - 2026-09-19
+
+### Toegevoegd in v0.7.0
+
+- Voeg aan het HTML-rapport een inhoudsopgave met regeltellingen en directe links naar elke sectie toe.
+- Voeg een vaste teruglink naar de inhoudsopgave toe.
+
+### Gewijzigd in v0.7.0
+
+- Groepeer de rapporttabellen in inklapbare secties; tabellen met weinig regels staan open en uitgebreide tabellen zijn dichtgeklapt.
+- Splits de aandachtspunten in het rapport per controleprioriteit en orden de secties van bevindingen naar referentiemateriaal.
+- Open alle rapportsecties automatisch bij afdrukken.
+
 ## [0.6.1] - 2026-09-18
 
 ### Toegevoegd in v0.6.1

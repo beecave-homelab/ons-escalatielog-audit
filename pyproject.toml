@@ -1,6 +1,6 @@
 [project]
 name = "ons-escalatielog-audit"
-version = "0.6.1"
+version = "0.8.0"
 description = "Lokale webui voor controle van Nedap Ons-escalatielogs"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -29,6 +29,7 @@ profile = "html"
 indent = 2
 max_line_length = 120
 use_gitignore = true
+extend_exclude = "exports/"
 format_css = false
 format_js = false
 

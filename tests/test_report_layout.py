@@ -1,3 +1,5 @@
+import os
+import shutil
 import sys
 from pathlib import Path
 
@@ -16,18 +18,44 @@ def launch_browser(playwright: Playwright):
             return playwright.chromium.launch(channel=channel, headless=True)
         except Error as error:
             failures.append(f"{channel}: {error.message.splitlines()[0]}")
-    pytest.fail("Geen lokale Chrome- of Edge-installatie gevonden. " + "; ".join(failures))
+
+    executable_candidates = [
+        os.environ.get("PLAYWRIGHT_CHROMIUM_EXECUTABLE"),
+        shutil.which("chromium"),
+        shutil.which("chromium-browser"),
+    ]
+    for executable_path in filter(None, executable_candidates):
+        try:
+            return playwright.chromium.launch(executable_path=executable_path, headless=True)
+        except Error as error:
+            failures.append(f"{executable_path}: {error.message.splitlines()[0]}")
+
+    try:
+        return playwright.chromium.launch(headless=True)
+    except Error as error:
+        failures.append(f"playwright-chromium: {error.message.splitlines()[0]}")
+
+    failure_details = "; ".join(failures)
+    message = "Geen bruikbare Chrome-, Edge- of Chromium-installatie gevonden."
+    pytest.fail(f"{message} {failure_details}")
 
 
 def inspect_layout(page, width: int, media: str) -> dict:
     page.set_viewport_size({"width": width, "height": 900})
     page.emulate_media(media=media)
     page.reload(wait_until="load")
+    closed_before_print = page.locator("details:not([open])").count()
+    if media == "print":
+        page.evaluate("window.dispatchEvent(new Event('beforeprint'))")
+    else:
+        page.evaluate("document.querySelectorAll('details').forEach(d => d.open = true)")
     return page.evaluate(
-        """() => {
+        """closedBeforePrint => {
           const wrappers = [...document.querySelectorAll('.table-scroll')];
           const tables = [...document.querySelectorAll('table')];
           return {
+            closedBeforePrint,
+            allDetailsOpen: [...document.querySelectorAll('details')].every(detail => detail.open),
             bodyContained: document.body.scrollWidth <= innerWidth,
             wrapperCount: wrappers.length,
             wrappersContained: wrappers.every(
@@ -40,11 +68,29 @@ def inspect_layout(page, width: int, media: str) -> dict:
             ).length,
             wideTables: wrappers
               .filter(wrapper => wrapper.scrollWidth > wrapper.clientWidth)
-              .map(wrapper => wrapper.previousElementSibling?.textContent.trim()),
+              .map(wrapper => (
+                wrapper.closest('details')?.querySelector('summary')?.textContent
+                || wrapper.previousElementSibling?.textContent || ''
+              ).trim()),
             printTablesFit: wrappers.every(
               wrapper => wrapper.querySelector('table').getBoundingClientRect().width
                 <= wrapper.clientWidth + 1
             ),
+          };
+        }""",
+        closed_before_print,
+    )
+
+
+def inspect_toc(page) -> dict:
+    return page.evaluate(
+        """() => {
+          const links = [...document.querySelectorAll('.toc a')];
+          const targets = links.map(link => document.querySelector(link.hash));
+          return {
+            linkCount: links.length,
+            uniqueTargetCount: new Set(targets).size,
+            allTargetsExist: targets.every(Boolean),
           };
         }"""
     )
@@ -127,6 +173,19 @@ def test_exported_report_tables_stay_aligned(tmp_path: Path) -> None:
             "310",
         ]
         assert "2.000 logregels ingelezen" in page.locator("#status").text_content()
+        peer_guidance = page.locator("#peerGuidance")
+        assert "waarde van de medewerker gedeeld door de mediaan" in peer_guidance.text_content()
+        assert all(ratio in peer_guidance.text_content() for ratio in ("0,50", "1,00", "2,00"))
+        assert peer_guidance.locator("tbody tr").count() == 4
+        peer_guidance.locator("details").evaluate("detail => detail.open = true")
+        assert "13 escalaties ÷ mediaan 6 = ratio 2,17" in peer_guidance.text_content()
+
+        page.locator('.tab[data-view="deepdive"]').click()
+        page.locator("#peerTable tbody tr").first.click()
+        assert (
+            page.locator("#drillTitle").text_content().startswith("Bronregels achter peeranalyse ·")
+        )
+        page.locator("#drillCloseBtn").click()
 
         page.goto(app_url, wait_until="load")
         page.locator("#fileInput").set_input_files(workbook)
@@ -147,18 +206,44 @@ def test_exported_report_tables_stay_aligned(tmp_path: Path) -> None:
         download_info.value.save_as(report)
         page.goto(report.as_uri(), wait_until="load")
 
+        report_guidance = page.locator(".peer-ratio-guidance")
+        assert report_guidance.count() == 1
+        assert report_guidance.locator("tbody tr").count() == 4
+        assert "geen oordeel of risicoscore" in report_guidance.text_content()
+        assert "13 escalaties ÷ mediaan 6 = ratio 2,17" in report_guidance.text_content()
+        peer_section = page.locator("#s-peer")
+        assert peer_section.locator(":scope > .peer-ratio-guidance").count() == 1
+        assert report_guidance.evaluate("guidance => guidance.parentElement?.id") == "s-peer"
+        peer_section.evaluate("section => section.open = false")
+        assert not report_guidance.is_visible()
+        peer_section.locator(":scope > summary").click()
+        assert report_guidance.is_visible()
+
+        toc_result = inspect_toc(page)
+        page.locator('.toc a[href="#s-peer"]').click()
+        page.wait_for_function("location.hash === '#s-peer'")
+        toc_hash = page.evaluate("location.hash")
         screen_results = [inspect_layout(page, width, "screen") for width in (1280, 800)]
         print_results = [inspect_layout(page, width, "print") for width in (1280, 800)]
         browser.close()
 
     assert not console_errors
+    assert toc_result == {
+        "linkCount": 18,
+        "uniqueTargetCount": 18,
+        "allTargetsExist": True,
+    }
+    assert toc_hash == "#s-peer"
     for result in screen_results:
         assert result["bodyContained"]
         assert result["wrapperCount"] >= 8
         assert result["wrappersContained"]
         assert result["malformedTables"] == 0
-        assert {"Aandachtspunten", "Peeranalyse"} <= set(result["wideTables"])
+        assert any(t.startswith("Aandachtspunten") for t in result["wideTables"])
+        assert any(t.startswith("Peeranalyse") for t in result["wideTables"])
     for result in print_results:
+        assert result["closedBeforePrint"] > 0
+        assert result["allDetailsOpen"]
         assert result["bodyContained"]
         assert result["wrappersContained"]
         assert result["malformedTables"] == 0

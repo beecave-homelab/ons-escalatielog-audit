@@ -1,21 +1,25 @@
-escalatielogs/
-escalatielogs/**
+# Lokale exports met persoonsgegevens: alles in escalatielogs/ wordt genegeerd,
+# behalve het synthetische testbestand (dat is veilig om te committen).
+escalatielogs/*
+!escalatielogs/synthetic-escalatielog.xlsx
+
+# Exports en lokale scratch: nooit committen (persoonsgegevens / lokaal).
+exports/*
+!exports/escalatie_log_controle_19-09-2026_14-13_(01-05-2026_31-05-2026)_aandachtspunten.csv
+!exports/escalatie_log_controle_19-09-2026_14-13_(01-05-2026_31-05-2026)_rapport.html
+to-do/
+
+# Overig project-lokaal.
 .DS_Store
 project-overview.md
-exports/
-exports/**
 .env
+
+# Python tooling.
 .venv
 .venv/
 venv/
-to-do/
-to-do/**
-to-do/add-explanatory-diagrams.md
-to-do/fix-exported-report-table-alignment.md
-to-do/add-quality-tooling-and-report-regression-test.md
 *.pyc
 __pycache__/
-__pycache__/*
 .pytest_cache/
 .ruff_cache/
 .coverage

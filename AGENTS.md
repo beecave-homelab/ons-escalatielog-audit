@@ -40,7 +40,7 @@ Sections, in file order:
    - **Normalisation**: `parseDate` (Excel serial 1900-system, `dd-mm-yyyy, hh:mm[:ss]`, ISO with `T`; date-only text is rejected), `normalizeRows`, `isSystemEvent`, `exactRowKey`/`deduplicateManualRows`.
    - **Analysis**: `analyze()` builds the populations `allRows → systemRows / manualRows → duplicateRows / auditRows → attention`, computes signals, then `peerAnalysis`, `burstAnalysis`, `clientClusterAnalysis`, `concentrationAnalysis`, `reasonUseAnalysis`, `auditLogicAnalysis`, `aggregate*`, `analyzeQuality`. All findings that end up in exports must be produced here, **not in render functions**.
    - **Rendering**: `render()` → `renderOverview`, `renderTables`, `renderDeepDive`, `renderAuditLogic`, `renderTime`, `tableWidget` (search/sort/filter are view-only), `openDrilldown` (rows carry non-enumerable `__rows`/`previousSourceRow` metadata).
-   - **Exports**: `toCsv` (`;` separator, BOM, CRLF, formula-injection guard for `=`, `+`, `@`, `-…` but not bare `-` or plain numbers), `exportAttentionCsv`, `exportDrilldownCsv`, `exportReport` (self-contained HTML string template). File names via `exportBaseName`. Both the CSVs and the HTML report contain personal data; treat them with the same care as the source export.
+   - **Exports**: `toCsv` (`;` separator, BOM, CRLF, formula-injection guard for `=`, `+`, `@`, `-…` but not bare `-` or plain numbers), `exportAttentionCsv`, `exportDrilldownCsv`, `exportReport` (self-contained HTML string template; tables render as collapsible `<details>` sections grouped under an anchor TOC, and a `beforeprint` handler opens all sections for printing). File names via `exportBaseName`. Both the CSVs and the HTML report contain personal data; treat them with the same care as the source export.
    - **Settings**: `renderSettings`/`readSettings`; integers only, hours 0–23, activation delay may be 0, other thresholds ≥1; invalid input is rejected without applying.
 
 Always HTML-escape with `esc()` before inserting data into the DOM or the report.
@@ -56,7 +56,9 @@ Always HTML-escape with `esc()` before inserting data into the DOM or the report
 
 ## Verifying changes
 
-Run the development checks with `uv sync --locked`, `uv run mdformat --check README.md CHANGELOG.md AGENTS.md docs`, `uv run djlint . --check`, `uv run ruff check .`, `uv run ruff format --check .`, `uv run pytest` and `uv run pytest --cov=tests --cov-report=term-missing:skip-covered`. Coverage follows Playwright greenlets and must remain at or above 85%. The pytest suite verifies the committed standard synthetic export, builds a temporary layout-focused XLSX file and checks exported report tables in a locally installed Chrome or Edge browser; it must not use files from `escalatielogs/`.
+Run `scripts/install-dependencies.sh --check` to prepare and validate a fresh Linux Codex Cloud environment. The script installs uv when needed, synchronizes the lockfile and prefers a distribution-provided Chromium so setup does not depend on the Playwright browser download.
+
+Run the development checks with `uv sync --locked`, `uv run mdformat --check README.md CHANGELOG.md AGENTS.md docs`, `uv run djlint . --check`, `uv run ruff check .`, `uv run ruff format --check .`, `uv run pytest` and `uv run pytest --cov=tests --cov-report=term-missing:skip-covered`. Coverage follows Playwright greenlets and must remain at or above 85%. The pytest suite verifies the committed standard synthetic export, builds a temporary layout-focused XLSX file and checks exported report tables in a locally installed Chrome, Edge or Chromium browser; it must not use files from `escalatielogs/`.
 
 For the full analysis regression, re-run the reference export with default settings and compare to docs §15. Key figures:
 
