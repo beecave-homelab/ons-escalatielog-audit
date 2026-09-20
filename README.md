@@ -126,6 +126,31 @@ uv run python tests/generate_synthetic_escalatielog.py \
 
 Dezelfde seed levert byte-voor-byte hetzelfde bestand op. De pytest-suite controleert dit bestand in de echte webui en maakt daarnaast tijdelijk een kleiner rapport om de tabelopmaak op scherm- en printbreedte te controleren.
 
+### Bescherming tegen datalekken via Git
+
+Bestanden onder `escalatielogs/` en `exports/` kunnen persoonsgegevens bevatten en
+mogen daarom nooit door Git worden gevolgd. Alleen `.gitkeep` is daar toegestaan.
+Synthetische testbestanden horen onder `tests/fixtures/`.
+
+Activeer na het klonen eenmalig de meegeleverde lokale Git-hooks:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+De pre-commit-hook controleert de Git-index. De pre-push-hook controleert iedere te
+pushen commit, dus ook een bestand dat in een latere commit alweer is verwijderd.
+GitHub Actions voert dezelfde controle opnieuw uit voor pushes en pull requests.
+Controleer de huidige index ook handmatig met:
+
+```bash
+scripts/check-sensitive-paths.sh --index
+```
+
+Deze controles zijn een aanvullende beveiliging. Ze vervangen niet de verplichte
+controle van staged bestanden vóór iedere commit en van de volledige wijzigingsreeks
+vóór iedere push.
+
 ## Licentie
 
 Dit project valt onder de [MIT-licentie](LICENSE).

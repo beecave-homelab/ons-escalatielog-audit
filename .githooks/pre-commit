@@ -1,0 +1,6 @@
+#!/bin/bash
+set -euo pipefail
+
+readonly REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+"${REPO_ROOT}/scripts/check-sensitive-paths.sh" --index
