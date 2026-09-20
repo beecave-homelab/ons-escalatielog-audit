@@ -1,3 +1,5 @@
+import os
+import shutil
 import sys
 from pathlib import Path
 
@@ -16,7 +18,26 @@ def launch_browser(playwright: Playwright):
             return playwright.chromium.launch(channel=channel, headless=True)
         except Error as error:
             failures.append(f"{channel}: {error.message.splitlines()[0]}")
-    pytest.fail("Geen lokale Chrome- of Edge-installatie gevonden. " + "; ".join(failures))
+
+    executable_candidates = [
+        os.environ.get("PLAYWRIGHT_CHROMIUM_EXECUTABLE"),
+        shutil.which("chromium"),
+        shutil.which("chromium-browser"),
+    ]
+    for executable_path in filter(None, executable_candidates):
+        try:
+            return playwright.chromium.launch(executable_path=executable_path, headless=True)
+        except Error as error:
+            failures.append(f"{executable_path}: {error.message.splitlines()[0]}")
+
+    try:
+        return playwright.chromium.launch(headless=True)
+    except Error as error:
+        failures.append(f"playwright-chromium: {error.message.splitlines()[0]}")
+
+    failure_details = "; ".join(failures)
+    message = "Geen bruikbare Chrome-, Edge- of Chromium-installatie gevonden."
+    pytest.fail(f"{message} {failure_details}")
 
 
 def inspect_layout(page, width: int, media: str) -> dict:

@@ -56,7 +56,9 @@ Always HTML-escape with `esc()` before inserting data into the DOM or the report
 
 ## Verifying changes
 
-Run the development checks with `uv sync --locked`, `uv run mdformat --check README.md CHANGELOG.md AGENTS.md docs`, `uv run djlint . --check`, `uv run ruff check .`, `uv run ruff format --check .`, `uv run pytest` and `uv run pytest --cov=tests --cov-report=term-missing:skip-covered`. Coverage follows Playwright greenlets and must remain at or above 85%. The pytest suite verifies the committed standard synthetic export, builds a temporary layout-focused XLSX file and checks exported report tables in a locally installed Chrome or Edge browser; it must not use files from `escalatielogs/`.
+Run `scripts/setup-codex-cloud.sh --check` to prepare and validate a fresh Linux Codex Cloud environment. The script installs uv when needed, synchronizes the lockfile and prefers a distribution-provided Chromium so setup does not depend on the Playwright browser download.
+
+Run the development checks with `uv sync --locked`, `uv run mdformat --check README.md CHANGELOG.md AGENTS.md docs`, `uv run djlint . --check`, `uv run ruff check .`, `uv run ruff format --check .`, `uv run pytest` and `uv run pytest --cov=tests --cov-report=term-missing:skip-covered`. Coverage follows Playwright greenlets and must remain at or above 85%. The pytest suite verifies the committed standard synthetic export, builds a temporary layout-focused XLSX file and checks exported report tables in a locally installed Chrome, Edge or Chromium browser; it must not use files from `escalatielogs/`.
 
 For the full analysis regression, re-run the reference export with default settings and compare to docs §15. Key figures:
 

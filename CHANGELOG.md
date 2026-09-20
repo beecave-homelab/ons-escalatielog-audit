@@ -8,11 +8,13 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 - Leg in de webui en binnen de inklapbare peeranalyse van het HTML-rapport uit hoe de vier ratio's worden berekend en geïnterpreteerd.
 - Toon een rekenvoorbeeld en maak zichtbaar wat ratio's van 0,50, 1,00 en 2,00 betekenen.
+- Voeg een installatiescript toe voor reproduceerbare Codex Cloud-omgevingen met uv, de vastgezette ontwikkelafhankelijkheden en Chromium.
 
 ### Gewijzigd in v0.8.0
 
 - Benoem het doorklikvenster van de peeranalyse als bronregels achter de vergelijking, zodat duidelijk is dat het geen nadere ratio-uitleg bevat.
 - Presenteer de beperkingen van de peervergelijking nadrukkelijk als context en niet als risico- of werklastcorrectie.
+- Laat de Playwright-regressietest naast Chrome en Edge ook een systeembrede of reeds door Playwright geïnstalleerde Chromium gebruiken.
 
 ## [0.7.0] - 2026-09-19
 

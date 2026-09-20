@@ -82,7 +82,17 @@ De webui verwerkt de export alleen in het geheugen van de browser. Als je de pag
 
 ## Ontwikkelen
 
-De webui zelf heeft geen buildstap of runtime-afhankelijkheden. De ontwikkelcontroles gebruiken [uv](https://docs.astral.sh/uv/), Python 3.10 of nieuwer en een lokale installatie van Chrome of Edge.
+De webui zelf heeft geen buildstap of runtime-afhankelijkheden. De ontwikkelcontroles gebruiken [uv](https://docs.astral.sh/uv/), Python 3.10 of nieuwer en een lokale installatie van Chrome, Edge of Chromium.
+
+### Codex Cloud
+
+Gebruik in een nieuwe Linux Codex Cloud-omgeving het installatiescript vanuit de hoofdmap van de repository:
+
+```bash
+./scripts/setup-codex-cloud.sh --check
+```
+
+Het script installeert uv wanneer dat nog ontbreekt, voert `uv sync --locked` uit en installeert zo nodig Chromium via `apt`. Hierdoor is de testomgeving niet afhankelijk van de Playwright-browserdownload. Met `--skip-browser` sla je de browserinstallatie over; zonder `--check` richt het script alleen de omgeving in.
 
 Installeer de vastgezette ontwikkelafhankelijkheden:
 
