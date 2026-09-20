@@ -82,3 +82,12 @@ For synthetic edge cases, call `analyze()`/`analyzeQuality()` directly in the pa
 - Commit messages follow `type emoji: Dutch imperative summary`, e.g. `docs 📝: Voeg uitleg over de analyseketen toe aan de README`, `chore 📦: …`.
 - Never commit anything from `escalatielogs/` or `exports/`; both contain real personal data.
 - Do not create commits or PRs unless explicitly asked.
+
+## Issues and pull requests
+
+- Apply the repository's existing labels to every issue and pull request. Inspect the available labels first and select only labels that describe the primary type and relevant cross-cutting concerns; do not invent near-duplicate labels without explicit approval.
+- Every pull request must link the issue or issues it addresses. Use a GitHub closing keyword such as `Closes #123` only when merging the PR fully resolves that issue; otherwise use a non-closing reference such as `Relates to #123` and state what remains.
+- Attach a screenshot or short video only when an issue or pull request concerns visual changes in the webui. Prefer a clear before/after pair. Skip visual evidence for all other changes, including analysis logic, scripts, CI, tests and documentation.
+- When visual evidence is required, upload it to the pull request so reviewers can view it directly; a local filesystem path is not sufficient.
+- Screenshots and videos must use synthetic or otherwise non-personal data. Never attach source files or generated exports from `escalatielogs/` or `exports/` to an issue or pull request.
+- Do not open a pull request while its required issue link or labels are missing. For visual webui changes, also require the visual evidence; if it cannot be produced, stop and ask the user how to proceed.

@@ -144,6 +144,7 @@ sync_dependencies() {
 
 run_repository_checks() {
   log "Voer documentatie-, lint- en regressiecontroles uit."
+  scripts/check-sensitive-paths.sh --index
   uv run mdformat --check README.md CHANGELOG.md AGENTS.md docs
   uv run djlint . --check
   uv run ruff check .

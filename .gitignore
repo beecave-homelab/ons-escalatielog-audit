@@ -1,12 +1,11 @@
-# Lokale exports met persoonsgegevens: alles in escalatielogs/ wordt genegeerd,
-# behalve het synthetische testbestand (dat is veilig om te committen).
+# Lokale bronbestanden en exports kunnen persoonsgegevens bevatten. Alleen de
+# bestaande .gitkeep-bestanden mogen ooit worden gevolgd; synthetische fixtures
+# horen onder tests/fixtures/.
 escalatielogs/*
-!escalatielogs/synthetic-escalatielog.xlsx
+!escalatielogs/.gitkeep
 
-# Exports en lokale scratch: nooit committen (persoonsgegevens / lokaal).
 exports/*
-!exports/escalatie_log_controle_19-09-2026_14-13_(01-05-2026_31-05-2026)_aandachtspunten.csv
-!exports/escalatie_log_controle_19-09-2026_14-13_(01-05-2026_31-05-2026)_rapport.html
+!exports/.gitkeep
 to-do/
 
 # Overig project-lokaal.
