@@ -1,6 +1,6 @@
 # Ons Escalatielog Audit
 
-![Version: 0.8.0](https://img.shields.io/badge/version-0.8.0-00A0C8.svg)
+![Version: 0.9.0](https://img.shields.io/badge/version-0.9.0-00A0C8.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 
 Ons Escalatielog Audit is een losse webpagina waarmee je `.xlsx`-exports met escalatielogs uit Nedap Ons controleert. De webui brengt opvallende patronen in beeld en laat per uitkomst de bijbehorende bronregels zien. De webui is bedoeld voor functioneel applicatiebeheerders, CISO's en privacy officers.
@@ -25,7 +25,7 @@ De webui:
 - Signaleert onder meer her-escalaties, hoge volumes, een brede spreiding over cliënten, nachtgebruik en problemen met de datakwaliteit.
 - Vergelijkt patronen met die van vergelijkbare medewerkers, legt de gebruikte peer-ratio's direct bij de tabel uit en zoekt naar korte pieken, cliëntclusters en concentraties.
 - Koppelt cijfers, grafieken en tabellen aan de bijbehorende Excelregels.
-- Exporteert aandachtspunten, bronregels en een HTML-rapport met inhoudsopgave en inklapbare secties.
+- Exporteert aandachtspunten, bronregels en een zelfstandig HTML-rapport met dezelfde visuele oriëntatie als het webui-overzicht: auditflow, themabalken, tijdpatronen per weekdag en uur, en topgrafieken bij hun tabellen.
 
 In [Berekeningen, tellingen en patroonherkenning](docs/berekeningen-en-patroonherkenning.md) lees je hoe de webui telt, groepeert en patronen herkent.
 

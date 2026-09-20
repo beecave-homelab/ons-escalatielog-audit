@@ -2,7 +2,7 @@
 title: Berekeningen, tellingen en patroonherkenning
 applies_to: escalatielog-audit-webui.html
 tags: [escalatielogs, audit, functioneel-beheer]
-updated: 2026-09-19
+updated: 2026-09-20
 ---
 
 ## Berekeningen, tellingen en patroonherkenning
@@ -179,7 +179,7 @@ Ontbrekende waarden kunnen als lege categorie verschijnen. Tellingen van unieke 
 
 ### 6.5 Tijdpatronen
 
-De webui telt geldige starttijdstippen per datum, uur en weekdag. De heatmap combineert weekdag en uur. Ongeldige startdatums blijven in de auditpopulatie maar vallen buiten tijdgebonden berekeningen.
+De webui telt geldige starttijdstippen per datum, uur en weekdag. De heatmap combineert weekdag en uur; deze gecombineerde telling hoort bij het analyseresultaat, zodat de webui-heatmap en de weekdag/uur-matrix in het HTML-rapport dezelfde waarden gebruiken. Ongeldige startdatums blijven in de auditpopulatie maar vallen buiten tijdgebonden berekeningen; het rapport vermeldt dit aantal apart en de som van alle matrixcellen plus dit aantal is de auditpopulatie.
 
 De grafieken tonen ruwe volumes. Ze houden geen rekening met het aantal maandagen of zondagen in het bestand, de bezetting van diensten of ontbrekende exportdagen. Het datumoverzicht bevat alleen dagen waarop geldige auditregels voorkomen. Ontbreekt een datum, dan bewijst dat niet dat er die dag geen activiteit was.
 
@@ -399,6 +399,8 @@ De scatterplot zet het volume af tegen het aantal herkenbare unieke cliënten. P
 **Aandachtspunten CSV** exporteert alle aandachtspunten uit de analyse, niet alleen de regels die na filteren zichtbaar zijn. **Bronregels CSV** exporteert de volledige geopende detailselectie; zoeken in het dialoogvenster beperkt deze export niet. Begint een waarde met `=`, `+`, `@` of `-`, dan zet de webui er bij de CSV-export een apostrof voor om interpretatie als formule te beperken. De losse plaatshouder `-` en gewone, ook negatieve, getallen blijven ongewijzigd.
 
 Het HTML-rapport bevat de gebruikte instellingen, definities en analysetabellen. Onder de samenvatting staat een inhoudsopgave met regeltellingen die naar elke sectie verwijst. De tabellen staan gegroepeerd in inklapbare secties: tabellen met weinig regels staan open en uitgebreide tabellen zijn dichtgeklapt. De aandachtspunten zijn gesplitst per controleprioriteit. Bij afdrukken opent het rapport alle secties. Voor sommige tabellen geldt een weergavelimiet. Kapt de webui een tabel af, dan vermeldt het rapport hoeveel regels het toont. Het rapport bevat daardoor niet altijd alle onderliggende bronregels.
+
+Het rapport bevat daarnaast dezelfde visuele oriëntatie als het webui-overzicht, telkens binnen de sectie van de bijbehorende tabel: de auditflow als verdelingstabel (bronbestand = systeemmeldingen + duplicaatkopieën + auditpopulatie, met aandachtspunten als selectie binnen de auditpopulatie), unieke regels per controlethema als balken, tijdpatronen als weekdag/uur-matrix in twee blokken van twaalf uur, en de topgrafieken voor medewerkers en cliënten boven hun tabellen met een leeswijzer over de topselectie en gelijke standen. Webui en rapport gebruiken hiervoor hetzelfde analyseresultaat; de medewerkerspreiding en verhoudingsdonuts zijn bewust niet overgenomen.
 
 De analyse draait lokaal. De webui verstuurt geen gegevens via het netwerk en slaat de ingelezen data niet op in de browseropslag. Als je de pagina sluit of vernieuwt, verdwijnen de sessiegegevens. Gedownloade rapporten en CSV-bestanden blijven wel bestaan en kunnen persoonsgegevens bevatten. Bewaar en deel ze volgens de interne afspraken.
 
