@@ -83,14 +83,30 @@ install_uv() {
 
 browser_available() {
   local browser
+  local browser_path
   for browser in google-chrome google-chrome-stable microsoft-edge \
     microsoft-edge-stable chromium chromium-browser; do
-    if command_exists "${browser}"; then
-      log "Browser gevonden: $(command -v "${browser}")"
+    if ! command_exists "${browser}"; then
+      continue
+    fi
+
+    browser_path="$(command -v "${browser}")"
+    if "${browser_path}" --version >/dev/null 2>&1; then
+      log "Uitvoerbare browser gevonden: ${browser_path}"
       return 0
     fi
+
+    log "Negeer niet-uitvoerbare browserkandidaat: ${browser_path}"
   done
   return 1
+}
+
+verify_playwright_browser() {
+  uv run python -c \
+    'from playwright.sync_api import sync_playwright
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=True)
+    browser.close()'
 }
 
 install_browser() {
@@ -102,17 +118,23 @@ install_browser() {
     log "Installeer Chromium en benodigde bibliotheken via apt."
     run_as_root apt-get update
     if run_as_root apt-get install -y chromium; then
-      browser_available || error_exit "Chromium is geïnstalleerd maar niet vindbaar."
-      return
+      if browser_available; then
+        return
+      fi
+      log "Het apt-pakket chromium leverde geen uitvoerbare browser op."
     fi
-    log "Het apt-pakket chromium was niet beschikbaar; probeer chromium-browser."
-    run_as_root apt-get install -y chromium-browser
-    browser_available || error_exit "Geen bruikbare Chromium-installatie gevonden."
-    return
+    log "Probeer vervolgens het apt-pakket chromium-browser."
+    if run_as_root apt-get install -y chromium-browser; then
+      if browser_available; then
+        return
+      fi
+      log "Het apt-pakket chromium-browser leverde geen uitvoerbare browser op."
+    fi
   fi
 
-  log "Geen apt gevonden; probeer de Playwright-browser te installeren."
+  log "Installeer Chromium via Playwright als fallback."
   uv run playwright install chromium
+  verify_playwright_browser || error_exit "Playwright Chromium kan niet starten."
 }
 
 sync_dependencies() {

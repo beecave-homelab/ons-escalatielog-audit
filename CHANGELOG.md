@@ -16,6 +16,10 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 - Presenteer de beperkingen van de peervergelijking nadrukkelijk als context en niet als risico- of werklastcorrectie.
 - Laat de Playwright-regressietest naast Chrome en Edge ook een systeembrede of reeds door Playwright geïnstalleerde Chromium gebruiken.
 
+### Opgelost in v0.8.0
+
+- Accepteer een gevonden browser pas nadat de executable met `--version` succesvol is uitgevoerd, zodat een Ubuntu snap-placeholder de installatie niet voortijdig stopt.
+
 ## [0.7.0] - 2026-09-19
 
 ### Toegevoegd in v0.7.0
