@@ -14,6 +14,7 @@ The webui has no build step, server, framework or runtime dependency. Everything
 | -- | -- |
 | `escalatielog-audit-webui.html` | The entire application. Version constant `APP_VERSION` near the top of the `<script>`. |
 | `README.md` | User-facing intro, usage, required input columns, privacy. Contains the version badge. |
+| `docs/development.md` | Human developer setup, quality checks, synthetic test data and Git privacy safeguards. |
 | `CHANGELOG.md` | Release history with user-visible changes grouped by SemVer version. |
 | `pyproject.toml` / `.mdformat.toml` | Development dependencies and configuration for djLint, Ruff, pytest, coverage and mdformat. |
 | `uv.lock` | Reproducible lockfile for development-only Python tooling. |
