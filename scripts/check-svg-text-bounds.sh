@@ -40,8 +40,9 @@ with sync_playwright() as pw:
               const bad = [];
               for (const t of svg.querySelectorAll("text")) {
                 const bb = t.getBBox();
-                if (bb.x + bb.width > vb.width || bb.x < 0) {
-                  bad.push({t: t.textContent.trim(), right: Math.round(bb.x + bb.width), vbw: vb.width});
+                if (bb.x + bb.width > vb.width || bb.x < 0
+                    || bb.y + bb.height > vb.height || bb.y < 0) {
+                  bad.push({t: t.textContent.trim(), right: Math.round(bb.x + bb.width), bottom: Math.round(bb.y + bb.height), vbw: vb.width, vbh: vb.height});
                 }
               }
               return bad;
@@ -56,7 +57,7 @@ with sync_playwright() as pw:
 if failures:
     for path, problems in failures:
         for p in problems:
-            print(f"[FAIL] {path}: tekst buiten viewBox: {p['t']!r} (rechterrand {p['right']}, viewBox {p.get('vbw')})")
+            print(f"[FAIL] {path}: tekst buiten viewBox: {p['t']!r} (rechterrand {p['right']}, onderrand {p['bottom']}, viewBox {p.get('vbw')}x{p.get('vbh')})")
     sys.exit(1)
 
 print(f"[svg-tekstcontrole] {len(files)} SVG-bestanden gecontroleerd: alle tekst binnen de viewBox.")
