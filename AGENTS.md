@@ -23,7 +23,7 @@ The webui has no build step, server, framework or runtime dependency. Everything
 | `tests/test_report_layout.py` | Synthetic Playwright regression test for exported report tables; contains no personal data. |
 | `docs/berekeningen-en-patroonherkenning.md` | Authoritative functional/technical reference (16 sections): populations, signals, thresholds, tie-breaks, defaults (§14), reference results (§15). Has frontmatter with `updated:` date. |
 | `docs/assets/` | SVG diagrams used by README/docs. |
-| `escalatielogs/` | Local test exports (**gitignored**, contain personal data). Reference file: `Escalatielogs 01-05-2026 tot 31-05-2026.xlsx` (the local copy may carry a download suffix such as `(1)`). |
+| `escalatielogs/` | Local test exports (**gitignored**, contain personal data; never commit). The historically used May export `Escalatielogs 01-05-2026 tot 31-05-2026.xlsx` lives here; it is not a documentation reference — docs §15 points at the committed synthetic fixture. |
 | `exports/` | Output written during manual testing (**gitignored**; contains personal data — never commit). |
 | `to-do/` | Gitignored local scratch/todo directory; not used by the webui. |
 | `project-overview.md` | Gitignored; not present in this repo. |
@@ -61,16 +61,16 @@ Run `scripts/install-dependencies.sh --check` to prepare and validate a fresh Li
 
 Run the development checks with `uv sync --locked`, `uv run mdformat --check README.md CHANGELOG.md AGENTS.md docs`, `uv run djlint . --check`, `uv run ruff check .`, `uv run ruff format --check .`, `uv run pytest` and `uv run pytest --cov=tests --cov-report=term-missing:skip-covered`. Coverage follows Playwright greenlets and must remain at or above 85%. The pytest suite verifies the committed standard synthetic export, builds a temporary layout-focused XLSX file and checks exported report tables in a locally installed Chrome, Edge or Chromium browser; it must not use files from `escalatielogs/`.
 
-For the full analysis regression, re-run the reference export with default settings and compare to docs §15. Key figures:
+For the full analysis regression, re-run the synthetic reference file `tests/fixtures/synthetic-escalatielog.xlsx` with default settings and compare to docs §15. Key figures:
 
 | Controle | Uitkomst |
 | -- | -: |
-| Bronregels / systeemregels / duplicaten / auditregels | 1927 / 237 / 0 / 1690 |
-| Medewerkers / cliënten / locaties | 235 / 483 / 43 |
-| Niet geactiveerd / nacht / late activatie / ongeldige activatie | 114 / 91 / 13 / 2 |
-| Her-escalaties / zeer snel | 44 / 6 |
-| Unieke aandachtspunten | 482 (28,5 %) |
-| Bursts / cliëntclusters | 11 / 11 |
+| Bronregels / systeemregels / duplicaten / auditregels | 2000 / 156 / 42 / 1802 |
+| Medewerkers / cliënten / locatiedoelen | 250 / 558 / 40 |
+| Niet geactiveerd / nacht / late activatie / ongeldige activatie | 310 / 544 / 1391 / 66 |
+| Her-escalaties / zeer snel | 0 / 0 |
+| Unieke aandachtspunten | 1790 (99,3 %) |
+| Bursts / cliëntclusters | 0 / 5 |
 
 For the manual reference check, open the HTML in Chromium/Chrome (needs `DecompressionStream`; Edge/Chrome 80+, Firefox 113+, Safari 16.4+). Check the console for errors, verify the figures above, exercise one drilldown, one CSV export and the HTML report. If figures change intentionally, update docs §15 in the same change.
 

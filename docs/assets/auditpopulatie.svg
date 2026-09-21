@@ -1,38 +1,39 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" role="img" aria-labelledby="auditpopulatie-title auditpopulatie-desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1160 600" role="img" aria-labelledby="auditpopulatie-title auditpopulatie-desc">
   <title id="auditpopulatie-title">Verdeling van bronregels in het referentiebestand</title>
-  <desc id="auditpopulatie-desc">Sankeydiagram waarin 1.927 bronregels uit het referentiebestand uiteenvallen in 237 systeemregels en 1.690 auditregels, waarvan 482 unieke aandachtspunten zijn.</desc>
+  <desc id="auditpopulatie-desc">Sankeydiagram waarin 2.000 bronregels uit het referentiebestand uiteenvallen in 156 systeemregels, 42 duplicaatkopieën en 1.802 auditregels, waarvan 1.790 unieke aandachtspunten zijn.</desc>
   <defs>
     <style>
       .ap-title{font:700 22px Inter,system-ui,sans-serif;fill:#333}.ap-sub{font:400 12px Inter,system-ui,sans-serif;fill:#6B7280}.ap-head{font:700 10px ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:1px;fill:#6B7280}.ap-name{font:700 13px Inter,system-ui,sans-serif;fill:#333}.ap-num{font:500 11px ui-monospace,SFMono-Regular,Consolas,monospace;fill:#6B7280}
     </style>
   </defs>
-  <rect width="1000" height="560" fill="#F6F7F9"/>
+  <rect width="1160" height="600" fill="#F6F7F9"/>
   <text x="40" y="42" class="ap-title">Hoe de auditpopulatie ontstaat</text>
-  <text x="40" y="64" class="ap-sub">Bandbreedtes volgen de gecontroleerde mei-export; andere bestanden geven andere verhoudingen.</text>
+  <text x="40" y="64" class="ap-sub">Bandbreedtes volgen het synthetisch referentiebestand; andere bestanden geven andere verhoudingen.</text>
   <text x="120" y="104" text-anchor="middle" class="ap-head">BRON</text>
   <text x="500" y="104" text-anchor="middle" class="ap-head">NA FILTER EN ONTDUBBELING</text>
   <text x="880" y="104" text-anchor="middle" class="ap-head">UITKOMST</text>
-  <path d="M126 130 C310 130 310 130 494 130 L494 170 C310 170 310 170 126 170 Z" fill="#00A0C8" fill-opacity=".22"/>
-  <path d="M126 170 C310 170 310 220 494 220 L494 488 C310 488 310 438 126 438 Z" fill="#A02A85" fill-opacity=".18"/>
-  <path d="M506 130 C690 130 690 130 874 130 L874 170 C690 170 690 170 506 170 Z" fill="#00A0C8" fill-opacity=".22"/>
-  <path d="M506 220 C690 220 690 220 874 220 L874 296 C690 296 690 296 506 296 Z" fill="#A02A85" fill-opacity=".28"/>
-  <path d="M506 296 C690 296 690 328 874 328 L874 520 C690 520 690 488 506 488 Z" fill="#6B7280" fill-opacity=".16"/>
+  <path d="M126 130 C310 130 310 130 494 130 L494 154 C310 154 310 154 126 154 Z" fill="#00A0C8" fill-opacity=".22"/>
+  <path d="M126 154 C310 154 310 157 494 157 L494 449 C310 449 310 438 126 438 Z" fill="#A02A85" fill-opacity=".18"/>
+  <path d="M506 130 C690 130 690 130 874 130 L874 154 C690 154 690 154 506 154 Z" fill="#00A0C8" fill-opacity=".22"/>
+  <path d="M506 157 C690 157 690 161 874 161 L874 168 C690 168 690 164 506 164 Z" fill="#E5E7EB"/>
+  <path d="M506 171 C690 171 690 176 874 176 L874 452 C690 452 690 449 506 449 Z" fill="#A02A85" fill-opacity=".28"/>
+  <path d="M506 446 C690 446 690 459 874 459 L874 462 C690 462 690 449 506 449 Z" fill="#6B7280" fill-opacity=".16"/>
   <rect x="114" y="130" width="12" height="308" fill="#333"/>
-  <rect x="494" y="130" width="12" height="40" fill="#333"/>
-  <rect x="494" y="188" width="12" height="12" fill="#E5E7EB"/>
-  <rect x="494" y="220" width="12" height="268" fill="#333"/>
-  <rect x="874" y="130" width="12" height="40" fill="#333"/>
-  <rect x="874" y="188" width="12" height="12" fill="#E5E7EB"/>
-  <rect x="874" y="220" width="12" height="76" fill="#A02A85"/>
-  <rect x="874" y="328" width="12" height="192" fill="#6B7280"/>
-  <text x="104" y="276" text-anchor="end" class="ap-name">Bronregels</text><text x="104" y="294" text-anchor="end" class="ap-num">1.927</text>
-  <text x="500" y="122" text-anchor="middle" class="ap-name">Systeemregels</text><text x="518" y="154" class="ap-num">237</text>
-  <text x="518" y="192" class="ap-name">Duplicaatkopieën</text><text x="518" y="210" class="ap-num">0</text>
-  <text x="500" y="354" text-anchor="middle" class="ap-name" fill="#7F1F69">Auditregels</text><text x="500" y="372" text-anchor="middle" class="ap-num">1.690</text>
-  <text x="896" y="148" class="ap-name">Uitgesloten als systeemregel</text><text x="896" y="166" class="ap-num">237</text>
-  <text x="896" y="194" class="ap-name">Uitgesloten als duplicaat</text><text x="896" y="212" class="ap-num">0</text>
-  <text x="896" y="252" class="ap-name" fill="#7F1F69">Aandachtspunten</text><text x="896" y="270" class="ap-num">482 unieke regels</text>
-  <text x="896" y="412" class="ap-name">Zonder ingeschakeld signaal</text><text x="896" y="430" class="ap-num">1.208 regels</text>
-  <line x1="40" y1="536" x2="960" y2="536" stroke="#E5E7EB"/>
-  <text x="40" y="553" class="ap-num">Referentie: Escalatielogs 01-05-2026 tot 31-05-2026.xlsx · standaardinstellingen</text>
+  <rect x="494" y="130" width="12" height="24" fill="#333"/>
+  <rect x="494" y="157" width="12" height="7" fill="#E5E7EB"/>
+  <rect x="494" y="171" width="12" height="278" fill="#333"/>
+  <rect x="874" y="130" width="12" height="24" fill="#333"/>
+  <rect x="874" y="161" width="12" height="7" fill="#E5E7EB"/>
+  <rect x="874" y="176" width="12" height="276" fill="#A02A85"/>
+  <rect x="874" y="459" width="12" height="3" fill="#6B7280"/>
+  <text x="104" y="276" text-anchor="end" class="ap-name">Bronregels</text><text x="104" y="294" text-anchor="end" class="ap-num">2.000</text>
+  <text x="500" y="122" text-anchor="middle" class="ap-name">Systeemregels</text><text x="518" y="147" class="ap-num">156</text>
+  <text x="518" y="188" class="ap-name">Duplicaatkopieën</text><text x="518" y="203" class="ap-num">42</text>
+  <text x="500" y="302" text-anchor="middle" class="ap-name" fill="#7F1F69">Auditregels</text><text x="500" y="320" text-anchor="middle" class="ap-num">1.802</text>
+  <text x="896" y="146" class="ap-name">Uitgesloten als systeemregel</text><text x="896" y="161" class="ap-num">156</text>
+  <text x="896" y="186" class="ap-name">Uitgesloten als duplicaat</text><text x="896" y="201" class="ap-num">42</text>
+  <text x="896" y="302" class="ap-name" fill="#7F1F69">Aandachtspunten</text><text x="896" y="320" class="ap-num">1.790 unieke regels</text>
+  <text x="896" y="480" class="ap-name">Zonder ingeschakeld signaal</text><text x="896" y="495" class="ap-num">12 regels</text>
+  <line x1="40" y1="576" x2="1120" y2="576" stroke="#E5E7EB"/>
+  <text x="40" y="593" class="ap-num">Referentie: tests/fixtures/synthetic-escalatielog.xlsx (seed 20260918) · standaardinstellingen</text>
 </svg>

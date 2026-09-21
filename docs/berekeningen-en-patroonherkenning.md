@@ -2,7 +2,7 @@
 title: Berekeningen, tellingen en patroonherkenning
 applies_to: escalatielog-audit-webui.html
 tags: [escalatielogs, audit, functioneel-beheer]
-updated: 2026-09-20
+updated: 2026-09-21
 ---
 
 ## Berekeningen, tellingen en patroonherkenning
@@ -55,7 +55,7 @@ De webui verwacht de onderstaande 14 kolomnamen. Het zoekt in de eerste tien rij
 | `Hoofdlocatie cliënt` | Aanvullende context bij cliënten | Geen bewijs van de locatie tijdens de escalatie of van teamtoegang |
 | `Gestart op` | Kalenderdag, uur, volgorde, bursts en her-escalaties | Tijdzone en volledigheid van de export zijn niet vastgelegd in deze velden |
 | `Geactiveerd op` | Activatievertraging en eerdere activatie als her-escalatiecontext | `Niet geactiveerd`, ontbrekend en ongeldig zijn verschillende toestanden |
-| `Bron` | Technische controle en bronregeldetail | In het testbestand alleen `-`; maakt daarom geen onderscheid in de analyse |
+| `Bron` | Technische controle en bronregeldetail | In het referentiebestand alleen `Synthetische generator`; maakt daarom geen onderscheid in de analyse |
 
 ### 3.1 Sleutels en normalisatie
 
@@ -71,7 +71,7 @@ In samenvattingen toont de webui vaak de meest voorkomende naam, teamwaarde of d
 
 Een cliëntgerichte regel zonder doel-ID telt wel mee in de auditpopulatie en, waar mogelijk, in medewerker-, team-, reden- en tijdanalyses. Deze regel telt niet mee bij unieke cliënten, cliëntspecifieke signalen, cliëntclusters of her-escalaties voor dezelfde cliënt. Een ontbrekende cliëntnaam met een aanwezig ID verhindert groepering niet, maar geeft wel een volledigheidssignaal.
 
-Het testbestand bevat 946 cliëntgerichte auditregels: 832 met herkenbaar cliënt-ID en 114 zonder cliënt-ID en cliëntnaam. Alle 114 niet-geactiveerde regels behoren tot die laatste groep. Dat verband is een bevinding uit dit bestand en geen algemene regel voor toekomstige exports.
+Het referentiebestand bevat 1.611 cliëntgerichte auditregels: 1.554 met herkenbaar cliënt-ID en 57 zonder herkenbaar cliënt-ID. Van de 310 niet-geactiveerde regels zijn er 7 cliëntgericht zonder herkenbaar doel-ID. Dat verband is een bevinding uit dit bestand en geen algemene regel voor toekomstige exports.
 
 ## 4. Van bronbestand naar auditpopulatie
 
@@ -88,7 +88,7 @@ De naam `manualRows` betekent hier dat het systeemfilter de regel niet heeft her
 
 ![Verdeling van bronregels over systeemregels, auditregels en aandachtspunten](assets/auditpopulatie.svg)
 
-Het diagram gebruikt de gecontroleerde mei-export als voorbeeld. De bandbreedtes en aantallen gelden alleen voor dat referentiebestand; de verzamelingen en rekenregels gelden voor iedere analyse.
+Het diagram gebruikt het synthetisch referentiebestand als voorbeeld. De bandbreedtes en aantallen gelden alleen voor dat referentiebestand; de verzamelingen en rekenregels gelden voor iedere analyse.
 
 De aantallen moeten aansluiten volgens:
 
@@ -111,7 +111,7 @@ Toegang tot cliënt nadat deze is aangemaakt door Ons Ketenverkeer
 
 De duur speelt bij deze herkenning geen rol. Met `excludeDuration30` kun je daarnaast alle regels uitsluiten waarvan de numerieke duur 30 minuten is. Deze optie staat standaard **uit**. Een onbekende reden met een duur van 30 minuten blijft daarom normaal in de auditpopulatie staan en verschijnt als controlepunt in **Auditlogica**.
 
-Controleer na wijzigingen in de export of applicatie opnieuw de verdeling van redenen en duur. Het testbestand bevat 237 herkende systeemregels: 125 voor de eerste reden, 107 voor de tweede en 5 voor de derde. Al deze regels duren 30 minuten. Daardoor levert het aanvullende duurfilter bij dit bestand dezelfde selectie op, of je het nu aan- of uitzet.
+Controleer na wijzigingen in de export of applicatie opnieuw de verdeling van redenen en duur. Het referentiebestand bevat 156 herkende systeemregels: 44 voor de eerste reden, 51 voor de tweede en 61 voor de derde. Al deze regels duren 30 minuten. In de auditpopulatie staan daarnaast 337 handmatige regels met een duur van precies 30 minuten. Het aanvullende duurfilter sluit bij dit bestand dus extra regels uit; zet het aan en uit om het verschil te zien.
 
 ### 4.2 Duplicaten
 
@@ -191,7 +191,7 @@ De parser kan overweg met numerieke Excel-datums in het 1900-datumsysteem, datum
 
 De webui behandelt tijdstippen als de kloktijden uit de export, los van de tijdzone van de browser. Het stelt de tijdzone van de bron niet vast en rekent tijden niet om. Daardoor zijn tijdverschillen rond de overgang tussen zomer- en wintertijd onzeker. Gebeurtenissen van vóór het begin van de export zijn evenmin bekend.
 
-In het testbestand hebben 1.690 regels een duur van 600 minuten en 237 regels een duur van 30 minuten. Voor her-escalaties gebruikt de webui daarnaast `activeAccessMinutes = 840`. Die 14 uur is een overgenomen functionele aanname voor triage. De export bevestigt deze termijn niet en laat ook niet zien of toegang tussentijds is ingetrokken.
+In het referentiebestand lopen de voorkomende tijdsduren van 15 tot en met 840 minuten (15: 388, 30: 337, 60: 345, 120: 349 en 840: 383 regels). Voor her-escalaties gebruikt de webui daarnaast `activeAccessMinutes = 840`. Die 14 uur is een overgenomen functionele aanname voor triage. De export bevestigt deze termijn niet en laat ook niet zien of toegang tussentijds is ingetrokken.
 
 Laat FAB controleren of de gebruikte toegangstermijn overeenkomt met de inrichting. Een verkeerde termijn verandert welke her-escalaties de webui selecteert. Bewaar daarom bij iedere beoordeling de toegepaste instellingen.
 
@@ -293,7 +293,7 @@ Bij een niet-geactiveerde poging telt `ONVOLLEDIG_CLIENTDOEL` niet nogmaals mee 
 
 Deze indeling bepaalt alleen de werkvolgorde. Het is niet aangetoond dat de thema's onafhankelijk van elkaar zijn. Ook zeggen de labels niets over de ernst van een mogelijke overtreding of de kans daarop. De aandachtspuntentabel sorteert eerst op prioriteit, dan op het aantal signalen en tot slot op starttijd.
 
-In het testbestand vallen `NIET_GEACTIVEERD` en `ONVOLLEDIG_CLIENTDOEL` volledig samen: beide signalen staan op dezelfde 114 regels. Dat zijn samen 114 unieke regels, geen 228 losse bevindingen. Ook een zeer snelle her-escalatie en een her-escalatie kunnen hetzelfde patroon beschrijven.
+In het referentiebestand is er sprake van gedeeltelijke overlap: `ONVOLLEDIG_CLIENTDOEL` staat op dezelfde 57 regels zonder herkenbaar doel-ID, waarvan 7 ook `NIET_GEACTIVEERD` hebben. Deze regels zijn samen 57 unieke regels, geen 114 losse bevindingen. Ook een zeer snelle her-escalatie en een her-escalatie kunnen hetzelfde patroon beschrijven.
 
 ## 11. Verdiepende analyses
 
@@ -410,7 +410,7 @@ De controles zoeken naar ontbrekende kernvelden, onvolledige cliëntdoelen, onge
 
 Niet iedere kwaliteitsbevinding levert automatisch een auditsignaal op. Conflicten tussen identifiers en redenvarianten staan bijvoorbeeld in aparte controletabellen. Het aantal kwaliteitsbevindingen is ook niet gelijk aan het aantal unieke probleemregels: één regel kan bij meerdere bevindingen horen.
 
-In het testbestand liggen twee activaties één seconde vóór de start. De webui markeert ze als `ONGELDIGE_ACTIVATIE`. Eén van de regels had al een ander signaal, waardoor deze controle één nieuw uniek aandachtspunt oplevert. Onderzoek eerst mogelijke oorzaken, zoals de klokregistratie of de volgorde in de export, voordat je hier een inhoudelijke conclusie aan verbindt.
+In het referentiebestand liggen 66 activaties vóór de start. De webui markeert ze als `ONGELDIGE_ACTIVATIE`. Bij 44 regels was er al een ander signaal, waardoor deze controle 22 nieuwe unieke aandachtspunten oplevert. Onderzoek eerst mogelijke oorzaken, zoals de klokregistratie of de volgorde in de export, voordat je hier een inhoudelijke conclusie aan verbindt.
 
 De webui stelt met alleen deze export niet vast:
 
@@ -466,34 +466,40 @@ Onderstaande namen komen overeen met de instellingen in de webui-code. Een expor
 
 De webui accepteert gehele getallen. Uren lopen van 0 tot en met 23. De drempel voor activatievertraging mag nul zijn; alle andere numerieke instellingen moeten minimaal 1 zijn. De webui negeert ongeldige invoer. Bekende systeemredenen blijven altijd uitgesloten, ongeacht de 30-minutenschakelaar.
 
-## 15. Controle-uitkomsten voor het gebruikte testbestand
+## 15. Controle-uitkomsten voor het referentiebestand
 
-Als referentiebestand is de export `Escalatielogs 01-05-2026 tot 31-05-2026.xlsx` gebruikt. Deze staat lokaal in `escalatielogs/` en maakt geen deel uit van de repository. De waargenomen datums lopen van 1 tot en met 31 mei 2026. De onderstaande resultaten zijn met de standaardinstellingen gecontroleerd. Ze gelden alleen als referentie voor dit bestand en zeggen niets over andere maanden.
+Als referentiebestand is het synthetisch exportbestand `tests/fixtures/synthetic-escalatielog.xlsx` gebruikt: 2.000 rijen, gegenereerd met seed `20260918` (zie `tests/generate_synthetic_escalatielog.py`). Het bestand hoort bij de repository en bevat geen persoonsgegevens, zodat iedere lezer de onderstaande uitkomsten zelf kan controleren. De waargenomen datums lopen van 1 tot en met 31 mei 2026. De onderstaande resultaten zijn met de standaardinstellingen gecontroleerd. Ze gelden alleen als referentie voor dit bestand en zeggen niets over echte exports.
 
 | Controle | Uitkomst |
 | -- | -: |
-| Bronregels | 1.927 |
-| Uitgesloten systeemregels | 237 |
-| Uitgesloten duplicaatkopieën | 0 |
-| Auditregels | 1.690 |
-| Auditregels / bronregels | 87,7% |
-| Herkenbare medewerkers | 235 |
-| Herkenbare cliënten | 483 |
-| Herkenbare locatiedoelen | 43 |
-| Cliëntgerichte auditregels | 946 |
-| Daarvan met herkenbaar cliënt-ID | 832 |
-| Daarvan zonder herkenbaar cliënt-ID | 114 |
-| Locatiegerichte auditregels | 744 |
-| Niet-geactiveerde auditregels | 114 |
-| Nachtregels | 91 |
-| Late activaties | 13 |
-| Her-escalaties binnen aangenomen actieve toegang | 44 |
-| Daarvan zeer snel | 6 |
-| Ongeldige activaties | 2 |
-| Unieke aandachtspunten | 482 |
-| Aandachtspunten / auditregels | 28,5% |
-| Medewerkers met een geselecteerd burstvenster | 11 |
-| Cliënten met een geselecteerd clustervenster | 11 |
+| Bronregels | 2.000 |
+| Uitgesloten systeemregels | 156 |
+| Uitgesloten duplicaatkopieën | 42 |
+| Auditregels | 1.802 |
+| Auditregels / bronregels | 90,1% |
+| Herkenbare medewerkers | 250 |
+| Herkenbare cliënten | 558 |
+| Herkenbare locatiedoelen | 40 |
+| Cliëntgerichte auditregels | 1.611 |
+| Daarvan met herkenbaar cliënt-ID | 1.554 |
+| Daarvan zonder herkenbaar cliënt-ID | 57 |
+| Locatiegerichte auditregels | 191 |
+| Niet-geactiveerde auditregels | 310 |
+| Nachtregels | 544 |
+| Late activaties | 1.391 |
+| Her-escalaties binnen aangenomen actieve toegang | 0 |
+| Daarvan zeer snel | 0 |
+| Ongeldige activaties | 66 |
+| Unieke aandachtspunten | 1.790 |
+| Aandachtspunten / auditregels | 99,3% |
+| Medewerkers met een geselecteerd burstvenster | 0 |
+| Cliënten met een geselecteerd clustervenster | 5 |
+
+De regressietest in `tests/test_report_layout.py` verifieert de kerncijfers (auditpopulatie 1.802, aandachtspunten 1.790, medewerkers 250, cliënten 558) automatisch bij iedere wijziging.
+
+De synthetische data is opzettelijk dichter bezaaid met signalen dan een gemiddelde export: bijna iedere auditregel heeft minimaal één signaal en her-escalaties ontbreken volledig. Dat maakt het bestand geschikt als technische controletabel, maar de verhoudingen zijn niet representatief voor echte maandexports.
+
+Naast dit reproduceerbare referentiebestand is tijdens de ontwikkeling de gecontroleerde mei-export `Escalatielogs 01-05-2026 tot 31-05-2026.xlsx` gebruikt. Deze staat lokaal in `escalatielogs/` (gegitignore, persoonsgegevens), is derhalve niet reproduceerbaar voor anderen en telt hier daarom niet meer als documentatiewaarde.
 
 Voor de controle zijn de kerncijfers onafhankelijk herteld en zijn gerichte randgevallen en browsercontroles uitgevoerd. De geteste randgevallen waren: opnieuw analyseren met een kortere toegangstermijn, een toekomstige activatie naast al beschikbare toegang, een cluster dat alleen de teamdrempel haalt, onmogelijke datums, een negatieve activatievertraging en duplicaten. Ook de doorklikdetails, instellingen, rapport- en CSV-export en de weergave op desktop en mobiel zijn gecontroleerd. Daarmee zijn niet alle mogelijke exportvarianten of autorisatie-inrichtingen bewezen afgedekt.
 
