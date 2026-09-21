@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; connect-src 'none'; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+    <title>Issue 2 · HTML-exportmock-up</title><style>
+:root{--p:#a02a85;--cyan:#007f9f;--ink:#333;--muted:#626975;--line:#dfe3e8;--soft:#f6f7f9;--purple:#faf0f7}*{box-sizing:border-box}body{margin:0;background:#eef0f3;color:var(--ink);font:15px/1.5 "Segoe UI",Arial,sans-serif}h1,h2,h3,p{margin:0 0 12px}h1{font-size:24px}h2{font-size:22px}h3{font-size:16px}p{max-width:85ch}a{color:#7f1f69}button,select{font:inherit}button,summary{cursor:pointer}button,a,select,summary{outline-offset:4px}button:focus-visible,a:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--cyan)}button{border:1px solid var(--line);background:white;border-radius:8px;padding:9px 13px;color:var(--ink)}button[aria-pressed=true],button.primary{background:var(--p);color:white;border-color:var(--p)}.review{background:#333;color:white;padding:10px 24px;font-size:13px}.review a{color:white}.app{max-width:1280px;margin:auto;padding:24px}.brand{display:flex;gap:13px;align-items:center;margin-bottom:22px}.mark{background:var(--p);color:white;border-radius:12px;padding:10px;font-size:21px;font-weight:700}.brand p{font-size:13px;color:var(--muted);margin:0}.topline{display:flex;justify-content:space-between;align-items:center;gap:20px}.modes{display:flex;gap:8px;flex-wrap:wrap}.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:20px 0}.surface{background:white;border:1px solid var(--line);border-radius:12px;padding:24px;min-width:0}.location{color:var(--muted);font-size:13px;margin-bottom:8px}.lead{color:var(--muted)}.notice{border-left:4px solid var(--cyan);background:#f0f9fc;padding:12px 16px;margin:18px 0;font-size:14px}.explain{border:1px solid #e7d2e1;background:#fdf9fc;border-radius:9px;padding:18px;margin:18px 0}.flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin:18px 0}.step{padding:15px;border:1px solid #dfccda;background:white;position:relative}.step:not(:last-child):after{content:'→';position:absolute;right:-10px;top:35%;z-index:1;background:#fdf9fc;font-weight:bold;color:var(--p)}.step strong{display:block;color:#7f1f69;margin-top:10px}.step small{display:block;color:var(--muted);margin-bottom:7px}.step.active{background:#f5e5f0;border:2px solid var(--p)}.controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:18px 0}.controls label{font-weight:600}select{padding:9px;max-width:100%;border:1px solid #aeb4be;border-radius:6px;background:white}.result{display:flex;align-items:flex-start;gap:14px;background:var(--soft);padding:16px;margin:14px 0}.badge{font-weight:700;display:inline-block;border:1px solid #a9aeb8;border-radius:5px;padding:3px 9px;white-space:nowrap}.badge.high{color:#8b2119;background:#fff2f0;border-color:#dfb2ac}.badge.mid{color:#815000;background:#fff5e5;border-color:#d5b884}.badge.base{color:#46566a;background:#eef2f6}.result p{margin:0}.table-scroll{overflow-x:auto;margin:18px 0}table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:var(--soft);font-weight:600}td button{font-size:13px;padding:3px 8px}.subtle{font-size:13px;color:var(--muted)}.timeline{margin:24px 0 16px}.track{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;position:relative;padding-top:0}.track:before{content:'';height:4px;background:#a02a85;position:absolute;top:12px;left:12px;right:12px}.event{position:relative;padding-top:32px}.event:before{content:'';position:absolute;top:6px;left:0;width:16px;height:16px;background:white;border:3px solid var(--p);border-radius:50%}.event strong,.event span{display:block}.event span{font-size:13px;color:var(--muted)}.event.current:before{background:var(--p)}.duration{border-bottom:2px solid var(--cyan);padding:8px 12px;background:#eef8fb;color:#205366;margin-top:16px;font-size:14px}.window{border:1px solid #87b6c3;background:#f1fafc;padding:18px;margin:14px 0}.dots{display:flex;justify-content:space-between;gap:8px;margin:20px 0;border-top:2px solid var(--cyan)}.dots span{position:relative;padding-top:14px;font-size:13px}.dots span:before{content:'';width:10px;height:10px;background:var(--cyan);border-radius:50%;position:absolute;top:-6px;left:0}.or{display:flex;gap:12px;align-items:center;margin:16px 0}.or span{background:white;border:1px solid #87b6c3;padding:12px;flex:1}.metrics{display:flex;gap:30px;flex-wrap:wrap}.metrics strong{display:block;font-size:22px}.metrics span{font-size:13px}.rep{border:1px solid var(--line);background:white;border-radius:9px;margin:14px 0}.rep>summary{padding:16px;font-size:18px}.rep>.inner{padding:0 20px 20px}.report{max-width:1100px}.report .flow{font-size:13px}.report .rep .rep{border-radius:5px}.scale{position:relative;height:94px;margin:22px 16px 10px;border-bottom:4px solid #626975}.scale .tick{position:absolute;bottom:0;border-left:2px solid #626975;height:14px;padding-left:5px}.tick span{position:absolute;bottom:15px;white-space:nowrap}.scale .pointer{position:absolute;bottom:25px;border-bottom:10px solid var(--p);border-left:7px solid transparent;border-right:7px solid transparent}.scale .pointer strong{position:absolute;bottom:16px;right:-20px;white-space:nowrap;color:#7f1f69}.share{height:18px;background:#e1e5eb;display:flex;border-radius:3px;overflow:hidden;min-width:130px;margin:5px 0}.share span{background:var(--p);height:100%}.legend{display:flex;gap:20px;font-size:13px}.legend b{display:inline-block;width:10px;height:10px;background:var(--p);margin-right:5px}.legend b.other{background:#d4d9e1}.toc{display:flex;gap:14px;flex-wrap:wrap;margin:20px 0}details.guide{margin-top:12px}details.guide>div{padding:12px 0}[hidden]{display:none!important}.section-note{border-top:1px solid var(--line);padding-top:14px;margin-top:24px;font-size:13px;color:var(--muted)}@media(max-width:800px){.app{padding:14px}.surface{padding:18px}.flow{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.step:after{display:none}.topline{align-items:flex-start;flex-direction:column}.track{gap:7px;font-size:13px}.event span{font-size:12px}.report .rep>.inner{padding:0 12px 12px}}@media(max-width:480px){.flow{grid-template-columns:1fr}.track{grid-template-columns:1fr;padding-left:22px}.track:before{height:auto;width:3px;left:7px;top:10px;bottom:16px;right:auto}.event{padding:0 0 14px 8px}.event:before{left:-22px;top:5px}.or{flex-direction:column;align-items:stretch}.dots{gap:4px}.dots span{font-size:11px}.brand h1{font-size:20px}}@media print{body{background:white;font-size:11px}.review,.modes,.tabs,.controls,.no-print{display:none!important}.app{padding:0;max-width:none}.rep{border:0;border-top:1px solid #bbb;border-radius:0}.rep>summary{padding:12px 0;font-size:17px;break-after:avoid}.rep .rep{break-inside:avoid}.rep>.inner{padding:0}.explain,.window{break-inside:avoid}.table-scroll{overflow:visible}table{table-layout:fixed;font-size:10px}th,td{overflow-wrap:anywhere;padding:7px}.flow{grid-template-columns:repeat(4,minmax(0,1fr))}.step{padding:9px}.track{grid-template-columns:repeat(4,minmax(0,1fr))}.track:before{height:4px;width:auto;left:12px;right:12px;top:12px;bottom:auto}.event{padding:32px 0 0}.event:before{left:0;top:6px}tr{break-inside:avoid}h2,h3{break-after:avoid}.share,.duration,.step,.window{-webkit-print-color-adjust:exact;print-color-adjust:exact}.brand{margin-bottom:14px}}
+    </style>
+  </head>
+  <body>
+    <div class="review">HTML-exportmock-up · synthetisch · <a href="index.html">Terug naar webui-mock-ups</a></div>
+    <main class="app report">
+      <h1>Escalatielog auditrapport</h1>
+      <p class="lead">Ontwerpvoorstel voor issue #2 · 20-09-2026</p>
+      <p>Dit voorbeeld toont alleen de voorgestelde secties, niet het volledige bestaande rapport.</p>
+      <p class="notice">Een signaal is aanleiding voor menselijke controle. Het bewijst geen onrechtmatige toegang of dossierinzage.</p>
+      <nav class="toc" aria-label="Rapportinhoud">
+        <a href="#r-prioriteit">Aandachtspunten en controleprioriteit</a><a href="#r-repeat">Her-escalatie</a><a href="#r-bursts">Bursts</a><a href="#r-clusters">Cliëntclusters</a><a href="#r-peers">Peeranalyse</a><a href="#r-concentratie">Concentratie per medewerker</a>
+      </nav>
+      <p class="no-print">
+        <button onclick="window.print()">Afdrukken / opslaan als PDF</button>
+        Alle secties openen bij afdrukken.
+      </p>
+      <details class="rep" id="r-prioriteit" open>
+        <summary>Aandachtspunten en controleprioriteit</summary>
+        <div class="inner">
+          <div class="explain">
+            <h3>Zo bepalen we de beoordelingsvolgorde</h3>
+            <div class="flow" aria-label="Beslisroute controleprioriteit">
+              <div class="step" data-step="0"><small>Eerst</small>Her-escalatiesignaal aanwezig?<strong>Ja: Hoog</strong></div>
+              <div class="step" data-step="1"><small>Anders</small>Minimaal 3 thema’s?<strong>Ja: Hoog</strong></div>
+              <div class="step" data-step="2"><small>Anders</small>Precies 2 thema’s?<strong>Ja: Midden</strong></div>
+              <div class="step" data-step="3"><small>Anders</small>Overig aandachtspunt<strong>Basis</strong></div>
+            </div>
+            <p class="subtle">Alleen voor regels met een signaal. Thema’s kunnen overlappen; prioriteit is geen gevalideerde risicoscore.</p>
+            <details class="guide">
+              <summary>Uitzondering bij niet-geactiveerde pogingen</summary>
+              <div>Een onvolledig cliëntdoel telt bij een niet-geactiveerde poging niet extra mee voor de prioriteit. Het signaal blijft wel zichtbaar in Datakwaliteit. Andere datakwaliteitssignalen kunnen dat thema nog steeds laten meetellen.</div>
+            </details>
+          </div>
+          <details class="rep" id="groep-hoog" open>
+            <summary>Aandachtspunten · Hoog</summary>
+            <div class="inner">
+              <div class="table-scroll">
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">Excel-rij</th>
+                      <th scope="col">Medewerker</th>
+                      <th scope="col">Signalen</th>
+                      <th scope="col">Prioriteit</th>
+                      <th scope="col">Waarom</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>142</td>
+                      <td>Voorbeeldmedewerker A</td>
+                      <td>Her-escalatie</td>
+                      <td><span class="badge high">Hoog</span></td>
+                      <td>Her-escalatiesignaal aanwezig</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </details>
+          <details class="rep" id="groep-midden" open>
+            <summary>Aandachtspunten · Midden</summary>
+            <div class="inner">
+              <div class="table-scroll">
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">Excel-rij</th>
+                      <th scope="col">Medewerker</th>
+                      <th scope="col">Signalen</th>
+                      <th scope="col">Prioriteit</th>
+                      <th scope="col">Waarom</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>238</td>
+                      <td>Voorbeeldmedewerker B</td>
+                      <td>Niet geactiveerd; onvolledig cliëntdoel; nacht</td>
+                      <td><span class="badge mid">Midden</span></td>
+                      <td>2 thema’s: toegang en tijd</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </details>
+          <details class="rep" id="groep-basis" open>
+            <summary>Aandachtspunten · Basis</summary>
+            <div class="inner">
+              <div class="table-scroll">
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">Excel-rij</th>
+                      <th scope="col">Medewerker</th>
+                      <th scope="col">Signalen</th>
+                      <th scope="col">Prioriteit</th>
+                      <th scope="col">Waarom</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>311</td>
+                      <td>Voorbeeldmedewerker C</td>
+                      <td>Niet geactiveerd; onvolledig cliëntdoel</td>
+                      <td><span class="badge base">Basis</span></td>
+                      <td>1 meetellend thema: toegang</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </details>
+        </div>
+      </details>
+      <details class="rep" id="r-repeat">
+        <summary>Her-escalatie · uitleg en gekoppelde regels</summary>
+        <div class="inner">
+          <p class="subtle">Fictief rekenvoorbeeld; geen gebeurtenis uit het geanalyseerde bestand.</p>
+          <div class="explain">
+            <h3>Een nieuwe poging binnen aangenomen actieve toegang</h3>
+            <p>Dezelfde medewerker, dezelfde herkenbare cliënt. We vergelijken Start B met de eerdere geldige Activatie A.</p>
+            <div class="timeline">
+              <div class="track">
+                <div class="event"><strong>08:00 · Start A</strong><span>Eerdere poging</span></div>
+                <div class="event"><strong>08:02 · Activatie A</strong><span>Begin aangenomen toegang</span></div>
+                <div class="event current"><strong>09:10 · Start B</strong><span>Nieuwe poging, 68 min. later</span></div>
+                <div class="event"><strong>22:02 · Eindgrens</strong><span>Activatie A + 840 min.</span></div>
+              </div>
+              <div class="duration">Aangenomen toegang: 840 minuten vanaf Activatie A. Een start precies op de eindgrens telt mee.</div>
+            </div>
+            <p class="subtle">Schematisch, niet op tijdschaal. De log bewijst niet dat toegang werkelijk nog actief was. Het zeer-snel-signaal gebruikt de afstand Start A–Start B; hier 70 minuten, dus niet binnen de ingestelde 5 minuten.</p>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Voorbeeld</th>
+                  <th scope="col">Start A</th>
+                  <th scope="col">Activatie A</th>
+                  <th scope="col">Start B</th>
+                  <th scope="col">Verschil sinds activatie</th>
+                  <th scope="col">Uitkomst</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>A → B</td>
+                  <td>08:00</td>
+                  <td>08:02</td>
+                  <td>09:10</td>
+                  <td>68 minuten</td>
+                  <td>Binnen 840 minuten</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="subtle">Ontwerpkeuze: één voorbeeld bij de her-escalaties, geen tijdlijn per exportregel. De aandachtspunttabel hierboven blijft de ingang voor de analyse.</p>
+        </div>
+      </details>
+      <details class="rep" id="r-bursts">
+        <summary>Bursts</summary>
+        <div class="inner">
+          <div class="explain">
+            <h3>Zo wordt een venster geselecteerd</h3>
+            <p>Minimaal <strong>5 pogingen</strong> van dezelfde medewerker in een venster van maximaal <strong>60 minuten</strong>.</p>
+            <div class="window">
+              <strong>Schematisch schuivend venster · 60 minuten</strong>
+              <p>Eerste gebeurtenis ≤ overige gebeurtenissen ≤ eerste gebeurtenis + vensterlengte.</p>
+            </div>
+            <p class="subtle">De grens telt mee. Per medewerker wordt één sterkste kwalificerend venster getoond; niet alle mogelijke vensters of incidenten.</p>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Medewerker</th>
+                  <th scope="col">Pogingen</th>
+                  <th scope="col">Eerste</th>
+                  <th scope="col">Laatste</th>
+                  <th scope="col">Verstreken tijd</th>
+                  <th scope="col">Unieke doelen</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Voorbeeldmedewerker D</td>
+                  <td>6 / minimum 5</td>
+                  <td>10:00</td>
+                  <td>10:42</td>
+                  <td>42 min. / maximaal 60</td>
+                  <td>4</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+      <details class="rep" id="r-clusters">
+        <summary>Cliëntclusters</summary>
+        <div class="inner">
+          <div class="explain">
+            <h3>Zo wordt een venster geselecteerd</h3>
+            <div class="or"><span>Minimaal <strong>3 medewerkers</strong></span><b>OF</b><span>Minimaal <strong>2 teams</strong></span></div>
+            <p>Dezelfde herkenbare cliënt, binnen maximaal <strong>120 minuten</strong>.</p>
+            <div class="window">
+              <strong>Schematisch schuivend venster · 120 minuten</strong>
+              <p>Eerste gebeurtenis ≤ overige gebeurtenissen ≤ eerste gebeurtenis + vensterlengte.</p>
+            </div>
+            <p class="subtle">De grens telt mee. Per cliënt wordt één sterkste kwalificerend venster getoond; niet alle mogelijke vensters of incidenten.</p>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Cliënt</th>
+                  <th scope="col">Medewerkers</th>
+                  <th scope="col">Teams</th>
+                  <th scope="col">Begin–einde</th>
+                  <th scope="col">Verstreken tijd</th>
+                  <th scope="col">Waarom geselecteerd</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Voorbeeldcliënt 02</td>
+                  <td>2 / minimum 3</td>
+                  <td>2 / minimum 2</td>
+                  <td>11:00–11:45</td>
+                  <td>45 min. / maximaal 120</td>
+                  <td>Teamdrempel gehaald</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+      <details class="rep" id="r-peers">
+        <summary>Peeranalyse</summary>
+        <div class="inner">
+          <div class="explain">
+            <h3>Zo lees je de ratio</h3>
+            <p><strong>13 escalaties ÷ groepsmediaan 6 = ratio 2,17.</strong> De mediaan is berekend over andere vergelijkbare medewerkers.</p>
+            <div class="scale"
+                 role="img"
+                 aria-label="Lineaire ratioschaal van 0 tot 2,5. Referentiepunten 0,5; 1; 2. Voorbeeldratio 2,17.">
+              <div class="tick" style="left:0%"><span>0</span></div>
+              <div class="tick" style="left:20%"><span>0,50</span></div>
+              <div class="tick" style="left:40%"><span>1,00</span></div>
+              <div class="tick" style="left:80%"><span>2,00</span></div>
+              <div class="pointer" style="left:86.8%"><strong>2,17</strong></div>
+            </div>
+            <p class="subtle">0,50 = de helft van de mediaan; 1,00 = gelijk; 2,00 = tweemaal de mediaan. Dit zijn referentiepunten, geen alarmdrempels. Een hogere ratio betekent geen evenredig hogere werklast of risico.</p>
+            <details class="guide">
+              <summary>Vier teller-noemerdefinities en beperkingen</summary>
+              <div>
+                <div class="table-scroll">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th scope="col">Ratio</th>
+                        <th scope="col">Teller</th>
+                        <th scope="col">Mediaan van andere vergelijkbare medewerkers</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Volume / team</td>
+                        <td>Auditregels medewerker</td>
+                        <td>Auditregels binnen hetzelfde team</td>
+                      </tr>
+                      <tr>
+                        <td>Cliënten / team</td>
+                        <td>Herkenbare unieke cliënten medewerker</td>
+                        <td>Herkenbare unieke cliënten binnen hetzelfde team</td>
+                      </tr>
+                      <tr>
+                        <td>Volume / deskundigheid</td>
+                        <td>Auditregels medewerker</td>
+                        <td>Auditregels binnen dezelfde deskundigheid</td>
+                      </tr>
+                      <tr>
+                        <td>Volume / team+deskundigheid</td>
+                        <td>Auditregels medewerker</td>
+                        <td>Auditregels binnen hetzelfde team én deskundigheid</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p>Alleen stabiele, ingevulde context; minimaal 3 andere peers. Geen correctie voor diensten, FTE, caseload of autorisatie. Medewerkers zonder auditregels ontbreken.</p>
+              </div>
+            </details>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Medewerker</th>
+                  <th scope="col">Auditregels</th>
+                  <th scope="col">Teammediaan</th>
+                  <th scope="col">Teampeers</th>
+                  <th scope="col">Volume / team</th>
+                  <th scope="col">Toelichting</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Voorbeeldmedewerker E</td>
+                  <td>13</td>
+                  <td>6</td>
+                  <td>3</td>
+                  <td>2,17</td>
+                  <td>Stabiele context</td>
+                </tr>
+                <tr>
+                  <td>Voorbeeldmedewerker F</td>
+                  <td>8</td>
+                  <td>—</td>
+                  <td>2</td>
+                  <td>Niet berekenbaar</td>
+                  <td>Te weinig peers</td>
+                </tr>
+                <tr>
+                  <td>Voorbeeldmedewerker G</td>
+                  <td>5</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>Niet vergeleken</td>
+                  <td>Context ontbreekt of wisselt</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+      <details class="rep" id="r-concentratie">
+        <summary>Concentratie per medewerker</summary>
+        <div class="inner">
+          <div class="explain">
+            <h3>Welk deel gaat naar de drie meest voorkomende doelen?</h3>
+            <p>De balk verdeelt uitsluitend regels met een herkenbaar doel. Cliënten hebben een eigen teller en noemer.</p>
+            <div class="legend"><span><b></b>Top 3</span><span><b class="other"></b>Overige herkenbare doelen</span></div>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Medewerker</th>
+                  <th scope="col">Populatie</th>
+                  <th scope="col">Unieke doelen/cliënten</th>
+                  <th scope="col">Top 3 / herkenbare regels</th>
+                  <th scope="col">Verdeling</th>
+                  <th scope="col">Zonder herkenbaar doel</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Voorbeeldmedewerker H</td>
+                  <td>Doelen</td>
+                  <td>5</td>
+                  <td>18 / 24 = 75,0%</td>
+                  <td>
+                    <div class="share" aria-label="Top 3: 18 regels. Overige: 6 regels.">
+                      <span style="width:75%"></span>
+                    </div>
+                  </td>
+                  <td>2</td>
+                </tr>
+                <tr>
+                  <td>Voorbeeldmedewerker H</td>
+                  <td>Cliënten</td>
+                  <td>4</td>
+                  <td>12 / 16 = 75,0%</td>
+                  <td>
+                    <div class="share"
+                         aria-label="Top 3: 12 cliëntregels. Overige: 4 cliëntregels.">
+                      <span style="width:75%"></span>
+                    </div>
+                  </td>
+                  <td>2</td>
+                </tr>
+                <tr>
+                  <td>Voorbeeldmedewerker I</td>
+                  <td>Doelen</td>
+                  <td>3</td>
+                  <td>9 / 9 = 100%</td>
+                  <td>
+                    <div class="share" aria-label="Top 3: alle 9 regels">
+                      <span style="width:100%"></span>
+                    </div>
+                  </td>
+                  <td>0</td>
+                </tr>
+                <tr>
+                  <td>Voorbeeldmedewerker J</td>
+                  <td>Doelen</td>
+                  <td>0</td>
+                  <td>Niet berekenbaar</td>
+                  <td>Geen herkenbaar doel; geen balk</td>
+                  <td>4</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="notice">Bij maximaal 3 herkenbare doelen is het aandeel vanzelf 100%. Bekijk daarom ook het volume, het aantal unieke doelen en ontbrekende doelen. Concentratie is geen risicoscore.</p>
+        </div>
+      </details>
+      <p class="section-note">Alle namen, tijden en waarden zijn fictief. Geen bronbestand geladen. Geen netwerkverkeer of browseropslag.</p>
+    </main>
+    <script>window.addEventListener('beforeprint',()=>document.querySelectorAll('details').forEach(d=>d.open=true));</script>
+  </body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "checks": [
+    "Webui: alle 6 schermen passen op 1280 px; vensterknoppen werken",
+    "Webui: alle 6 schermen passen op 800 px; vensterknoppen werken",
+    "Webui: alle 6 schermen passen op 390 px; vensterknoppen werken",
+    "Zes prioriteitsvarianten gecontroleerd",
+    "Drie grensvarianten bedienbaar",
+    "Vensterknop werkt met Enter en spatie",
+    "Peeruitleg en tabel klappen gezamenlijk in",
+    "Rapport 1280 px: geen overflow; beforeprint opent 7 gesloten blokken",
+    "Rapport 800 px: geen overflow; beforeprint opent 7 gesloten blokken",
+    "Rapport 390 px: geen overflow; beforeprint opent 7 gesloten blokken",
+    "Verse standaardfixture-nulmeting: {\"source\": 2000, \"audit\": 1802, \"attention\": 1790, \"bursts\": 0, \"clusters\": 5}"
+  ],
+  "browser_errors": []
+}
