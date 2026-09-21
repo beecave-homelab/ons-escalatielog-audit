@@ -2,7 +2,7 @@
 title: Berekeningen, tellingen en patroonherkenning
 applies_to: escalatielog-audit-webui.html
 tags: [escalatielogs, audit, functioneel-beheer]
-updated: 2026-09-20
+updated: 2026-09-21
 ---
 
 ## Berekeningen, tellingen en patroonherkenning
@@ -403,6 +403,18 @@ Het HTML-rapport bevat de gebruikte instellingen, definities en analysetabellen.
 Het rapport bevat daarnaast dezelfde visuele oriëntatie als het webui-overzicht, telkens binnen de sectie van de bijbehorende tabel: de auditflow als verdelingstabel (bronbestand = systeemmeldingen + duplicaatkopieën + auditpopulatie, met aandachtspunten als selectie binnen de auditpopulatie), unieke regels per controlethema als balken, tijdpatronen als weekdag/uur-matrix in twee blokken van twaalf uur, en de topgrafieken voor medewerkers en cliënten boven hun tabellen met een leeswijzer over de topselectie en gelijke standen. Webui en rapport gebruiken hiervoor hetzelfde analyseresultaat; de medewerkerspreiding en verhoudingsdonuts zijn bewust niet overgenomen.
 
 De analyse draait lokaal. De webui verstuurt geen gegevens via het netwerk en slaat de ingelezen data niet op in de browseropslag. Als je de pagina sluit of vernieuwt, verdwijnen de sessiegegevens. Gedownloade rapporten en CSV-bestanden blijven wel bestaan en kunnen persoonsgegevens bevatten. Bewaar en deel ze volgens de interne afspraken.
+
+### 12.1. Visuele uitleg bij de uitkomst (0.10.0)
+
+Webui en HTML-rapport gebruiken dezelfde presentatiehelpers, toegepaste instellingen en aanvullende waarden uit `analyze()`. Er worden geen nieuwe signalen of bevindingen in renderfuncties gemaakt.
+
+- **Controleprioriteit:** de route telt thema’s, geen signalen. Een aanwezig her-escalatiesignaal geeft Hoog; anders geven minimaal drie thema’s Hoog, twee Midden en overige aandachtspunten Basis. Bij een niet-geactiveerde poging telt alleen `ONVOLLEDIG_CLIENTDOEL` niet mee; andere datakwaliteit kan wel meetellen. Daarom kan Basis ook nul meetellende thema’s hebben. De kolom *Waarom deze prioriteit* en het bronregeldetail tonen de onderbouwing. In het rapport staat deze uitleg als volle regel direct onder de bijbehorende Excel-rij, zodat er geen extra smalle tekstkolom nodig is. In het rapport staat één route boven de drie geneste, afzonderlijk inklapbare prioriteitsgroepen.
+- **Her-escalatie:** het detail gebruikt `previousSourceRow`, de echte start- en activatietijden en de toegangstermijn van de analyse. De schematische tijdlijn staat in tijdvolgorde en is niet op schaal. De exacte afstanden vanaf Activatie A en Start A worden afzonderlijk in seconden getoond. De inclusieve eindgrens begint bij activatie; de zeer-snel-drempel vergelijkt beide starts. Het rapport bevat een gegevensvrij voorbeeld op 01-01-2000, exact op de toegepaste eindgrens. Bij een uitgeschakeld her-escalatiesignaal vermeldt dit voorbeeld dat. Geen van deze beelden bewijst daadwerkelijke toegang of dossierinzage.
+- **Bursts en cliëntclusters:** boven de tabel staat een algemeen schema, geen willekeurig gekozen individueel venster. Het detail toont de werkelijke start en het einde van de geselecteerde bronregels. De resultaten bevatten exacte `Verstreken (sec.)`, het maximum `Venster (min.)` en de minimumdrempels. Clusters tonen bovendien de behaalde medewerker- en/of teamdrempel als selectiereden; één van beide is voldoende. De selectie van één sterkste venster verandert niet.
+- **Peers:** de schaal 0–2 bevat neutrale referentiepunten 0,50 / 1,00 / 2,00. Het voorbeeld 13 / 6 = 2,17 is een rekenvoorbeeld, geen gemeten waarde en geen risicoscore. Ontbrekende ratio’s krijgen per ratio de feitelijke oorzaak: ontbrekende/wisselende context, te weinig peers (aantal en minimum), of mediaan nul. De numerieke waarden blijven de basis voor sortering.
+- **Concentratie:** `Top-3 doelregistraties` en `Top-3 cliëntregistraties` bevatten de intern berekende gehele tellers. De balk gebruikt deze tellers met respectievelijk `Escalaties met herkenbaar doel` en `Cliëntescalaties herkenbaar`; de teller wordt nooit uit een afgerond percentage gereconstrueerd. Het overige deel is noemer minus teller. Bij maximaal drie herkenbare doelen ontstaat vanzelf 100%; een lege noemer is niet berekenbaar. Een locatiedoel draagt wel aan doelen, maar niet aan cliënten bij.
+
+Deze aanvullingen gelden voor webui-tabellen en HTML-rapport. De aandachtspunten-CSV en bronregels-CSV behouden exact hun bestaande kolommen en formulebeveiliging. Uitleg, visual en tabel staan samen in dezelfde rapportsectie; het echte `beforeprint`-event opent ook de geneste groepen en peerdefinities. De expliciete thematabel telt iedere auditregel eenmaal per thema. De tijdmatrix toont ook nullen als tekst. Cliëntgrafiek en rapporttabel delen de sortering op unieke medewerkers, daarna escalatievolume; bestaande rapportlimieten blijven expliciet vermeld.
 
 ## 13. Datakwaliteit en interpretatie
 

@@ -63,7 +63,8 @@ def inspect_layout(page, width: int, media: str) -> dict:
             ),
             malformedTables: tables.filter(
               table => [...table.tBodies[0].rows].some(
-                row => row.cells.length !== table.tHead.rows[0].cells.length
+                row => [...row.cells].reduce((sum,cell) => sum + cell.colSpan,0)
+                  !== table.tHead.rows[0].cells.length
               )
             ).length,
             wideTables: wrappers
@@ -270,8 +271,8 @@ def test_exported_report_tables_stay_aligned(tmp_path: Path) -> None:
 
     assert not console_errors
     assert toc_result == {
-        "linkCount": 20,
-        "uniqueTargetCount": 20,
+        "linkCount": 21,
+        "uniqueTargetCount": 21,
         "allTargetsExist": True,
     }
     assert toc_hash == "#s-peer"
