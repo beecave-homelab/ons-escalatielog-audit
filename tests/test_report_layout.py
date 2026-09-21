@@ -144,6 +144,64 @@ def test_generator_cli(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys) 
     assert "SHA-256:" in result
 
 
+def test_drilldown_column_filters_and_full_csv(tmp_path: Path) -> None:
+    with sync_playwright() as playwright:
+        browser = launch_browser(playwright)
+        page = browser.new_page(accept_downloads=True)
+        errors = []
+        page.on("pageerror", lambda error: errors.append(str(error)))
+        page.goto((ROOT / "escalatielog-audit-webui.html").as_uri())
+        page.evaluate(
+            """() => {
+              const rows = [
+                {sourceRow: 2, employeeTeam: 'Team <A>', expertise: 'Verpleegkundige',
+                 targetType: 'Cliënt', signals: ['Nacht']},
+                {sourceRow: 3, employeeTeam: 'Team <A>', expertise: 'Arts',
+                 targetType: 'Locatie', signals: []},
+                {sourceRow: 4, employeeTeam: 'Team B', expertise: 'Arts',
+                 targetType: 'Cliënt', signals: ['Nacht']},
+              ];
+              openDrilldown('Test', rows);
+            }"""
+        )
+        filters = page.locator("#drillBody .column-filter")
+        assert filters.count() == 4
+        team = page.get_by_role("combobox", name="Filter op Medewerkersteam")
+        assert team.locator("option").all_text_contents() == [
+            "Alle medewerkersteam",
+            "Team <A>",
+            "Team B",
+        ]
+        assert page.locator("#drillBody option[value='Team <A>']").count() == 1
+        assert page.locator("#drillBody option[value='Team <A>'] b").count() == 0
+        assert page.locator(".drill-count").text_content() == "3 van 3"
+        team.focus()
+        assert team.evaluate("element => document.activeElement === element")
+        team.select_option("Team B")
+        assert page.locator(".drill-count").text_content() == "1 van 3"
+        team.select_option("Team <A>")
+        page.get_by_role("combobox", name="Filter op Deskundigheid medewerker").select_option(
+            "Arts"
+        )
+        assert page.locator(".drill-count").text_content() == "1 van 3"
+        page.get_by_role("textbox", name="Zoek bronregels").fill("Cliënt")
+        assert page.locator(".drill-count").text_content() == "0 van 3"
+        page.get_by_role("textbox", name="Zoek bronregels").fill("Locatie")
+        assert page.locator(".drill-count").text_content() == "1 van 3"
+        assert page.locator("#drillBody tbody tr:visible").count() == 1
+        page.locator("#drillOverlay").screenshot(path=str(tmp_path / "drilldown-filters.png"))
+        with page.expect_download() as download_info:
+            page.locator("#drillCsvBtn").click()
+        csv_file = tmp_path / "bronregels.csv"
+        download_info.value.save_as(csv_file)
+        assert len(csv_file.read_text(encoding="utf-8-sig").splitlines()) == 4
+        page.locator("#drillCloseBtn").click()
+        page.evaluate("openDrilldown('Leeg', [])")
+        assert page.locator(".drill-count").text_content() == "0 van 0"
+        assert not errors
+        browser.close()
+
+
 def test_exported_report_tables_stay_aligned(tmp_path: Path) -> None:
     workbook = tmp_path / "synthetisch-escalatielog.xlsx"
     report = tmp_path / "synthetisch-rapport.html"
