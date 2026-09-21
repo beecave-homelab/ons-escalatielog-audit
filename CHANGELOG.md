@@ -2,6 +2,21 @@
 
 Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgelegd. Versies volgen [Semantic Versioning](https://semver.org/lang/nl/).
 
+## [0.10.0] - 2026-09-21
+
+### Toegevoegd in v0.10.0
+
+- Toon de prioriteitsroute en de meetellende thema’s bij aandachtspunten; groepeer de drie prioriteitstabellen onder één uitlegblok in het rapport.
+- Toon de gekoppelde eerdere activatie en her-escalatie als tijdlijn in het bronregeldetail; geef in het rapport een expliciet fictief voorbeeld met de toegepaste toegangstermijn.
+- Leg burst- en cliëntclustervensters uit, met exacte verstreken seconden, drempels en selectiereden; toon het werkelijke venster bij de bronregels.
+- Voeg een neutrale ratioschaal en de concrete oorzaak van ontbrekende peer-ratio’s toe.
+- Toon top-3-concentratie als balk met exacte teller/noemer, resterende registraties en uitleg bij 100% of een lege noemer.
+
+### Gewijzigd in v0.10.0
+
+- Maak nulwaarden in de rapporttijdmatrix expliciet, voeg de thematabel toe en deel de cliëntselectie tussen overzicht en rapport. De cliënttabel volgt dezelfde sortering als de grafiek.
+- Behoud de bestaande signalen, reconciliatie en beide CSV-schema’s; de analyseresultaten krijgen aanvullende uitlegvelden en exacte tellers.
+
 ## [0.9.0] - 2026-09-20
 
 ### Toegevoegd in v0.9.0
