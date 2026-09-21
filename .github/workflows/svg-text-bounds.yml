@@ -1,0 +1,23 @@
+name: SVG-tekstcontrole
+
+on:
+  pull_request:
+    paths:
+      - "docs/assets/*.svg"
+      - "scripts/check-svg-text-bounds.sh"
+      - ".github/workflows/svg-text-bounds.yml"
+
+jobs:
+  svg-text-bounds:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Installeer Playwright + Chromium
+        run: |
+          pip install playwright==1.52.0
+          playwright install chromium --with-deps
+      - name: Controleer tekst binnen viewBox
+        run: bash scripts/check-svg-text-bounds.sh

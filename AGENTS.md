@@ -22,7 +22,7 @@ The webui has no build step, server, framework or runtime dependency. Everything
 | `tests/fixtures/synthetic-escalatielog.xlsx` | Standard synthetic export: 2,000 rows generated with seed `20260918`; safe to commit. |
 | `tests/test_report_layout.py` | Synthetic Playwright regression test for exported report tables; contains no personal data. |
 | `docs/berekeningen-en-patroonherkenning.md` | Authoritative functional/technical reference (16 sections): populations, signals, thresholds, tie-breaks, defaults (§14), reference results (§15). Has frontmatter with `updated:` date. |
-| `docs/assets/` | SVG diagrams used by README/docs. |
+| `docs/assets/` | SVG diagrams used by README/docs. All text must stay inside the viewBox; `scripts/check-svg-text-bounds.sh` (and CI) enforce this. |
 | `escalatielogs/` | Local test exports (**gitignored**, contain personal data; never commit). The historically used May export `Escalatielogs 01-05-2026 tot 31-05-2026.xlsx` lives here; it is not a documentation reference — docs §15 points at the committed synthetic fixture. |
 | `exports/` | Output written during manual testing (**gitignored**; contains personal data — never commit). |
 | `to-do/` | Gitignored local scratch/todo directory; not used by the webui. |
