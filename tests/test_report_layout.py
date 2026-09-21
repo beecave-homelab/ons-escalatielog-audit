@@ -241,6 +241,14 @@ def test_exported_report_tables_stay_aligned(tmp_path: Path) -> None:
               .reduce((sum, cell) => sum + (Number(cell.textContent) || 0), 0)"""
         )
         assert heat_sum == 24
+        peak_cell = tijd_section.locator("td").filter(has_text="24")
+        assert peak_cell.count() == 1
+        assert (
+            peak_cell.evaluate("cell => getComputedStyle(cell).backgroundColor")
+            == "rgb(157, 47, 132)"
+        )
+        assert "niet alle medewerkers" in page.locator("#s-medewerkers").text_content()
+        assert "niet alle cliënten" in page.locator("#s-clienten").text_content()
         assert "Som van alle cellen" in tijd_section.text_content()
         tijd_section.evaluate("section => section.open = false")
         assert not tijd_section.locator("table.heat").first.is_visible()
