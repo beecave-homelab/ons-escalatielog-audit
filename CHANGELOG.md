@@ -2,6 +2,21 @@
 
 Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgelegd. Versies volgen [Semantic Versioning](https://semver.org/lang/nl/).
 
+## [0.9.0] - 2026-09-20
+
+### Toegevoegd in v0.9.0
+
+- Voeg de auditflow als verdelingstabel toe aan het HTML-rapport: bronbestand = systeemmeldingen + duplicaatkopieën + auditpopulatie, met aandachtspunten als selectie binnen de auditpopulatie.
+- Toon unieke regels per controlethema als balken in het rapport, met de uitleg dat één regel met meerdere thema's in elk thema meetelt.
+- Voeg een tijdpatronen-sectie toe met een weekdag/uur-matrix in twee blokken van twaalf uur, inclusief het aantal auditregels zonder geldige starttijd en de somcontrole tegen de auditpopulatie.
+- Plaats de topgrafieken voor medewerkers en cliënten in het rapport bij hun tabellen, met een leeswijzer over de topselectie en de sortering bij gelijke standen.
+
+### Gewijzigd in v0.9.0
+
+- Bereken de weekdag/uur-telling en de thematellingen in het analyseresultaat, zodat webui en rapport dezelfde waarden gebruiken in plaats van ze afzonderlijk in de renderlaag te bepalen.
+- Verwijder de losse topgrafieken uit de rapportsamenvatting; de grafieken staan voortaan binnen de bijbehorende inklapbare secties.
+- Werk de gebruikersuitleg in de README en de functionele documentatie bij.
+
 ## [0.8.0] - 2026-09-19
 
 ### Toegevoegd in v0.8.0

@@ -219,6 +219,47 @@ def test_exported_report_tables_stay_aligned(tmp_path: Path) -> None:
         peer_section.locator(":scope > summary").click()
         assert report_guidance.is_visible()
 
+        auditflow_section = page.locator("#s-auditflow")
+        assert auditflow_section.locator("table.flow tbody tr").count() == 5
+        assert "duplicaatkopieën + auditpopulatie" in auditflow_section.text_content()
+        auditflow_section.evaluate("section => section.open = false")
+        assert not auditflow_section.locator("table.flow").is_visible()
+        auditflow_section.locator(":scope > summary").click()
+        assert auditflow_section.locator("table.flow").is_visible()
+
+        signalen_section = page.locator("#s-signalen")
+        theme_bars = signalen_section.locator(".r-bars .r-row")
+        assert theme_bars.count() == 4
+        assert theme_bars.first.locator("strong").text_content() == "24"
+        assert "in elk daarvan eenmaal" in signalen_section.text_content()
+
+        tijd_section = page.locator("#s-tijd")
+        heat_tables = tijd_section.locator("table.heat")
+        assert heat_tables.count() == 2
+        heat_sum = page.evaluate(
+            """() => [...document.querySelectorAll('#s-tijd table.heat td')]
+              .reduce((sum, cell) => sum + (Number(cell.textContent) || 0), 0)"""
+        )
+        assert heat_sum == 24
+        peak_cell = tijd_section.locator("td").filter(has_text="24")
+        assert peak_cell.count() == 1
+        assert (
+            peak_cell.evaluate("cell => getComputedStyle(cell).backgroundColor")
+            == "rgb(157, 47, 132)"
+        )
+        assert "niet alle medewerkers" in page.locator("#s-medewerkers").text_content()
+        assert "niet alle cliënten" in page.locator("#s-clienten").text_content()
+        assert "Som van alle cellen" in tijd_section.text_content()
+        tijd_section.evaluate("section => section.open = false")
+        assert not tijd_section.locator("table.heat").first.is_visible()
+        tijd_section.locator(":scope > summary").click()
+        assert tijd_section.locator("table.heat").first.is_visible()
+
+        for section_id in ("#s-medewerkers", "#s-clienten"):
+            section = page.locator(section_id)
+            assert section.locator(".r-bars .r-row").count() > 0
+            assert "Leeswijzer top" in section.text_content()
+
         toc_result = inspect_toc(page)
         page.locator('.toc a[href="#s-peer"]').click()
         page.wait_for_function("location.hash === '#s-peer'")
@@ -229,8 +270,8 @@ def test_exported_report_tables_stay_aligned(tmp_path: Path) -> None:
 
     assert not console_errors
     assert toc_result == {
-        "linkCount": 18,
-        "uniqueTargetCount": 18,
+        "linkCount": 20,
+        "uniqueTargetCount": 20,
         "allTargetsExist": True,
     }
     assert toc_hash == "#s-peer"
