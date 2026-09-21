@@ -13,27 +13,27 @@
   <text x="500" y="104" text-anchor="middle" class="ap-head">NA FILTER EN ONTDUBBELING</text>
   <text x="880" y="104" text-anchor="middle" class="ap-head">UITKOMST</text>
   <path d="M126 130 C310 130 310 130 494 130 L494 154 C310 154 310 154 126 154 Z" fill="#00A0C8" fill-opacity=".22"/>
-  <path d="M126 154 C310 154 310 157 494 157 L494 438 C310 438 310 438 126 438 Z" fill="#A02A85" fill-opacity=".18"/>
-  <path d="M506 130 C690 130 690 130 874 130 L874 160 C690 160 690 160 506 160 Z" fill="#00A0C8" fill-opacity=".22"/>
-  <path d="M506 157 C690 157 690 168 874 168 L874 176 C690 176 690 164 506 164 Z" fill="#E5E7EB"/>
-  <path d="M506 172 C690 172 690 184 874 184 L874 509 C690 509 690 436 506 436 Z" fill="#A02A85" fill-opacity=".28"/>
-  <path d="M506 436 C690 436 690 517 874 517 L874 520 C690 520 690 438 506 438 Z" fill="#6B7280" fill-opacity=".16"/>
+  <path d="M126 154 C310 154 310 157 494 157 L494 449 C310 449 310 438 126 438 Z" fill="#A02A85" fill-opacity=".18"/>
+  <path d="M506 130 C690 130 690 130 874 130 L874 154 C690 154 690 154 506 154 Z" fill="#00A0C8" fill-opacity=".22"/>
+  <path d="M506 157 C690 157 690 161 874 161 L874 168 C690 168 690 164 506 164 Z" fill="#E5E7EB"/>
+  <path d="M506 171 C690 171 690 176 874 176 L874 452 C690 452 690 449 506 449 Z" fill="#A02A85" fill-opacity=".28"/>
+  <path d="M506 446 C690 446 690 459 874 459 L874 462 C690 462 690 449 506 449 Z" fill="#6B7280" fill-opacity=".16"/>
   <rect x="114" y="130" width="12" height="308" fill="#333"/>
   <rect x="494" y="130" width="12" height="24" fill="#333"/>
   <rect x="494" y="157" width="12" height="7" fill="#E5E7EB"/>
-  <rect x="494" y="172" width="12" height="266" fill="#333"/>
-  <rect x="874" y="130" width="12" height="30" fill="#333"/>
-  <rect x="874" y="168" width="12" height="8" fill="#E5E7EB"/>
-  <rect x="874" y="184" width="12" height="325" fill="#A02A85"/>
-  <rect x="874" y="517" width="12" height="3" fill="#6B7280"/>
+  <rect x="494" y="171" width="12" height="278" fill="#333"/>
+  <rect x="874" y="130" width="12" height="24" fill="#333"/>
+  <rect x="874" y="161" width="12" height="7" fill="#E5E7EB"/>
+  <rect x="874" y="176" width="12" height="276" fill="#A02A85"/>
+  <rect x="874" y="459" width="12" height="3" fill="#6B7280"/>
   <text x="104" y="276" text-anchor="end" class="ap-name">Bronregels</text><text x="104" y="294" text-anchor="end" class="ap-num">2.000</text>
   <text x="500" y="122" text-anchor="middle" class="ap-name">Systeemregels</text><text x="518" y="147" class="ap-num">156</text>
   <text x="518" y="188" class="ap-name">Duplicaatkopieën</text><text x="518" y="203" class="ap-num">42</text>
-  <text x="500" y="300" text-anchor="middle" class="ap-name" fill="#7F1F69">Auditregels</text><text x="500" y="318" text-anchor="middle" class="ap-num">1.802</text>
-  <text x="896" y="148" class="ap-name">Uitgesloten als systeemregel</text><text x="896" y="166" class="ap-num">156</text>
-  <text x="896" y="196" class="ap-name">Uitgesloten als duplicaat</text><text x="896" y="211" class="ap-num">42</text>
-  <text x="896" y="300" class="ap-name" fill="#7F1F69">Aandachtspunten</text><text x="896" y="318" class="ap-num">1.790 unieke regels</text>
-  <text x="896" y="530" class="ap-name">Zonder ingeschakeld signaal</text><text x="896" y="545" class="ap-num">12 regels</text>
+  <text x="500" y="302" text-anchor="middle" class="ap-name" fill="#7F1F69">Auditregels</text><text x="500" y="320" text-anchor="middle" class="ap-num">1.802</text>
+  <text x="896" y="146" class="ap-name">Uitgesloten als systeemregel</text><text x="896" y="161" class="ap-num">156</text>
+  <text x="896" y="186" class="ap-name">Uitgesloten als duplicaat</text><text x="896" y="201" class="ap-num">42</text>
+  <text x="896" y="302" class="ap-name" fill="#7F1F69">Aandachtspunten</text><text x="896" y="320" class="ap-num">1.790 unieke regels</text>
+  <text x="896" y="480" class="ap-name">Zonder ingeschakeld signaal</text><text x="896" y="495" class="ap-num">12 regels</text>
   <line x1="40" y1="576" x2="960" y2="576" stroke="#E5E7EB"/>
   <text x="40" y="593" class="ap-num">Referentie: tests/fixtures/synthetic-escalatielog.xlsx (seed 20260918) · standaardinstellingen</text>
 </svg>
