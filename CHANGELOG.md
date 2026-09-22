@@ -2,6 +2,16 @@
 
 Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgelegd. Versies volgen [Semantic Versioning](https://semver.org/lang/nl/).
 
+## [0.11.0] - 2026-09-21
+
+### Toegevoegd in v0.11.0
+
+- Filter bronregels in het detailvenster op team, deskundigheid, doeltype en auditcontext, samen met het zoekveld en een zichtbare regelteller.
+
+### Gewijzigd in v0.11.0
+
+- Verduidelijk dat Bronregels CSV ook bij actieve detailfilters de volledige geopende selectie exporteert.
+
 ## [0.10.0] - 2026-09-21
 
 ### Toegevoegd in v0.10.0

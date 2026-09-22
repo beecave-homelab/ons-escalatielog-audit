@@ -144,6 +144,261 @@ def test_generator_cli(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys) 
     assert "SHA-256:" in result
 
 
+def test_drilldown_column_filters_and_full_csv(tmp_path: Path) -> None:
+    with sync_playwright() as playwright:
+        browser = launch_browser(playwright)
+        page = browser.new_page(accept_downloads=True)
+        errors = []
+        page.on("pageerror", lambda error: errors.append(str(error)))
+        page.goto((ROOT / "escalatielog-audit-webui.html").as_uri())
+        page.evaluate(
+            """() => {
+              const rows = [
+                {sourceRow: 2, employeeTeam: 'Team <A>', expertise: 'Verpleegkundige',
+                 targetType: 'Cliënt', signals: ['Nacht']},
+                {sourceRow: 3, employeeTeam: 'Team <A>', expertise: 'Arts',
+                 targetType: 'Locatie', signals: []},
+                {sourceRow: 4, employeeTeam: 'Team B', expertise: 'Arts',
+                 targetType: 'Cliënt', signals: ['Nacht']},
+              ];
+              openDrilldown('Test', rows);
+            }"""
+        )
+        filters = page.locator("#drillBody .column-filter")
+        assert filters.count() == 4
+        team = page.get_by_role("combobox", name="Filter op Medewerkersteam")
+        assert team.locator("option").all_text_contents() == [
+            "Alle medewerkersteam",
+            "Team <A>",
+            "Team B",
+        ]
+        assert page.locator("#drillBody option[value='Team <A>']").count() == 1
+        assert page.locator("#drillBody option[value='Team <A>'] b").count() == 0
+        assert page.locator(".drill-count").text_content() == "3 van 3"
+        team.focus()
+        assert team.evaluate("element => document.activeElement === element")
+        team.select_option("Team B")
+        assert page.locator(".drill-count").text_content() == "1 van 3"
+        team.select_option("Team <A>")
+        page.get_by_role("combobox", name="Filter op Deskundigheid medewerker").select_option(
+            "Arts"
+        )
+        assert page.locator(".drill-count").text_content() == "1 van 3"
+        page.get_by_role("textbox", name="Zoek bronregels").fill("Cliënt")
+        assert page.locator(".drill-count").text_content() == "0 van 3"
+        page.get_by_role("textbox", name="Zoek bronregels").fill("Locatie")
+        assert page.locator(".drill-count").text_content() == "1 van 3"
+        assert page.locator("#drillBody tbody tr:visible").count() == 1
+        page.locator("#drillOverlay").screenshot(path=str(tmp_path / "drilldown-filters.png"))
+        with page.expect_download() as download_info:
+            page.locator("#drillCsvBtn").click()
+        csv_file = tmp_path / "bronregels.csv"
+        download_info.value.save_as(csv_file)
+        assert len(csv_file.read_text(encoding="utf-8-sig").splitlines()) == 4
+        page.locator("#drillCloseBtn").click()
+        page.evaluate("openDrilldown('Leeg', [])")
+        assert page.locator(".drill-count").text_content() == "0 van 0"
+        assert not errors
+        browser.close()
+
+
+def test_drilldown_focus_trap_includes_select_filters(tmp_path: Path) -> None:
+    """The four <select> column filters must be reachable by Tab/Shift+Tab."""
+    with sync_playwright() as playwright:
+        browser = launch_browser(playwright)
+        page = browser.new_page()
+        errors: list[str] = []
+        page.on("pageerror", lambda error: errors.append(str(error)))
+        page.goto((ROOT / "escalatielog-audit-webui.html").as_uri())
+        page.evaluate(
+            """() => {
+              const rows = [
+                {sourceRow: 2, employeeTeam: 'Team A', expertise: 'Verpleegkundige',
+                 targetType: 'Cliënt', signals: ['Nacht']},
+                {sourceRow: 3, employeeTeam: 'Team B', expertise: 'Arts',
+                 targetType: 'Locatie', signals: []},
+              ];
+              openDrilldown('Test', rows);
+            }"""
+        )
+
+        # Collect focusable elements in DOM order inside the dialog.
+        focusable = page.evaluate(
+            """() => {
+              const overlay = document.getElementById('drillOverlay');
+              const sel = 'button, input, select, textarea, [tabindex="0"]';
+              return [...overlay.querySelectorAll(sel)]
+                .filter(el => !el.disabled)
+                .map(el => ({
+                  tag: el.tagName.toLowerCase(),
+                  id: el.id || null,
+                  label: el.getAttribute('aria-label') || null,
+                  type: el.type || null,
+                }));
+            }"""
+        )
+
+        # The dialog must contain the close button, CSV button, search input,
+        # and four <select> filters.
+        tags = [el["tag"] for el in focusable]
+        assert "select" in tags, f"No <select> in focusable set: {focusable}"
+        select_count = tags.count("select")
+        assert select_count == 4, f"Expected 4 selects in focus loop, got {select_count}"
+
+        # Simulate Tab traversal: the focusable order is:
+        #   1. drillCsvBtn (button)
+        #   2. drillCloseBtn (button)
+        #   3. drillExplanation (tabindex="0")
+        #   4. drill-search (input)
+        #   5-8. four selects
+        # The last element is the 4th select (Auditcontext).
+
+        search = page.get_by_role("textbox", name="Zoek bronregels")
+        last_select = page.get_by_role("combobox", name="Filter op Auditcontext")
+        csv_btn = page.locator("#drillCsvBtn")
+
+        # Focus the search input, Tab forward, should reach the first select.
+        search.focus()
+        page.keyboard.press("Tab")
+        active_label = page.evaluate("() => document.activeElement?.getAttribute('aria-label')")
+        assert active_label == "Filter op Medewerkersteam", (
+            f"Tab from search should reach first select, got: {active_label}"
+        )
+
+        # Shift+Tab from the first select should go back to search.
+        page.keyboard.press("Shift+Tab")
+        active_label = page.evaluate("() => document.activeElement?.getAttribute('aria-label')")
+        assert active_label == "Zoek bronregels", (
+            f"Shift+Tab from first select should reach search, got: {active_label}"
+        )
+
+        # Focus the last element (Auditcontext select), Tab forward should
+        # wrap to the first focusable (CSV button).
+        last_select.focus()
+        page.keyboard.press("Tab")
+        active_id = page.evaluate("() => document.activeElement?.id")
+        assert active_id == "drillCsvBtn", (
+            f"Tab from last element should wrap to drillCsvBtn, got: {active_id}"
+        )
+
+        # Shift+Tab from the first element (CSV button) should wrap to last.
+        csv_btn.focus()
+        page.keyboard.press("Shift+Tab")
+        active_label = page.evaluate("() => document.activeElement?.getAttribute('aria-label')")
+        assert active_label == "Filter op Auditcontext", (
+            f"Shift+Tab from CSV button should wrap to last select, got: {active_label}"
+        )
+
+        assert not errors
+        browser.close()
+
+
+def test_drilldown_sticky_header_offset_below_filter_bar(tmp_path: Path) -> None:
+    """Sticky table headers must sit below the sticky filter bar, not under it."""
+    with sync_playwright() as playwright:
+        browser = launch_browser(playwright)
+        page = browser.new_page(viewport={"width": 1280, "height": 400})
+        errors: list[str] = []
+        page.on("pageerror", lambda error: errors.append(str(error)))
+        page.goto((ROOT / "escalatielog-audit-webui.html").as_uri())
+
+        # Generate enough rows to make the drilldown body scroll.
+        rows = [
+            {
+                "sourceRow": i + 2,
+                "employeeTeam": "Team A" if i % 2 == 0 else "Team B",
+                "expertise": "Verpleegkundige" if i % 3 == 0 else "Arts",
+                "targetType": "Cliënt" if i % 2 == 0 else "Locatie",
+                "signals": ["Nacht"] if i % 5 == 0 else [],
+            }
+            for i in range(60)
+        ]
+        page.evaluate("""(rows) => openDrilldown('Scroll Test', rows)""", rows)
+
+        # Wait for the filter bar to render and the offset to be applied.
+        page.wait_for_selector("#drillBody .drill-filters")
+        page.wait_for_function(
+            """() => {
+              const body = document.getElementById('drillBody');
+              const v = body.style.getPropertyValue('--drill-filter-offset');
+              return v && parseFloat(v) > 0;
+            }"""
+        )
+
+        measurements = page.evaluate(
+            """() => {
+              const body = document.getElementById('drillBody');
+              const filterBar = body.querySelector('.drill-filters');
+              const th = body.querySelector('th');
+              if (!filterBar || !th) return null;
+              const filterRect = filterBar.getBoundingClientRect();
+              const thRect = th.getBoundingClientRect();
+              const thTop = parseFloat(getComputedStyle(th).top) || 0;
+              return {
+                filterHeight: filterRect.height,
+                cssOffset: body.style.getPropertyValue('--drill-filter-offset'),
+                computedThTop: thTop,
+                // When scrolled, the th should stick at filterHeight (not 0).
+                thRectTopAfterScroll: null, // filled after scroll
+                filterRectTopAfterScroll: null,
+              };
+            }"""
+        )
+        assert measurements is not None, "Filter bar or th not found"
+
+        # The CSS variable must match the filter bar's rendered height.
+        filter_height = measurements["filterHeight"]
+        css_offset_px = float(measurements["cssOffset"].replace("px", ""))
+        assert abs(css_offset_px - filter_height) < 1, (
+            f"CSS offset {css_offset_px} != filter bar height {filter_height}"
+        )
+
+        # The computed top of the th must equal the filter bar height, not 0.
+        assert measurements["computedThTop"] > 0, (
+            f"th top should be > 0 (offset below filter bar), got {measurements['computedThTop']}"
+        )
+        assert abs(measurements["computedThTop"] - filter_height) < 1, (
+            f"th top {measurements['computedThTop']} != filter height {filter_height}"
+        )
+
+        # Scroll the drilldown body down so the header would normally stick at top:0.
+        page.evaluate(
+            """() => {
+              document.getElementById('drillBody').scrollTop = 200;
+            }"""
+        )
+        page.wait_for_timeout(100)
+
+        overlap = page.evaluate(
+            """() => {
+              const body = document.getElementById('drillBody');
+              const filterBar = body.querySelector('.drill-filters');
+              const th = body.querySelector('th');
+              const fr = filterBar.getBoundingClientRect();
+              const tr = th.getBoundingClientRect();
+              // Both are sticky inside .drill-body. Get their position relative
+              // to the drill-body container.
+              const bodyRect = body.getBoundingClientRect();
+              return {
+                filterTopRel: fr.top - bodyRect.top,
+                filterBottomRel: fr.bottom - bodyRect.top,
+                thTopRel: tr.top - bodyRect.top,
+                thBottomRel: tr.bottom - bodyRect.top,
+              };
+            }"""
+        )
+
+        # The th top (relative to scroll container) should be at or below
+        # the filter bar bottom, meaning the header is NOT hidden behind it.
+        assert overlap["thTopRel"] >= overlap["filterBottomRel"] - 1, (
+            f"th top {overlap['thTopRel']} should be >= filter bottom "
+            f"{overlap['filterBottomRel']} (header hidden behind filter bar)"
+        )
+
+        assert not errors
+        browser.close()
+
+
 def test_exported_report_tables_stay_aligned(tmp_path: Path) -> None:
     workbook = tmp_path / "synthetisch-escalatielog.xlsx"
     report = tmp_path / "synthetisch-rapport.html"
