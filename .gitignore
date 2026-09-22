@@ -24,3 +24,4 @@ __pycache__/
 .coverage
 coverage.xml
 htmlcov/
+docs/assets/issue-12-drilldown-filters.png
