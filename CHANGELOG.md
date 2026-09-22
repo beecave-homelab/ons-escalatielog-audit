@@ -2,6 +2,13 @@
 
 Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgelegd. Versies volgen [Semantic Versioning](https://semver.org/lang/nl/).
 
+## [0.11.1] - 2026-09-22
+
+### Opgelost in v0.11.1
+
+- Lijn toelichtingen, grafieken en tabellen binnen het HTML-rapport gelijk uit en voorkom een dubbele inspringing van de tijdmatrix.
+- Geef bij brede rapporttabellen aan dat de overige kolommen horizontaal bereikbaar zijn.
+
 ## [0.11.0] - 2026-09-21
 
 ### Toegevoegd in v0.11.0
