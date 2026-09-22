@@ -53,6 +53,17 @@ def inspect_layout(page, width: int, media: str) -> dict:
         """closedBeforePrint => {
           const wrappers = [...document.querySelectorAll('.table-scroll')];
           const tables = [...document.querySelectorAll('table')];
+          const aligned = (section, selectors) => {
+            const elements = selectors.map(
+              selector => document.querySelector(section + ' ' + selector)
+            );
+            if (elements.some(element => !element)) return false;
+            const boxes = elements.map(element => element.getBoundingClientRect());
+            return boxes.every(box =>
+              Math.abs(box.left - boxes[0].left) <= 1 &&
+              Math.abs(box.right - boxes[0].right) <= 1
+            );
+          };
           return {
             closedBeforePrint,
             allDetailsOpen: [...document.querySelectorAll('details')].every(detail => detail.open),
@@ -77,6 +88,10 @@ def inspect_layout(page, width: int, media: str) -> dict:
               wrapper => wrapper.querySelector('table').getBoundingClientRect().width
                 <= wrapper.clientWidth + 1
             ),
+            auditFlowAligned: aligned('#s-auditflow', ['.note', 'table.flow']),
+            signalsAligned: aligned('#s-signalen', ['.note', '.r-bars', '.table-scroll']),
+            timeAligned: aligned('#s-tijd', ['.note', '.table-scroll', '.heat-wrap']),
+            employeesAligned: aligned('#s-medewerkers', ['.r-bars', '.note', '.table-scroll']),
           };
         }""",
         closed_before_print,
@@ -92,6 +107,31 @@ def inspect_toc(page) -> dict:
             linkCount: links.length,
             uniqueTargetCount: new Set(targets).size,
             allTargetsExist: targets.every(Boolean),
+          };
+        }"""
+    )
+
+
+def inspect_webui_alignment(page, width: int) -> dict:
+    page.set_viewport_size({"width": width, "height": 900})
+    return page.evaluate(
+        """() => {
+          const aligned = selector => {
+            const body = document.querySelector(selector);
+            const head = body.closest('.card').querySelector('.section-head');
+            const a = head.getBoundingClientRect();
+            const b = body.getBoundingClientRect();
+            return Math.abs(a.left - b.left) <= 1 &&
+              Math.abs(a.right - b.right) <= 1;
+          };
+          const heat = document.querySelector('#timeHeatmap').parentElement;
+          return {
+            bodyContained: document.body.scrollWidth <= innerWidth,
+            auditFlowAligned: aligned('#auditFlow'),
+            signalBarsAligned: aligned('#signalCategories'),
+            employeeBarsAligned: aligned('#chartEmployees'),
+            heatmapContained: heat.getBoundingClientRect().right <= innerWidth,
+            heatmapScrollable: heat.scrollWidth > heat.clientWidth,
           };
         }"""
     )
@@ -435,6 +475,7 @@ def test_exported_report_tables_stay_aligned(tmp_path: Path) -> None:
         assert peer_guidance.locator("tbody tr").count() == 4
         peer_guidance.locator("details").evaluate("detail => detail.open = true")
         assert "13 escalaties ÷ mediaan 6 = ratio 2,17" in peer_guidance.text_content()
+        webui_results = [inspect_webui_alignment(page, width) for width in (1280, 800)]
 
         page.locator('.tab[data-view="deepdive"]').click()
         page.locator("#peerTable tbody tr").first.click()
@@ -525,6 +566,9 @@ def test_exported_report_tables_stay_aligned(tmp_path: Path) -> None:
         browser.close()
 
     assert not console_errors
+    for result in webui_results:
+        assert all(value for key, value in result.items() if key != "heatmapScrollable")
+    assert webui_results[1]["heatmapScrollable"]
     assert toc_result == {
         "linkCount": 21,
         "uniqueTargetCount": 21,
@@ -532,6 +576,10 @@ def test_exported_report_tables_stay_aligned(tmp_path: Path) -> None:
     }
     assert toc_hash == "#s-peer"
     for result in screen_results:
+        assert all(
+            result[key]
+            for key in ("auditFlowAligned", "signalsAligned", "timeAligned", "employeesAligned")
+        )
         assert result["bodyContained"]
         assert result["wrapperCount"] >= 8
         assert result["wrappersContained"]
@@ -539,6 +587,10 @@ def test_exported_report_tables_stay_aligned(tmp_path: Path) -> None:
         assert any(t.startswith("Aandachtspunten") for t in result["wideTables"])
         assert any(t.startswith("Peeranalyse") for t in result["wideTables"])
     for result in print_results:
+        assert all(
+            result[key]
+            for key in ("auditFlowAligned", "signalsAligned", "timeAligned", "employeesAligned")
+        )
         assert result["closedBeforePrint"] > 0
         assert result["allDetailsOpen"]
         assert result["bodyContained"]
