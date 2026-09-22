@@ -36,6 +36,8 @@ jobs:
         run: |
           if [[ "${BEFORE_SHA}" =~ ^0+$ ]]; then
             scripts/check-sensitive-paths.sh --range "${HEAD_SHA}^!"
+          elif ! git cat-file -e "${BEFORE_SHA}" 2>/dev/null; then
+            scripts/check-sensitive-paths.sh --range "${HEAD_SHA}^!"
           else
             scripts/check-sensitive-paths.sh --range "${BEFORE_SHA}..${HEAD_SHA}"
           fi
