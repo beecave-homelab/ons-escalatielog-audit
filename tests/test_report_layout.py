@@ -12,20 +12,6 @@ STANDARD_FIXTURE = ROOT / "tests/fixtures/synthetic-escalatielog.xlsx"
 
 
 def launch_browser(playwright: Playwright):
-    if sys.platform == "darwin":
-        executable = os.environ.get("PLAYWRIGHT_CHROMIUM_EXECUTABLE")
-        options = {"executable_path": executable} if executable else {}
-        try:
-            return playwright.chromium.launch(headless=True, **options)
-        except Error as error:
-            pytest.fail(
-                "De aparte Chromium-testbrowser kon niet starten. "
-                "Installeer die met uv run playwright install chromium --only-shell "
-                "of stel PLAYWRIGHT_CHROMIUM_EXECUTABLE in op een testinstallatie. "
-                "Voer browsertests buiten de macOS-processandbox uit. "
-                f"{error.message.splitlines()[0]}"
-            )
-
     failures = []
     for channel in ("chrome", "msedge"):
         try:

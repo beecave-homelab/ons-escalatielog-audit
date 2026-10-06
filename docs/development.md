@@ -3,7 +3,7 @@
 Deze pagina is bedoeld voor mensen die aan Ons Escalatielog Audit bijdragen. De
 webui zelf heeft geen buildstap of runtime-afhankelijkheden. De
 ontwikkelcontroles gebruiken [uv](https://docs.astral.sh/uv/), Python 3.10 of
-nieuwer en een Chromium-testbrowser. Op Linux kunnen de controles ook een lokale installatie van Chrome, Edge of Chromium gebruiken.
+nieuwer en een lokale installatie van Chrome, Edge of Chromium.
 
 ## Ontwikkelomgeving inrichten
 
@@ -13,16 +13,6 @@ repository:
 ```bash
 uv sync --locked
 ```
-
-Op macOS gebruiken de tests uitsluitend de aparte Playwright Chromium-testbrowser,
-zodat mislukte browserstarts geen crashmeldingen van je persoonlijke Chrome- of
-Edge-app veroorzaken. Installeer die eenmalig met:
-
-```bash
-uv run playwright install chromium --only-shell
-```
-
-Met `PLAYWRIGHT_CHROMIUM_EXECUTABLE` kun je expliciet een andere Chromium-testinstallatie kiezen. Als de testbrowser ontbreekt of niet kan starten, stoppen de tests met een gerichte foutmelding; op macOS vallen ze niet terug op Chrome of Edge. Browsertests moeten buiten de macOS-processandbox worden uitgevoerd.
 
 ## Controles uitvoeren
 
