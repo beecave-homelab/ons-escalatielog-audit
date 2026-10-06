@@ -2,6 +2,14 @@
 
 Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgelegd. Versies volgen [Semantic Versioning](https://semver.org/lang/nl/).
 
+## [0.11.2] - 2026-10-06
+
+### Opgelost in v0.11.2
+
+- Benoem bij een afgekeurde XLSX-export de ontbrekende kolommen, het best passende werkblad en het Excel-rijnummer van de mogelijke kopregel.
+- Vermeld het aantal leesbare werkbladen en de controlegrens van tien rijen; leid het aantal vereiste kolommen af van de kolommenlijst.
+- Toon de importdiagnose op afzonderlijke regels en laat lange werkbladnamen binnen het invoervak afbreken.
+
 ## [0.11.1] - 2026-09-22
 
 ### Opgelost in v0.11.1

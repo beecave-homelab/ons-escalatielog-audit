@@ -1,6 +1,6 @@
 # Ons Escalatielog Audit
 
-![Version: 0.11.1](https://img.shields.io/badge/version-0.11.1-00A0C8.svg)
+![Version: 0.11.2](https://img.shields.io/badge/version-0.11.2-00A0C8.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 
 Ons Escalatielog Audit is een losse webpagina waarmee je `.xlsx`-exports met escalatielogs uit Nedap Ons controleert. De webui brengt opvallende patronen in beeld en laat per uitkomst de bijbehorende bronregels zien. De webui is bedoeld voor functioneel applicatiebeheerders, CISO's en privacy officers.
@@ -63,7 +63,7 @@ Gebruik het [Excel-rapport van het escalatielog](https://support.nedap-ons.nl/su
 - `Geactiveerd op`
 - `Bron`
 
-De webui gebruikt het eerste werkblad waarin deze kolommen in een van de eerste tien rijen staan. De webui voegt werkbladen niet samen.
+De webui gebruikt het eerste werkblad waarin deze kolommen in een van de eerste tien rijen staan. De webui voegt werkbladen niet samen. Als geen werkblad voldoet, noemt de foutmelding de ontbrekende kolommen, het best passende werkblad en het rijnummer van de mogelijke kopregel. De melding vermeldt ook dat alleen de eerste tien rijen zijn gecontroleerd.
 
 ## Uitkomsten beoordelen
 
