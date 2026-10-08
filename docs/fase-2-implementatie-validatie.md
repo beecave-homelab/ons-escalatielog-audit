@@ -19,7 +19,7 @@ Een afzonderlijke voor/na-controle op het standaardfixture vergelijkt de volledi
 
 De screenshots op 390 en 1280 px, beide visuals in grijswaarden en de echte gepagineerde A4-afdruk zijn visueel beoordeeld. De afdrukbeelden hieronder komen van pagina 3 en 253 van het volledige synthetische rapport; de bestaande detailtabellen maken dat rapport lang. De nachtband blijft intact vóór de heatmap, die op de volgende pagina verdergaat. Dit is geen volledige toegankelijkheidsaudit of controle van iedere rapportpagina.
 
-De volledige regressiesuite slaagt met **26 tests**. De coveragecontrole geeft **97,18% Python-testcoverage** (vereiste ondergrens 85%; geen JavaScript-coverage). Locked dependency sync, mdformat, djLint, Ruff lint/format, Git-indexprivacycontrole, zes SVG-tekstgrenzen en `git diff --check` slagen.
+De volledige regressiesuite slaagt met **26 tests**. De coveragecontrole geeft **97,18% Python-testcoverage** (vereiste ondergrens 85%; geen JavaScript-coverage). Deze meting is uitgevoerd op macOS met Python 3.11.16. Coveragepercentages kunnen tussen testomgevingen verschillen doordat andere omgevingsafhankelijke codepaden worden uitgevoerd; leg daarom de omgeving en meetmethode bij het percentage vast. Locked dependency sync, mdformat, djLint, Ruff lint/format, Git-indexprivacycontrole, zes SVG-tekstgrenzen en `git diff --check` slagen.
 
 ## Webui
 
