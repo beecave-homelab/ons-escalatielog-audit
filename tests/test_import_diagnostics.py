@@ -79,7 +79,10 @@ def test_missing_column_is_visible_and_safe(page, tmp_path):
     expect(status).to_contain_text("Ontbrekende kolommen: Deskundigheid medewerker")
     text = status.text_content()
     assert "14 vereiste escalatielog-kolommen" in text
-    assert f"Best passend werkblad: “{sheet_name}” (rij 1)." in text
+    assert (
+        f"Best passend werkblad: “{sheet_name}” (rij 1); 13 van 14 vereiste kolommen herkend."
+        in text
+    )
     assert "Alleen de eerste 10 rijen van elk leesbaar werkblad zijn gecontroleerd" in text
     assert status.locator("img").count() == 0
     assert page.evaluate("window.injected === undefined")
@@ -101,7 +104,10 @@ def test_best_candidate_across_sheets_and_rows(page, tmp_path):
         ],
     )
     message = read_result(page, workbook)["error"]
-    assert "Best passend werkblad: “Escalatielog” (rij 2)." in message
+    assert (
+        "Best passend werkblad: “Escalatielog” (rij 2); 13 van 14 vereiste kolommen herkend."
+        in message
+    )
     assert "Ontbrekende kolommen: Bron" in message
     assert "Niet opnemen in diagnose" not in message
     assert "3 leesbare werkbladen" in message
@@ -114,7 +120,9 @@ def test_ties_keep_first_sheet_and_first_row_without_combining_headers(page, tmp
         [("Eerste", [HEADERS[:-1], HEADERS[1:]]), ("Tweede", [HEADERS[:-1]])],
     )
     message = read_result(page, workbook)["error"]
-    assert "Best passend werkblad: “Eerste” (rij 1)." in message
+    assert (
+        "Best passend werkblad: “Eerste” (rij 1); 13 van 14 vereiste kolommen herkend." in message
+    )
     assert "Ontbrekende kolommen: Bron" in message
 
 
@@ -130,7 +138,10 @@ def test_header_search_boundary_and_first_valid_sheet(page, tmp_path, header_row
         write_workbook(workbook, [("Export", rows), ("Later", [HEADERS])])
         assert read_result(page, workbook) == result
     else:
-        assert "Best passend werkblad: “Onvolledig” (rij 1)." in result["error"]
+        assert (
+            "Best passend werkblad: “Onvolledig” (rij 1); 13 van 14 vereiste kolommen herkend."
+            in result["error"]
+        )
         assert "Ontbrekende kolommen: Bron" in result["error"]
 
 
@@ -151,4 +162,5 @@ def test_required_header_count_is_dynamic(page, tmp_path):
     page.evaluate("header => REQUIRED_HEADERS.push(header)", extra)
     message = read_result(page, workbook)["error"]
     assert "15 vereiste escalatielog-kolommen" in message
+    assert "14 van 15 vereiste kolommen herkend" in message
     assert f"Ontbrekende kolommen: {extra}" in message

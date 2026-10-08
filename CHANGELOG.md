@@ -7,6 +7,8 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 ### Opgelost in v0.11.2
 
 - Benoem bij een afgekeurde XLSX-export de ontbrekende kolommen, het best passende werkblad en het Excel-rijnummer van de mogelijke kopregel.
+- Vermeld het aantal herkende vereiste kolommen in de best passende rij.
+- Koppel de release-uitleg in het HTML-rapport aan de juiste versie: uitlijning bij 0.11.1 en importdiagnostiek bij 0.11.2.
 - Vermeld het aantal leesbare werkbladen en de controlegrens van tien rijen; leid het aantal vereiste kolommen af van de kolommenlijst.
 - Toon de importdiagnose op afzonderlijke regels en laat lange werkbladnamen binnen het invoervak afbreken.
 

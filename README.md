@@ -63,7 +63,7 @@ Gebruik het [Excel-rapport van het escalatielog](https://support.nedap-ons.nl/su
 - `Geactiveerd op`
 - `Bron`
 
-De webui gebruikt het eerste werkblad waarin deze kolommen in een van de eerste tien rijen staan. De webui voegt werkbladen niet samen. Als geen werkblad voldoet, noemt de foutmelding de ontbrekende kolommen, het best passende werkblad en het rijnummer van de mogelijke kopregel. De melding vermeldt ook dat alleen de eerste tien rijen zijn gecontroleerd.
+De webui gebruikt het eerste werkblad waarin deze kolommen in een van de eerste tien rijen staan. De webui voegt werkbladen niet samen. Als geen werkblad voldoet, noemt de foutmelding de ontbrekende kolommen, het best passende werkblad en het rijnummer van de mogelijke kopregel, met het aantal herkende vereiste kolommen. De melding vermeldt ook dat alleen de eerste tien rijen zijn gecontroleerd.
 
 ## Uitkomsten beoordelen
 
