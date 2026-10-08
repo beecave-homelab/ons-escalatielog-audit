@@ -14,7 +14,7 @@ Uitvoering van de issuebespreking in [#2](https://github.com/beecave-homelab/ons
 
 De nieuwe tabelkolommen zijn *Waarom deze prioriteit*, *Minimum escalaties*, *Minimum medewerkers*, *Minimum teams*, *Selectiereden*, *Verstreken (sec.)*, *Top-3 doelregistraties* en *Top-3 cliëntregistraties*. Ze horen alleen bij hun eigen analyse. De bronregels- en aandachtspunten-CSV behouden hun bestaande schema. Ratio’s en concentratiepercentages blijven numeriek sorteerbaar; opmaak vervangt de waarden niet.
 
-De nieuwe [beoordeling voor issue #17](fase-2-visuele-uitleg.md) bevat de nulmeting en besluiten voor fase 2. Activatievertraging en het nachtvenster zijn geselecteerd; de compacte mock-ups zijn op 08-10-2026 goedgekeurd. Deze documentatiewijziging voegt geen productievisuals toe; de twee goedgekeurde visuals wachten nog op afzonderlijke productie-implementatie. Redenconcentratie is uitgesteld. De analysegrenzen blijven gelden; de regressies controleren ook de strikte activatievertraging. Auditflow en overlap per thema zijn reeds opgenomen via #3.
+De nieuwe [beoordeling voor issue #17](fase-2-visuele-uitleg.md) bevat de nulmeting en besluiten voor fase 2. Activatievertraging en het nachtvenster zijn geselecteerd; de compacte mock-ups zijn op 08-10-2026 goedgekeurd. Versie 0.12.0 implementeert beide goedgekeurde visuals in de webui en het HTML-rapport; de uitleg volgt de toegepaste analyse-instellingen. Zie het [controlebewijs](fase-2-implementatie-validatie.md). Redenconcentratie is uitgesteld. De analysegrenzen blijven gelden; de regressies controleren ook de strikte activatievertraging. Auditflow en overlap per thema zijn reeds opgenomen via #3.
 
 ## Issue #3: beslismatrix en afronding geselecteerde secties
 
