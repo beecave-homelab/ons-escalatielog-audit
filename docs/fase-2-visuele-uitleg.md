@@ -1,5 +1,7 @@
 # Fase 2: beoordeling van compacte visuele uitleg
 
+**Uitgevoerd in 0.12.0:** beide geselecteerde visuals staan nu in de productie-webui en het HTML-rapport. Zie [implementatie en controlebewijs](fase-2-implementatie-validatie.md). De nulmeting en ontwerpbesluiten hieronder blijven als ontwerpgeschiedenis bewaard.
+
 Beoordeling voor [issue #17](https://github.com/beecave-homelab/ons-escalatielog-audit/issues/17), uitgevoerd op 08-10-2026. De nulmeting gebruikt versie **0.11.1 op `main`**, commit `e13642f67a057d60186fcb4b9a5f32e64d8b3ade`, na de gemergede PR's [#8](https://github.com/beecave-homelab/ons-escalatielog-audit/pull/8) en [#14](https://github.com/beecave-homelab/ons-escalatielog-audit/pull/14). Import-PR #25 is na deze nulmeting gemergd. De nulmeting blijft gekoppeld aan bovenstaande commit; de importwijziging valt buiten deze beoordeling.
 
 Dit document levert de nulmeting en besluiten op. **De gebruiker heeft op 08-10-2026 activatievertraging en het nachtvenster geselecteerd.** De [webui- en rapportmock-ups](mockups/issue-17/README.md) werken deze twee onderwerpen uit. De selectie en de compacte ontwerpen zijn op 08-10-2026 goedgekeurd; productie-implementatie volgt als afzonderlijke wijziging, volgens de werkvolgorde van [#2](https://github.com/beecave-homelab/ons-escalatielog-audit/issues/2).

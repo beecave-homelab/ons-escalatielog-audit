@@ -538,3 +538,13 @@ De webui berekent geen historische norm of juridische conclusie. Voor de volgend
 | Bewezen dossierinzage na escalatie | Passende dossierlogging en een betrouwbare koppeling op persoon, cliënt en tijd |
 
 Voor trends tussen perioden moeten exportduur, dekking, definities, instellingen en groepsindeling vergelijkbaar zijn. Ruwe maandtotalen tonen zonder die voorwaarden geen gedragsverandering.
+
+## 17. Visuele uitleg van activatievertraging en nachtvenster
+
+Sinds 0.12.0 staan onder de prioriteitsuitleg bij Aandachtspunten twee fictieve tijdlijnen: activatie exact op de ingestelde grens en één seconde later. De vergelijking blijft ongerond en strikt `>`; de tabel rondt minuten af op twee decimalen. Bij grens nul vallen start en grens samen. De onderbroken tijdas is schematisch, niet op schaal. Ontbrekende/onleesbare activatie en activatie vóór start horen bij datakwaliteit; `Niet geactiveerd` is een afzonderlijke toestand. Een uitgeschakeld signaal geeft in beide voorbeelden geen signaal; de kop vermeldt dan expliciet dat het signaal uitstaat.
+
+Boven de uurweergave bij Tijdpatroon staat een gearceerde band op de as 00:00–24:00. De band gebruikt dezelfde `isNight()`-selectie als de analyse: startuur, begin inclusief, einde exclusief; gelijke begin- en einduren geven een leeg venster. Nachtvolumes blijven beschikbaar als `signalNight` uitstaat. Auditregels zonder geldige starttijd ontbreken in de uurweergave en zijn geen dagregels.
+
+`analyze()` bewaart beide uitlegmodellen met de toegepaste instellingen in het analyseresultaat. Webui en rapport gebruiken dezelfde renderers en modellen; het wijzigen van invoervelden zonder heranalyse verandert de uitleg niet. De visuals berekenen geen nieuwe bevindingen en veranderen signalen, prioriteiten, reconciliatie of CSV-kolommen niet.
+
+In het HTML-rapport staan de tijdlijnen binnen Signalen en de nachtband binnen Tijdpatronen, samen met hun relevante tabel. De uitleg is statische HTML en blijft zonder JavaScript leesbaar; `beforeprint` opent de berekening en uitzonderingen. Exacte waarden, vormverschillen, arcering en tekst houden de betekenis zonder kleur controleerbaar. De voorbeelden zijn triage-uitleg, geen bewijs van onrechtmatige toegang of dossierinzage.

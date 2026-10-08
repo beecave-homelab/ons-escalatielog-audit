@@ -1,5 +1,7 @@
 # Mock-ups voor issue #17
 
+**Ontwerpsnapshot:** deze mock-ups bewaren het goedgekeurde ontwerp van 08-10-2026. De productie-implementatie is inmiddels beschikbaar in 0.12.0; zie [controlebewijs](../../fase-2-implementatie-validatie.md). De onderstaande beschrijving betreft de mock-upfase.
+
 De gebruiker selecteerde op 08-10-2026 **activatievertraging** en **nachtvenster** uit de [fase-2-beoordeling](../../fase-2-visuele-uitleg.md). Deze mock-ups maken het ontwerp concreet vóór productie-implementatie. Alle gegevens zijn fictief; de productie-webui is ongewijzigd.
 
 ## Bekijken en beslissen
