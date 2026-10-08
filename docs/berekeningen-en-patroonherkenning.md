@@ -2,7 +2,7 @@
 title: Berekeningen, tellingen en patroonherkenning
 applies_to: escalatielog-audit-webui.html
 tags: [escalatielogs, audit, functioneel-beheer]
-updated: 2026-09-21
+updated: 2026-10-08
 ---
 
 ## Berekeningen, tellingen en patroonherkenning
@@ -56,6 +56,14 @@ De webui verwacht de onderstaande 14 kolomnamen. Het zoekt in de eerste tien rij
 | `Gestart op` | Kalenderdag, uur, volgorde, bursts en her-escalaties | Tijdzone en volledigheid van de export zijn niet vastgelegd in deze velden |
 | `Geactiveerd op` | Activatievertraging en eerdere activatie als her-escalatiecontext | `Niet geactiveerd`, ontbrekend en ongeldig zijn verschillende toestanden |
 | `Bron` | Technische controle en bronregeldetail | In het referentiebestand alleen `Synthetische generator`; maakt daarom geen onderscheid in de analyse |
+
+### Importdiagnostiek
+
+Als geen werkblad alle vereiste kolommen bevat, toont de foutmelding het dynamische aantal vereiste kolommen en het aantal leesbare werkbladen. De controle blijft beperkt tot de eerste tien Excelrijen van elk leesbaar werkblad; koppen op rij 11 of later worden niet geaccepteerd.
+
+De diagnose gebruikt de kandidaatrij met de meeste overeenkomende vereiste kolomnamen. De melding noemt de werkbladnaam, het Excel-rijnummer (vanaf 1), het aantal herkende vereiste kolommen (bijvoorbeeld 13 van 14) en de ontbrekende kolommen in de volgorde van de vereiste kolommenlijst. Bij gelijkstand wint de eerste kandidaat in werkbladvolgorde en daarna rijvolgorde. Kolomkoppen uit verschillende rijen of werkbladen worden niet gecombineerd. De overige celinhoud wordt niet in de diagnose opgenomen; de werkbladnaam wordt als tekst getoond.
+
+Als geen gecontroleerde rij ook maar één vereiste kolomnaam bevat, vermeldt de melding dat expliciet en noemt zij alle ontbrekende kolommen zonder een best passende rij aan te wijzen. Een bestand zonder leesbare werkbladen behoudt de aparte melding `Geen leesbaar werkblad gevonden.` De kolomvereisten en de selectie van het eerste volledig passende werkblad blijven gelijk.
 
 ### 3.1 Sleutels en normalisatie
 

@@ -503,6 +503,11 @@ def test_exported_report_tables_stay_aligned(tmp_path: Path) -> None:
         download_info.value.save_as(report)
         page.goto(report.as_uri(), wait_until="load")
 
+        release_notes = page.locator("details.section-card").first.text_content()
+        assert "Versie 0.11.1 lijnde de onderdelen van het HTML-rapport uit." in release_notes
+        assert "Versie 0.11.2 verduidelijkt afgekeurde imports" in release_notes
+        assert "Versie 0.11.2 lijnt" not in release_notes
+
         report_guidance = page.locator(".peer-ratio-guidance")
         assert report_guidance.count() == 1
         assert report_guidance.locator("tbody tr").count() == 4
