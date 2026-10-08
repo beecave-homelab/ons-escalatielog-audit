@@ -19,7 +19,7 @@ Een afzonderlijke voor/na-controle op het standaardfixture vergelijkt de volledi
 
 De screenshots op 390 en 1280 px, beide visuals in grijswaarden en de echte gepagineerde A4-afdruk zijn visueel beoordeeld. De afdrukbeelden hieronder komen van pagina 3 en 253 van het volledige synthetische rapport; de bestaande detailtabellen maken dat rapport lang. De nachtband blijft intact vóór de heatmap, die op de volgende pagina verdergaat. Dit is geen volledige toegankelijkheidsaudit of controle van iedere rapportpagina.
 
-De volledige regressiesuite slaagt met **26 tests**. De coveragecontrole geeft **97,17% Python-testcoverage** (vereiste ondergrens 85%; geen JavaScript-coverage). Locked dependency sync, mdformat, djLint, Ruff lint/format, Git-indexprivacycontrole, zes SVG-tekstgrenzen en `git diff --check` slagen.
+De volledige regressiesuite slaagt met **26 tests**. De coveragecontrole geeft **97,18% Python-testcoverage** (vereiste ondergrens 85%; geen JavaScript-coverage). Locked dependency sync, mdformat, djLint, Ruff lint/format, Git-indexprivacycontrole, zes SVG-tekstgrenzen en `git diff --check` slagen.
 
 ## Webui
 
@@ -36,3 +36,11 @@ De volledige regressiesuite slaagt met **26 tests**. De coveragecontrole geeft *
 ![Activatie-uitleg met berekening en signaaltabel in A4](assets/fase-2-implementatie/afdruk-activatie.png)
 
 ![Nachtvenster met arcering en uitgeklapte betekenis in A4](assets/fase-2-implementatie/afdruk-nachtvenster.png)
+
+## Reviewafhandeling PR #30
+
+De activatiekop vermeldt bij een uitgeschakeld signaal nu expliciet **Activatievertraging · signaal uit**, in beide uitvoervormen. De regressie controleert de kop bij signaal aan en uit, in het rapport en zonder JavaScript. De nachtvolume-opmerking is weerlegd: `analyze()` begint al met `state.settings={...s}`, vóór de aggregaties. De bestaande parametergevallen bewijzen 9 nachtregels bij 08–17 en 0 bij 06–06 zonder extra instellingensynchronisatie in de tests.
+
+![Vóór: misleidende activatiekop bij signaal uit](assets/fase-2-implementatie/activatie-uit-voor.png)
+
+![Na: activatiekop vermeldt dat het signaal uitstaat](assets/fase-2-implementatie/activatie-uit-na.png)

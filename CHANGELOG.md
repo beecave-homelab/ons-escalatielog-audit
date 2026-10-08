@@ -6,7 +6,7 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ### Toegevoegd in v0.12.0
 
-- Toon bij Aandachtspunten twee fictieve activatietijdlijnen: exact op de ingestelde grens en één seconde later, met de toestand van het signaal.
+- Toon bij Aandachtspunten twee fictieve activatietijdlijnen: exact op de ingestelde grens en één seconde later, met de toestand van het signaal en een aangepaste kop wanneer het signaal uitstaat.
 - Toon boven het uurpatroon een gearceerde 24-uursband voor het toegepaste nachtvenster, inclusief lege vensters en uitgeschakelde signalen.
 - Neem dezelfde uitleg op binnen Signalen en Tijdpatronen in het HTML-rapport; berekening en uitzonderingen klappen open bij afdrukken.
 

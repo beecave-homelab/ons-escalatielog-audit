@@ -57,6 +57,9 @@ def test_activation_boundaries_match_explanation(page, threshold, enabled):
     assert "NIET_GEACTIVEERD" in result["signals"][5]
     assert result["delays"][:2] == [threshold, round(threshold + 1 / 60, 2)]
     guidance = page.locator("#activationGuidance")
+    expect(guidance.locator("h3")).to_have_text(
+        "Alleen ná de grens een signaal" if enabled else "Activatievertraging · signaal uit"
+    )
     assert guidance.locator(".row-names strong").all_text_contents() == [
         f"{threshold * 60} s",
         f"{threshold * 60 + 1} s",
@@ -154,6 +157,7 @@ def test_reanalysis_report_and_responsive_guidance(page, tmp_path):
     section.locator(":scope > summary").focus()
     page.keyboard.press("Enter")
     expect(section.locator(".delay-guidance")).to_be_visible()
+    expect(section.locator(".delay-guidance h3")).to_have_text("Activatievertraging · signaal uit")
     page.keyboard.press("Enter")
     expect(section.locator(".delay-guidance")).not_to_be_visible()
     for width in (1280, 800, 390):
@@ -172,6 +176,7 @@ def test_reanalysis_report_and_responsive_guidance(page, tmp_path):
     expect(static.locator("#s-signalen .delay-guidance")).to_be_visible()
     assert static.locator(".delay-guidance").is_visible()
     assert "0 min · signaal uit" in static.locator(".delay-guidance").text_content()
+    expect(static.locator(".delay-guidance h3")).to_have_text("Activatievertraging · signaal uit")
     assert "Leeg nachtvenster" in static.locator("#s-tijd").text_content()
     context.close()
     assert not errors

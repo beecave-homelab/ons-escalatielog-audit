@@ -541,7 +541,7 @@ Voor trends tussen perioden moeten exportduur, dekking, definities, instellingen
 
 ## 17. Visuele uitleg van activatievertraging en nachtvenster
 
-Sinds 0.12.0 staan onder de prioriteitsuitleg bij Aandachtspunten twee fictieve tijdlijnen: activatie exact op de ingestelde grens en één seconde later. De vergelijking blijft ongerond en strikt `>`; de tabel rondt minuten af op twee decimalen. Bij grens nul vallen start en grens samen. De onderbroken tijdas is schematisch, niet op schaal. Ontbrekende/onleesbare activatie en activatie vóór start horen bij datakwaliteit; `Niet geactiveerd` is een afzonderlijke toestand. Een uitgeschakeld signaal geeft in beide voorbeelden geen signaal.
+Sinds 0.12.0 staan onder de prioriteitsuitleg bij Aandachtspunten twee fictieve tijdlijnen: activatie exact op de ingestelde grens en één seconde later. De vergelijking blijft ongerond en strikt `>`; de tabel rondt minuten af op twee decimalen. Bij grens nul vallen start en grens samen. De onderbroken tijdas is schematisch, niet op schaal. Ontbrekende/onleesbare activatie en activatie vóór start horen bij datakwaliteit; `Niet geactiveerd` is een afzonderlijke toestand. Een uitgeschakeld signaal geeft in beide voorbeelden geen signaal; de kop vermeldt dan expliciet dat het signaal uitstaat.
 
 Boven de uurweergave bij Tijdpatroon staat een gearceerde band op de as 00:00–24:00. De band gebruikt dezelfde `isNight()`-selectie als de analyse: startuur, begin inclusief, einde exclusief; gelijke begin- en einduren geven een leeg venster. Nachtvolumes blijven beschikbaar als `signalNight` uitstaat. Auditregels zonder geldige starttijd ontbreken in de uurweergave en zijn geen dagregels.
 
