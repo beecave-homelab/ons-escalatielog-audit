@@ -77,6 +77,14 @@ def test_png_complete_offline_and_viewport_independent(page, tmp_path):
           r.attention.length,r.bursts.length,r.clientClusters.length]}"""
     ) == [2000, 156, 42, 1802, 250, 558, 40, 310, 544, 1391, 66, 0, 0, 1790, 0, 5]
     model = drawing["model"]
+    # DOM changes must never change exported audit findings.
+    assert page.evaluate(
+        """() => {const before=JSON.stringify(dashboardPngModel());
+          const root=$('#view-overview'),html=root.innerHTML;
+          root.innerHTML='<div>Gewijzigde dashboardwaarden: 999.999</div>';
+          const unchanged=JSON.stringify(dashboardPngModel())===before;
+          root.innerHTML=html;render();return unchanged}"""
+    )
     assert set(drawing["ids"]) - {"analysisBanner", "signalTotalBadge"} == set(model["sections"])
     assert len(model["kpis"]) == 6
     assert len(model["reviews"]) == 3
@@ -168,6 +176,9 @@ def test_png_reanalysis_empty_and_failures(page, tmp_path):
     expect(page.locator("#status")).to_contain_text("Dashboard als PNG is mislukt")
     expect(page.locator("#pngBtn")).to_be_enabled()
     page.evaluate("() => {HTMLCanvasElement.prototype.toBlob=window.originalToBlob}")
+    with page.expect_download():
+        page.evaluate("exportDashboardPng()")
+    expect(page.locator("#status")).to_have_text("Dashboard als PNG gedownload.")
     # Long words are wrapped, not ellipsized; oversized images fail explicitly.
     page.evaluate("$('#chartReasons .empty').textContent='Geen gegevens.'")
     assert page.evaluate(
