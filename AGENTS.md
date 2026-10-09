@@ -14,7 +14,6 @@ The webui has no build step, server, framework or runtime dependency. Everything
 | -- | -- |
 | `escalatielog-audit-webui.html` | The entire application. Version constant `APP_VERSION` near the top of the `<script>`. |
 | `README.md` | User-facing intro, usage, required input columns, privacy. Contains the version badge. |
-| `docs/development.md` | Human developer setup, quality checks, synthetic test data and Git privacy safeguards. |
 | `CHANGELOG.md` | Release history with user-visible changes grouped by SemVer version. |
 | `pyproject.toml` / `.mdformat.toml` | Development dependencies and configuration for djLint, Ruff, pytest, coverage and mdformat. |
 | `uv.lock` | Reproducible lockfile for development-only Python tooling. |
@@ -75,6 +74,24 @@ For the full analysis regression, re-run the synthetic reference file `tests/fix
 For the manual reference check, open the HTML in Chromium/Chrome (needs `DecompressionStream`; Edge/Chrome 80+, Firefox 113+, Safari 16.4+). Check the console for errors, verify the figures above, exercise one drilldown, one CSV export and the HTML report. If figures change intentionally, update docs §15 in the same change.
 
 For synthetic edge cases, call `analyze()`/`analyzeQuality()` directly in the page context with hand-built row objects.
+
+## Productiedocumentatie
+
+Op `main` bevat `docs/` uitsluitend `berekeningen-en-patroonherkenning.md` en de
+zes gebruikte SVG-diagrammen. `scripts/check-production-docs.py` bevat de vaste
+toelatingslijst en controleert ook of toegestane bestanden ontbreken.
+Mock-ups, screenshots, PDF-proefafdrukken, QA-resultaten, ontwerpbesluiten en
+ontwikkelhandleidingen horen alleen op `dev` of lokaal in het gitignored
+`to-do/`. Verplaats ze niet naar een andere gevolgde map op `main`.
+
+Voer vóór een wijziging naar `main` `uv run python scripts/check-production-docs.py`
+uit. GitHub Actions controleert de volledige resulterende Git-boom voor pull
+requests naar `main`, de merge queue en pushes op `main`, zonder padfilter.
+De status `Productiedocumentatie` moet verplicht zijn in de branchbescherming
+van `main`; een falende workflow alleen blokkeert geen merge zonder die instelling.
+Bij een productiewijziging vanuit `dev` moeten ontwikkelbestanden dus uit de
+resulterende boom worden verwijderd. Breid de toelatingslijst alleen uit voor
+actuele gebruikersdocumentatie en daadwerkelijk gebruikte diagrammen.
 
 ## Conventions
 
