@@ -2,7 +2,7 @@
 title: Berekeningen, tellingen en patroonherkenning
 applies_to: escalatielog-audit-webui.html
 tags: [escalatielogs, audit, functioneel-beheer]
-updated: 2026-10-08
+updated: 2026-10-09
 ---
 
 ## Berekeningen, tellingen en patroonherkenning
@@ -548,3 +548,15 @@ Boven de uurweergave bij Tijdpatroon staat een gearceerde band op de as 00:00–
 `analyze()` bewaart beide uitlegmodellen met de toegepaste instellingen in het analyseresultaat. Webui en rapport gebruiken dezelfde renderers en modellen; het wijzigen van invoervelden zonder heranalyse verandert de uitleg niet. De visuals berekenen geen nieuwe bevindingen en veranderen signalen, prioriteiten, reconciliatie of CSV-kolommen niet.
 
 In het HTML-rapport staan de tijdlijnen binnen Signalen en de nachtband binnen Tijdpatronen, samen met hun relevante tabel. De uitleg is statische HTML en blijft zonder JavaScript leesbaar; `beforeprint` opent de berekening en uitzonderingen. Exacte waarden, vormverschillen, arcering en tekst houden de betekenis zonder kleur controleerbaar. De voorbeelden zijn triage-uitleg, geen bewijs van onrechtmatige toegang of dossierinzage.
+
+## 18. Dashboard als PNG
+
+Sinds 0.13.0 exporteert **Dashboard als PNG** alle visuals van Overzicht in één afbeelding. De knop wordt na een succesvolle analyse beschikbaar en wordt bij een nieuwe bestandsselectie uitgeschakeld. De export gebruikt de laatst uitgevoerde analyse, inclusief de daarbij toegepaste instellingen en het analysetijdstip. Nog niet toegepaste wijzigingen in de instellingen tellen niet mee.
+
+De inventaris omvat de drie controleperspectieven, zes KPI-kaarten, auditflow, controleprioriteit, beide verhoudingsdonuts, controlethema’s, de volledige weekdag/uur-heatmap, medewerkerspreiding, vier topgrafieken en alle aanwezige signaalkaarten. Ook de beoordelingsroute en relevante leeswijzers staan in de afbeelding. Navigatie, uploadvelden, actieknoppen, hoverinformatie en bronregeldialogen worden niet meegenomen. De punten in de medewerkerspreiding behouden dezelfde betekenis en kunnen overlappen; voor individuele bronregels blijft de webui nodig. De bestaande topselecties blijven behouden: de PNG voegt geen niet-getoonde categorieën toe.
+
+De afbeelding heeft een vaste indeling van 1.200 logische pixels breed en wordt op dubbele resolutie als PNG van 2.400 pixels breed opgeslagen. De hoogte volgt de inhoud. Schermbreedte, scrollpositie, actieve tab en geopende bronregeldetails beïnvloeden de export niet. Lange labels worden afgebroken in plaats van afgeknipt; de heatmap vermeldt alle aantallen, inclusief nul. De export tekent met de ingebouwde Canvas-API, zonder externe code, netwerkverkeer of browseropslag. De CSP blijft ongewijzigd. Er worden geen nieuwe analysebevindingen berekend en de dashboardweergave blijft gelijk.
+
+Het bestand heet `<exportBaseName>_dashboard.png` en bevat bronbestand, waargenomen datumbereik, analysetijdstip, applicatieversie, toegepaste instellingen en de waarschuwing dat signalen geen bewijs zijn van dossierinzage of onrechtmatige toegang. Het datumbereik gebruikt, net als de overige exportbestandsnamen, geldige starttijden uit alle bronregels. Het bewijst geen volledige exportperiode. De PNG kan persoonsgegevens bevatten en moet volgens interne afspraken worden bewaard en gedeeld.
+
+Een export boven 48 miljoen pixels of 16.384 pixels hoogte wordt met een duidelijke foutmelding geweigerd, evenals een mislukte Canvas- of PNG-encodering. Tijdelijke tekenbuffers worden na de export vrijgegeven. Wijzigt de analyse tijdens PNG-encodering, dan wordt de verouderde download tegengehouden en vraagt de melding om opnieuw te exporteren. Een volgende export kan opnieuw worden geprobeerd; de analyse blijft beschikbaar.

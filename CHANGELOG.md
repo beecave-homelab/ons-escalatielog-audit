@@ -2,6 +2,14 @@
 
 Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgelegd. Versies volgen [Semantic Versioning](https://semver.org/lang/nl/).
 
+## [0.13.0] - 2026-10-09
+
+### Toegevoegd in v0.13.0
+
+- Exporteer alle dashboardvisuals na analyse als één lokale PNG met vaste indeling en dubbele resolutie, inclusief volledige labels, heatmapwaarden, leeswijzers en toegepaste instellingen.
+- Vermeld bronbestand, waargenomen datumbereik, analysetijdstip, applicatieversie en de triagewaarschuwing in de afbeelding. De PNG kan persoonsgegevens bevatten; bewaar en deel volgens interne afspraken.
+- Meld mislukte of te grote PNG-exports zonder analyse of dashboard te veranderen.
+
 ## [0.12.0] - 2026-10-08
 
 ### Toegevoegd in v0.12.0

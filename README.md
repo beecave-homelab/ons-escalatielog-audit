@@ -1,6 +1,6 @@
 # Ons Escalatielog Audit
 
-![Version: 0.12.0](https://img.shields.io/badge/version-0.12.0-00A0C8.svg)
+![Version: 0.13.0](https://img.shields.io/badge/version-0.13.0-00A0C8.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 
 Ons Escalatielog Audit is een losse webpagina waarmee je `.xlsx`-exports met escalatielogs uit Nedap Ons controleert. De webui brengt opvallende patronen in beeld en laat per uitkomst de bijbehorende bronregels zien. De webui is bedoeld voor functioneel applicatiebeheerders, CISO's en privacy officers.
@@ -27,6 +27,7 @@ De webui:
 - Legt controleprioriteit, her-escalaties, geselecteerde tijdvensters, peer-ratio’s en top-3-concentratie uit bij de uitkomst, zowel in de webui als het HTML-rapport. Details tonen gekoppelde tijden; het rapport gebruikt voor her-escalatie een expliciet fictief voorbeeld.
 - Laat met compacte tijdlijnen zien dat late activatie strikt ná de ingestelde grens begint, en toont welke starturen binnen het nachtvenster vallen. Beide visuals volgen de toegepaste instellingen en staan ook in het HTML-rapport.
 - Koppelt cijfers, grafieken en tabellen aan de bijbehorende Excelregels.
+- Exporteert het volledige visuele dashboard als één PNG met een vaste indeling, inclusief onderdelen buiten beeld, volledige labels, periode, analysetijdstip, versie en toegepaste instellingen.
 - Exporteert aandachtspunten, bronregels en een zelfstandig HTML-rapport met dezelfde visuele oriëntatie als het webui-overzicht: auditflow, themabalken, tijdpatronen per weekdag en uur, en topgrafieken bij hun tabellen. Brede rapporttabellen kun je horizontaal verschuiven.
 
 In [Berekeningen, tellingen en patroonherkenning](docs/berekeningen-en-patroonherkenning.md) lees je hoe de webui telt, groepeert en patronen herkent.
@@ -43,7 +44,7 @@ Je hoeft niets te installeren en hebt geen webserver nodig.
 6. Klik op een cijfer, grafiek of tabelregel om de bronregels te openen.
    Zoek en filter daar op team, deskundigheid, doeltype en auditcontext. **Bronregels CSV** bevat ook bij actieve filters de volledige geopende selectie.
 7. Pas zo nodig de instellingen aan en klik op **Analyse opnieuw uitvoeren**.
-8. Exporteer de gewenste aandachtspunten, bronregels of het HTML-rapport.
+8. Exporteer de gewenste aandachtspunten, bronregels, het HTML-rapport of **Dashboard als PNG**. De PNG gebruikt de laatste succesvolle analyse; pas gewijzigde instellingen eerst toe met **Analyse opnieuw uitvoeren**.
 
 ## Vereiste invoer
 
@@ -81,7 +82,7 @@ Niet alle schermen gebruiken dezelfde regels. **Datakwaliteit** kijkt bijvoorbee
 
 ## Privacy
 
-De webui verwerkt de export alleen in het geheugen van de browser. Als je de pagina sluit of vernieuwt, worden de ingelezen gegevens gewist. Gedownloade CSV- en HTML-bestanden blijven wel op het apparaat staan en kunnen persoonsgegevens bevatten. Bewaar en deel deze bestanden volgens de interne afspraken van je organisatie.
+De webui verwerkt de export alleen in het geheugen van de browser. Als je de pagina sluit of vernieuwt, worden de ingelezen gegevens gewist. Gedownloade PNG-, CSV- en HTML-bestanden blijven wel op het apparaat staan en kunnen persoonsgegevens bevatten. Bewaar en deel deze bestanden volgens de interne afspraken van je organisatie.
 
 ## Licentie
 
