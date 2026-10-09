@@ -9,6 +9,15 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 - Beperk `docs/` op `main` tot de berekeningsdocumentatie en zes gebruikte SVG-diagrammen. Ontwikkelhandleidingen, mock-ups, ontwerpbesluiten en controlebewijs horen op `dev` of lokaal.
 - Controleer de volledige productiedocumentatie met een vaste toelatingslijst in pull requests naar `main`, de merge queue en pushes op `main`.
 
+## [0.13.0] - 2026-10-09
+
+### Toegevoegd in v0.13.0
+
+- Exporteer alle dashboardvisuals na analyse als één lokale PNG met vaste indeling en dubbele resolutie, inclusief volledige labels, heatmapwaarden, leeswijzers en toegepaste instellingen.
+- Vermeld bronbestand, waargenomen datumbereik, analysetijdstip, applicatieversie en de triagewaarschuwing in de afbeelding. De PNG kan persoonsgegevens bevatten; bewaar en deel volgens interne afspraken.
+- Meld mislukte of te grote PNG-exports zonder analyse of dashboard te veranderen en bevestig een geslaagde herkansing.
+- Gebruik gedeelde analysegegevens voor webui en PNG; wijzigingen in de gerenderde pagina beïnvloeden de exportwaarden niet.
+
 ## [0.12.0] - 2026-10-08
 
 ### Toegevoegd in v0.12.0
