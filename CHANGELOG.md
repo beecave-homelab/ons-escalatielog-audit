@@ -4,8 +4,13 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+## [0.13.1] - 2026-10-09
+
 ### Onderhoud
 
+- Controleer alle opmaak-, lint-, versie- en synthetische regressietests in CI.
+- Bereid handmatig een conceptrelease voor met een vaste main-commit, gecontroleerde hervatting en uitsluitend de toegestane downloadbestanden. Publicatie blijft handmatig.
+- Voeg een release-downloadlink en uitleg over controle, publicatie en hervatting toe aan de README.
 - Beperk `docs/` op `main` tot de berekeningsdocumentatie en zes gebruikte SVG-diagrammen. Ontwikkelhandleidingen, mock-ups, ontwerpbesluiten en controlebewijs horen op `dev` of lokaal.
 - Controleer de volledige productiedocumentatie met een vaste toelatingslijst in pull requests naar `main`, de merge queue en pushes op `main`.
 

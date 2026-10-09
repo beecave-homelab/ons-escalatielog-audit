@@ -1,0 +1,88 @@
+name: Release voorbereiden
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Releaseversie (bijvoorbeeld 0.13.1)"
+        required: true
+        type: string
+      commit:
+        description: "Optioneel: volledige main-commit voor hervatting; leeg gebruikt main bij de start"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: releasevoorbereiding
+  cancel-in-progress: false
+
+jobs:
+  pin:
+    name: Leg releasecommit vast
+    runs-on: ubuntu-latest
+    outputs:
+      sha: ${{ steps.pin.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - id: pin
+        env:
+          REQUESTED_COMMIT: ${{ inputs.commit }}
+          START_SHA: ${{ github.sha }}
+          START_REF: ${{ github.ref }}
+        run: |
+          test "$START_REF" = refs/heads/main
+          RELEASE_SHA="${REQUESTED_COMMIT:-$START_SHA}"
+          [[ "$RELEASE_SHA" =~ ^[0-9a-f]{40}$ ]]
+          git merge-base --is-ancestor "$RELEASE_SHA" "$START_SHA"
+          echo "sha=$RELEASE_SHA" >> "$GITHUB_OUTPUT"
+          echo "Releasecommit: $RELEASE_SHA" >> "$GITHUB_STEP_SUMMARY"
+
+  verify:
+    needs: pin
+    uses: ./.github/workflows/ci.yml
+    with:
+      revision: ${{ needs.pin.outputs.sha }}
+
+  package:
+    name: Controleer releasepakket
+    needs: [pin, verify]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.pin.outputs.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: python scripts/release_tools.py package --version "$RELEASE_VERSION" --output "$RUNNER_TEMP/release-check"
+
+  draft:
+    name: Maak of hervat conceptrelease
+    needs: [pin, verify, package]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.pin.outputs.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ inputs.version }}
+          RELEASE_REPOSITORY: ${{ github.repository }}
+        run: |
+          python scripts/release_tools.py prepare --version "$RELEASE_VERSION" --repository "$RELEASE_REPOSITORY" --output "$RUNNER_TEMP/release" >> "$GITHUB_STEP_SUMMARY"

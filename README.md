@@ -1,6 +1,6 @@
 # Ons Escalatielog Audit
 
-![Version: 0.13.0](https://img.shields.io/badge/version-0.13.0-00A0C8.svg)
+![Version: 0.13.1](https://img.shields.io/badge/version-0.13.1-00A0C8.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 
 Ons Escalatielog Audit is een losse webpagina waarmee je `.xlsx`-exports met escalatielogs uit Nedap Ons controleert. De webui brengt opvallende patronen in beeld en laat per uitkomst de bijbehorende bronregels zien. De webui is bedoeld voor functioneel applicatiebeheerders, CISO's en privacy officers.
@@ -35,6 +35,8 @@ In [Berekeningen, tellingen en patroonherkenning](docs/berekeningen-en-patroonhe
 ## Gebruik
 
 Je hoeft niets te installeren en hebt geen webserver nodig.
+
+[Download de laatste GitHub Release](https://github.com/beecave-homelab/ons-escalatielog-audit/releases/latest). Kies de losse HTML of de ZIP met uitleg en diagrammen. Pak de ZIP volledig uit en behoud de mapstructuur. Tot de eerste release is gepubliceerd, kun je de HTML uit de repository gebruiken.
 
 1. Open `escalatielog-audit-webui.html` in een recente versie van Edge, Chrome, Firefox of Safari (minimaal Edge/Chrome 80, Firefox 113 of Safari 16.4).
 2. Kies een `.xlsx`-export of sleep het bestand naar het uploadvak.
@@ -87,3 +89,11 @@ De webui verwerkt de export alleen in het geheugen van de browser. Als je de pag
 ## Licentie
 
 Dit project valt onder de [MIT-licentie](LICENSE).
+
+## Een release voorbereiden en publiceren
+
+Start op `main` de GitHub Actions-workflow **Release voorbereiden** met de gewenste versie, zonder `v` (bijvoorbeeld `0.13.1`). De versie moet gelijk zijn aan de HTML, `pyproject.toml` en de README-badge, met een gedateerde changelogsectie. Koppel wijzigingen onder **Nog niet uitgebracht** eerst aan een versie. De workflow legt de commit bij de start vast, voert alle controles uit en maakt daarna een tag en conceptrelease.
+
+Controleer vóór publicatie de conceptbeschrijving, de losse HTML, de uitgepakte ZIP en `SHA256SUMS.txt`. Op macOS controleer je de hashes met `shasum -a 256 -c SHA256SUMS.txt`; op Linux met `sha256sum -c SHA256SUMS.txt`. Open de uitgepakte HTML lokaal, controleer de documentatielinks en klik pas daarna in GitHub op **Publish release**. Publicatie gebeurt handmatig. Met immutable releases blijven de tag en bestanden na publicatie vaststaan; publiceer correcties onder een nieuwe versie.
+
+Bij een gedeeltelijk mislukte upload kies je **Re-run all jobs**, zodat dezelfde commit opnieuw wordt gecontroleerd. Bij een nieuwe workflowstart vul je naast dezelfde versie de volledige oorspronkelijke commit in; die moet in de geschiedenis van main liggen. De workflow behoudt identieke bestaande bestanden en voegt uitsluitend ontbrekende bestanden toe. Bij een afwijkende tag, beschrijving, commit, bestand of al gepubliceerde release stopt de workflow. Onderzoek dan de oorzaak; overschrijf geen bestaande releasebestanden.
