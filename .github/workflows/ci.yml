@@ -1,0 +1,66 @@
+name: Volledige controles
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  merge_group:
+    branches: [main]
+  workflow_call:
+    inputs:
+      revision:
+        required: true
+        type: string
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  version:
+    name: Versiecontrole
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.revision || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python scripts/check_release_version.py
+
+  checks:
+    name: Volledige CI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.revision || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: astral-sh/setup-uv@v7
+      - run: uv sync --locked
+      - run: uv run playwright install chromium --with-deps --only-shell
+      - name: Kies de aparte Chromium-testbrowser
+        run: |
+          uv run python - <<'PY' >> "$GITHUB_ENV"
+          from playwright.sync_api import sync_playwright
+          with sync_playwright() as pw:
+              from pathlib import Path
+              root = Path(pw.chromium.executable_path).parents[2]
+              executable = next(root.glob("chromium_headless_shell-*/chrome-linux/headless_shell"))
+              print(f"PLAYWRIGHT_CHROMIUM_EXECUTABLE={executable}")
+          PY
+      - run: uv run mdformat --check README.md CHANGELOG.md AGENTS.md docs
+      - run: uv run djlint . --check
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: scripts/check-sensitive-paths.sh --index
+      - run: uv run python scripts/check-production-docs.py --revision HEAD
+      - run: uv run bash scripts/check-svg-text-bounds.sh
+      - run: uv run pytest --cov=tests --cov-report=term-missing:skip-covered
