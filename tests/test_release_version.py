@@ -53,3 +53,22 @@ def test_invalid_version_sources(name, value):
     files[name] = value
     with pytest.raises(ValueError):
         version_check.check_version(files.__getitem__)
+
+
+@pytest.mark.parametrize("pending", ["", "- Onderhoud."])
+def test_cli_release_mode(tmp_path, monkeypatch, pending):
+    import sys
+
+    for name, content in source(pending=pending).items():
+        (tmp_path / name).write_text(content)
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(sys, "argv", ["check_release_version.py", "--version", "1.2.3"])
+    version_check.main()
+    monkeypatch.setattr(
+        sys, "argv", ["check_release_version.py", "--version", "1.2.3", "--release"]
+    )
+    if pending:
+        with pytest.raises(ValueError, match="Nog niet uitgebracht"):
+            version_check.main()
+    else:
+        version_check.main()

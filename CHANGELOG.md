@@ -10,7 +10,7 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 - Herstel het hervatten van conceptreleases: vind bestaande concepten via de releaselijst en ruim lege restanten van mislukte uploads pas na alle conflictcontroles op.
 
-- Controleer alle opmaak-, lint-, versie- en synthetische regressietests in CI.
+- Controleer alle opmaak-, lint-, versie- en synthetische regressietests in CI; de versiecontrole heeft een expliciete release-modus die ongepubliceerde wijzigingen blokkeert.
 
 - Bereid handmatig een conceptrelease voor met een vaste main-commit, gecontroleerde hervatting en uitsluitend de toegestane downloadbestanden. Publicatie blijft handmatig.
 
