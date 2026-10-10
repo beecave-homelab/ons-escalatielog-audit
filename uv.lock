@@ -472,7 +472,7 @@ wheels = [
 
 [[package]]
 name = "ons-escalatielog-audit"
-version = "0.13.1"
+version = "0.14.0"
 source = { virtual = "." }
 
 [package.dev-dependencies]
@@ -484,6 +484,7 @@ dev = [
     { name = "playwright" },
     { name = "pytest" },
     { name = "pytest-cov" },
+    { name = "pyyaml" },
     { name = "ruff" },
 ]
 
@@ -498,6 +499,7 @@ dev = [
     { name = "playwright", marker = "python_full_version >= '3.10'", specifier = "==1.52.0" },
     { name = "pytest", marker = "python_full_version >= '3.10'", specifier = "==9.0.2" },
     { name = "pytest-cov", marker = "python_full_version >= '3.10'", specifier = "==7.0.0" },
+    { name = "pyyaml", marker = "python_full_version >= '3.10'", specifier = "==6.0.3" },
     { name = "ruff", marker = "python_full_version >= '3.10'", specifier = "==0.16.6" },
 ]
 
