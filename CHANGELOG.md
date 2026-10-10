@@ -8,10 +8,16 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ### Onderhoud
 
+- Herstel het hervatten van conceptreleases: vind bestaande concepten via de releaselijst en ruim lege restanten van mislukte uploads pas na alle conflictcontroles op.
+
 - Controleer alle opmaak-, lint-, versie- en synthetische regressietests in CI.
+
 - Bereid handmatig een conceptrelease voor met een vaste main-commit, gecontroleerde hervatting en uitsluitend de toegestane downloadbestanden. Publicatie blijft handmatig.
+
 - Voeg een release-downloadlink en uitleg over controle, publicatie en hervatting toe aan de README.
+
 - Beperk `docs/` op `main` tot de berekeningsdocumentatie en zes gebruikte SVG-diagrammen. Ontwikkelhandleidingen, mock-ups, ontwerpbesluiten en controlebewijs horen op `dev` of lokaal.
+
 - Controleer de volledige productiedocumentatie met een vaste toelatingslijst in pull requests naar `main`, de merge queue en pushes op `main`.
 
 ## [0.13.0] - 2026-10-09

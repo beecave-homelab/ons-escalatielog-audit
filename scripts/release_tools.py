@@ -128,8 +128,20 @@ def prepare(api, version: str, sha: str, assets: dict[str, Path], notes: str):
     tag = api.tag_commit(version)
     if tag is not None and tag != sha:
         raise ValueError("Bestaande tag verwijst naar een andere commit.")
-    release = api.request(f"releases/tags/{version}")
+    matches = []
+    page = 1
+    while True:
+        releases = api.request(f"releases?per_page=100&page={page}")
+        matches.extend(item for item in releases if item["tag_name"] == version)
+        if len(releases) < 100:
+            break
+        page += 1
+    if len(matches) > 1:
+        raise ValueError("Meerdere releases voor dezelfde versie.")
+    release = matches[0] if matches else None
     present = set()
+    seen = set()
+    failed = []
     if release is not None:
         if not release["draft"] or release["target_commitish"] != sha or tag != sha:
             raise ValueError("Alleen een conceptrelease voor dezelfde tag en commit mag hervatten.")
@@ -140,8 +152,14 @@ def prepare(api, version: str, sha: str, assets: dict[str, Path], notes: str):
             existing = api.request(f"releases/{release['id']}/assets?per_page=100&page={page}")
             for asset in existing:
                 name = asset["name"]
-                if name not in assets or name in present or asset["state"] != "uploaded":
-                    raise ValueError("Onbekende, dubbele of onvolledige release-asset.")
+                if name not in assets or name in seen:
+                    raise ValueError("Onbekende of dubbele release-asset.")
+                seen.add(name)
+                if asset["state"] == "starter" and asset["size"] == 0:
+                    failed.append(asset["id"])
+                    continue
+                if asset["state"] != "uploaded":
+                    raise ValueError("Onvolledige release-asset.")
                 content = api.request(f"releases/assets/{asset['id']}", binary=True)
                 if content != assets[name].read_bytes():
                     raise ValueError(f"Bestaande asset wijkt af: {name}")
@@ -165,6 +183,8 @@ def prepare(api, version: str, sha: str, assets: dict[str, Path], notes: str):
                 "prerelease": False,
             },
         )
+    for asset_id in failed:
+        api.request(f"releases/assets/{asset_id}", method="DELETE")
     upload = release["upload_url"].split("{")[0]
     for name, path in assets.items():
         if name not in present:

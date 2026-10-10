@@ -76,11 +76,16 @@ class FakeGitHub:
         self.assets = {}
         self.writes = []
         self.fail_name = None
+        self.starters = {}
 
     def tag_commit(self, _version):
         return self.tag
 
     def request(self, endpoint, *, method="GET", payload=None, binary=False, file=None):
+        if method == "DELETE":
+            self.writes.append(endpoint)
+            del self.starters[endpoint.split("/")[-1]]
+            return None
         if method == "POST":
             self.writes.append(endpoint)
             if endpoint == "git/refs":
@@ -100,9 +105,13 @@ class FakeGitHub:
                 return {"id": name, "name": name, "state": "uploaded"}
             return self.release
         if endpoint.startswith("releases/tags/"):
-            return self.release
+            return self.release if self.release and not self.release["draft"] else None
+        if endpoint.startswith("releases?per_page="):
+            return [self.release] if self.release else []
         if endpoint.startswith("releases/1/assets?"):
-            return [{"id": name, "name": name, "state": "uploaded"} for name in self.assets]
+            return [{"id": name, "name": name, "state": "uploaded"} for name in self.assets] + list(
+                self.starters.values()
+            )
         if binary:
             return self.assets[endpoint.split("/")[-1]]
         raise AssertionError(endpoint)
@@ -199,3 +208,72 @@ def test_gh_upload_sends_bytes_and_preserves_draft_payload(monkeypatch, tmp_path
     path.write_bytes(b"example")
     api.request("https://uploads.github.com/assets?name=file", method="POST", file=path)
     assert "--input" in commands[1][0] and str(path) in commands[1][0]
+
+
+def test_resume_deletes_only_empty_expected_starter(assets):
+    api = FakeGitHub()
+    api.fail_name = "app.zip"
+    with pytest.raises(RuntimeError):
+        release_tools.prepare(api, "1.2.3", SHA, assets, "- Verandering.")
+    assert api.request("releases/tags/1.2.3") is None
+    api.starters["failed"] = {"id": "failed", "name": "app.zip", "state": "starter", "size": 0}
+    api.fail_name = None
+    api.writes.clear()
+    release_tools.prepare(api, "1.2.3", SHA, assets, "- Verandering.")
+    assert api.writes[0] == "releases/assets/failed"
+    assert len(api.writes) == 3
+    assert not api.starters
+    assert api.assets == {name: path.read_bytes() for name, path in assets.items()}
+
+
+@pytest.mark.parametrize("conflict", ["unknown", "duplicate", "nonempty", "state", "bytes"])
+def test_starter_cleanup_waits_for_all_conflict_checks(assets, conflict):
+    api = FakeGitHub()
+    release_tools.prepare(api, "1.2.3", SHA, assets, "- Verandering.")
+    del api.assets["app.zip"]
+    starter = {"id": "failed", "name": "app.zip", "state": "starter", "size": 0}
+    api.starters["failed"] = starter
+    if conflict == "unknown":
+        starter["name"] = "unknown.zip"
+    elif conflict == "duplicate":
+        api.starters["duplicate"] = {**starter, "id": "duplicate"}
+    elif conflict == "nonempty":
+        starter["size"] = 1
+    elif conflict == "state":
+        starter["state"] = "uploading"
+    else:
+        api.assets["SHA256SUMS.txt"] = b"afwijkend"
+    api.writes.clear()
+    with pytest.raises(ValueError):
+        release_tools.prepare(api, "1.2.3", SHA, assets, "- Verandering.")
+    assert api.writes == []
+    assert "failed" in api.starters
+
+
+def test_release_lookup_paginates_and_rejects_duplicate_matches(assets):
+    api = FakeGitHub()
+    release_tools.prepare(api, "1.2.3", SHA, assets, "- Verandering.")
+    request = api.request
+    calls = []
+
+    def paginated(endpoint, **kwargs):
+        if endpoint.startswith("releases?per_page="):
+            calls.append(endpoint)
+            if endpoint.endswith("page=1"):
+                return [{"tag_name": "0.0.0"}] * 100
+            return [api.release]
+        return request(endpoint, **kwargs)
+
+    api.request = paginated
+    api.writes.clear()
+    release_tools.prepare(api, "1.2.3", SHA, assets, "- Verandering.")
+    assert len(calls) == 2
+    assert api.writes == []
+    api.request = lambda endpoint, **kwargs: (
+        [api.release, api.release]
+        if endpoint.startswith("releases?per_page=")
+        else request(endpoint, **kwargs)
+    )
+    with pytest.raises(ValueError, match="Meerdere"):
+        release_tools.prepare(api, "1.2.3", SHA, assets, "- Verandering.")
+    assert api.writes == []
