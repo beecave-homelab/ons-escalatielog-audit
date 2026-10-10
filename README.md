@@ -1,6 +1,6 @@
 # Ons Escalatielog Audit
 
-![Version: 0.13.1](https://img.shields.io/badge/version-0.13.1-00A0C8.svg)
+![Version: 0.14.0](https://img.shields.io/badge/version-0.14.0-00A0C8.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 
 Ons Escalatielog Audit is een losse webpagina waarmee je `.xlsx`-exports met escalatielogs uit Nedap Ons controleert. De webui brengt opvallende patronen in beeld en laat per uitkomst de bijbehorende bronregels zien. De webui is bedoeld voor functioneel applicatiebeheerders, CISO's en privacy officers.
@@ -36,7 +36,14 @@ In [Berekeningen, tellingen en patroonherkenning](docs/berekeningen-en-patroonhe
 
 Je hoeft niets te installeren en hebt geen webserver nodig.
 
-[Download de laatste GitHub Release](https://github.com/beecave-homelab/ons-escalatielog-audit/releases/latest). Kies de losse HTML of de ZIP met uitleg en diagrammen. Pak de ZIP volledig uit en behoud de mapstructuur. Tot de eerste release is gepubliceerd, kun je de HTML uit de repository gebruiken.
+### Twee manieren om de webui te gebruiken
+
+- **Showcase online:** [bekijk de webui](https://beecave-homelab.github.io/ons-escalatielog-audit/escalatielog-audit-webui.html). Deze versie laat het open-source project zien en volgt de gecontroleerde wijzigingen op `main`. Door caching kan een vorige versie nog circa tien minuten zichtbaar blijven. Probeer de showcase met het [synthetische voorbeeldbestand](https://github.com/beecave-homelab/ons-escalatielog-audit/raw/refs/heads/main/tests/fixtures/synthetic-escalatielog.xlsx); dit bevat geen echte persoonsgegevens.
+- **Lokale kopie voor analyse:** [download een GitHub Release](https://github.com/beecave-homelab/ons-escalatielog-audit/releases/latest). Kies de losse HTML of de ZIP met uitleg en diagrammen. Pak de ZIP volledig uit en behoud de mapstructuur. Gebruik voor analyses een lokaal vastgestelde versie en controleer de download tegen het meegeleverde `SHA256SUMS.txt`. Op macOS kan dat met `shasum -a 256 -c SHA256SUMS.txt`; op Linux met `sha256sum -c SHA256SUMS.txt`. Download beide genoemde bestanden (HTML en ZIP) voor deze controle.
+
+Beide varianten verwerken de ingelezen export uitsluitend in het geheugen van je browser. Bij het openen van de showcase ontvangt GitHub het paginaverzoek en logt het bezoekers-IP voor beveiliging; de inhoud van je Excelbestand wordt niet verzonden.
+
+### Analyse uitvoeren
 
 1. Open `escalatielog-audit-webui.html` in een recente versie van Edge, Chrome, Firefox of Safari (minimaal Edge/Chrome 80, Firefox 113 of Safari 16.4).
 2. Kies een `.xlsx`-export of sleep het bestand naar het uploadvak.

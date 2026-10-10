@@ -94,7 +94,7 @@ def test_png_complete_offline_and_viewport_independent(page, tmp_path):
     assert len(model["employees"]) == 250
     assert len(model["charts"]) == 4
     assert len(model["route"]) == 3
-    assert model["version"] == "0.13.1"
+    assert model["version"] == "0.14.0"
     text = " ".join(line["value"] for line in drawing["lines"])
     for expected in [
         "1.802",
@@ -106,7 +106,7 @@ def test_png_complete_offline_and_viewport_independent(page, tmp_path):
         "Toegepaste instellingen",
         "01-05-2026",
         "31-05-2026",
-        "0.13.1",
+        "0.14.0",
         "geen bewijs van dossierinzage",
         "persoonsgegevens",
     ]:

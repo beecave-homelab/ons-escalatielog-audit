@@ -1,0 +1,67 @@
+name: Publiceer Pages-showcase
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  pin:
+    name: Leg publicatiecommit vast
+    runs-on: ubuntu-latest
+    outputs:
+      sha: ${{ steps.pin.outputs.sha }}
+    steps:
+      - id: pin
+        env:
+          START_REF: ${{ github.ref }}
+          START_SHA: ${{ github.sha }}
+        run: |
+          test "$START_REF" = refs/heads/main
+          [[ ${#START_SHA} -eq 40 && "$START_SHA" != *[!0-9a-f]* ]] || exit 1
+          echo "sha=$START_SHA" >> "$GITHUB_OUTPUT"
+
+  verify:
+    needs: pin
+    uses: ./.github/workflows/ci.yml
+    with:
+      revision: ${{ needs.pin.outputs.sha }}
+
+  deploy:
+    name: Publiceer uitsluitend de webui
+    needs: [pin, verify]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.pin.outputs.sha }}
+          persist-credentials: false
+      - uses: actions/configure-pages@v5
+      - name: Maak een leeg publicatieartefact
+        id: stage
+        run: |
+          test -f escalatielog-audit-webui.html
+          test ! -L escalatielog-audit-webui.html
+          PAGES_DIRECTORY="$(mktemp -d "$RUNNER_TEMP/pages.XXXXXX")"
+          cp escalatielog-audit-webui.html "$PAGES_DIRECTORY/"
+          cmp escalatielog-audit-webui.html "$PAGES_DIRECTORY/escalatielog-audit-webui.html"
+          echo "path=$PAGES_DIRECTORY" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: ${{ steps.stage.outputs.path }}
+      - uses: actions/deploy-pages@v4
+        id: deployment
