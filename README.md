@@ -27,6 +27,7 @@ De webui:
 - Legt controleprioriteit, her-escalaties, geselecteerde tijdvensters, peer-ratio’s en top-3-concentratie uit bij de uitkomst, zowel in de webui als het HTML-rapport. Details tonen gekoppelde tijden; het rapport gebruikt voor her-escalatie een expliciet fictief voorbeeld.
 - Laat met compacte tijdlijnen zien dat late activatie strikt ná de ingestelde grens begint, en toont welke starturen binnen het nachtvenster vallen. Beide visuals volgen de toegepaste instellingen en staan ook in het HTML-rapport.
 - Koppelt cijfers, grafieken en tabellen aan de bijbehorende Excelregels.
+- Exporteert alle visuals van Overzicht ook los als PNG in één ZIP, met herkenbare namen en brongegevens per afbeelding. Handig om één grafiek of kaart in bijvoorbeeld TOPdesk te gebruiken.
 - Exporteert het volledige visuele dashboard als één PNG met een vaste indeling, inclusief onderdelen buiten beeld, volledige labels, periode, analysetijdstip, versie en toegepaste instellingen.
 - Exporteert aandachtspunten, bronregels en een zelfstandig HTML-rapport met dezelfde visuele oriëntatie als het webui-overzicht: auditflow, themabalken, tijdpatronen per weekdag en uur, en topgrafieken bij hun tabellen. Brede rapporttabellen kun je horizontaal verschuiven.
 
@@ -53,7 +54,7 @@ Beide varianten verwerken de ingelezen export uitsluitend in het geheugen van je
 6. Klik op een cijfer, grafiek of tabelregel om de bronregels te openen.
    Zoek en filter daar op team, deskundigheid, doeltype en auditcontext. **Bronregels CSV** bevat ook bij actieve filters de volledige geopende selectie.
 7. Pas zo nodig de instellingen aan en klik op **Analyse opnieuw uitvoeren**.
-8. Exporteer de gewenste aandachtspunten, bronregels, het HTML-rapport of **Dashboard als PNG**. De PNG gebruikt de laatste succesvolle analyse; pas gewijzigde instellingen eerst toe met **Analyse opnieuw uitvoeren**.
+8. Exporteer de gewenste aandachtspunten, bronregels, het HTML-rapport, **Dashboard als PNG** of **Losse visuals als ZIP**. Pak de ZIP uit en kies de gewenste afbeelding. De PNG gebruikt de laatste succesvolle analyse; pas gewijzigde instellingen eerst toe met **Analyse opnieuw uitvoeren**.
 
 ## Vereiste invoer
 
@@ -91,7 +92,7 @@ Niet alle schermen gebruiken dezelfde regels. **Datakwaliteit** kijkt bijvoorbee
 
 ## Privacy
 
-De webui verwerkt de export alleen in het geheugen van de browser. Als je de pagina sluit of vernieuwt, worden de ingelezen gegevens gewist. Gedownloade PNG-, CSV- en HTML-bestanden blijven wel op het apparaat staan en kunnen persoonsgegevens bevatten. Bewaar en deel deze bestanden volgens de interne afspraken van je organisatie.
+De webui verwerkt de export alleen in het geheugen van de browser. Als je de pagina sluit of vernieuwt, worden de ingelezen gegevens gewist. Gedownloade ZIP-, PNG-, CSV- en HTML-bestanden blijven wel op het apparaat staan en kunnen persoonsgegevens bevatten. Bewaar en deel deze bestanden volgens de interne afspraken van je organisatie.
 
 ## Licentie
 
