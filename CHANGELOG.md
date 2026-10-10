@@ -11,6 +11,11 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 - Publiceer de Pages-showcase vanaf main na de volledige CI op dezelfde commit, met uitsluitend de ongewijzigde webui in het publicatieartefact.
 - Onderscheid in de README de online showcase met synthetisch voorbeeldbestand en een lokale, hash-gecontroleerde releasekopie voor analyses.
 
+### Onderhoud
+
+- Weiger verouderde Pages-commits bij de start en vlak vóór publicatie; laat deployments op elkaar wachten zonder lopende of wachtende runs te annuleren.
+- Leg PyYAML expliciet vast als ontwikkelafhankelijkheid voor de workflowtests.
+
 ## [0.13.1] - 2026-10-09
 
 ### Onderhoud

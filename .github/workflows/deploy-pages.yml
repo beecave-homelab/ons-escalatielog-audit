@@ -8,10 +8,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: pages
-  cancel-in-progress: true
-
 jobs:
   pin:
     name: Leg publicatiecommit vast
@@ -20,12 +16,17 @@ jobs:
       sha: ${{ steps.pin.outputs.sha }}
     steps:
       - id: pin
+        shell: bash
         env:
           START_REF: ${{ github.ref }}
           START_SHA: ${{ github.sha }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         run: |
           test "$START_REF" = refs/heads/main
           [[ ${#START_SHA} -eq 40 && "$START_SHA" != *[!0-9a-f]* ]] || exit 1
+          CURRENT_SHA="$(gh api "repos/$GH_REPO/git/ref/heads/main" --jq .object.sha)"
+          test "$START_SHA" = "$CURRENT_SHA"
           echo "sha=$START_SHA" >> "$GITHUB_OUTPUT"
 
   verify:
@@ -38,6 +39,10 @@ jobs:
     name: Publiceer uitsluitend de webui
     needs: [pin, verify]
     runs-on: ubuntu-latest
+    concurrency:
+      group: pages
+      queue: max
+      cancel-in-progress: false
     permissions:
       contents: read
       pages: write
@@ -63,5 +68,18 @@ jobs:
       - uses: actions/upload-pages-artifact@v4
         with:
           path: ${{ steps.stage.outputs.path }}
+      - name: Controleer main opnieuw vóór publicatie
+        id: current
+        shell: bash
+        env:
+          START_REF: ${{ github.ref }}
+          START_SHA: ${{ needs.pin.outputs.sha }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          test "$START_REF" = refs/heads/main
+          [[ ${#START_SHA} -eq 40 && "$START_SHA" != *[!0-9a-f]* ]] || exit 1
+          CURRENT_SHA="$(gh api "repos/$GH_REPO/git/ref/heads/main" --jq .object.sha)"
+          test "$START_SHA" = "$CURRENT_SHA"
       - uses: actions/deploy-pages@v4
         id: deployment
