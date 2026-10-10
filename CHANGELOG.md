@@ -16,7 +16,7 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 - Bereid handmatig een conceptrelease voor met een vaste main-commit, gecontroleerde hervatting en uitsluitend de toegestane downloadbestanden. Publicatie blijft handmatig.
 
-- Voeg een release-downloadlink en uitleg over controle, publicatie en hervatting toe aan de README.
+- Voeg een release-downloadlink en uitleg over downloaden en uitpakken toe aan de README.
 
 - Beperk `docs/` op `main` tot de berekeningsdocumentatie en zes gebruikte SVG-diagrammen. Ontwikkelhandleidingen, mock-ups, ontwerpbesluiten en controlebewijs horen op `dev` of lokaal.
 
