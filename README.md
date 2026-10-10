@@ -89,11 +89,3 @@ De webui verwerkt de export alleen in het geheugen van de browser. Als je de pag
 ## Licentie
 
 Dit project valt onder de [MIT-licentie](LICENSE).
-
-## Een release voorbereiden en publiceren
-
-Start op `main` de GitHub Actions-workflow **Release voorbereiden** met de gewenste versie, zonder `v` (bijvoorbeeld `0.13.1`). De versie moet gelijk zijn aan de HTML, `pyproject.toml` en de README-badge, met een gedateerde changelogsectie. Koppel wijzigingen onder **Nog niet uitgebracht** eerst aan een versie. De workflow legt de commit bij de start vast, voert alle controles uit en maakt daarna een tag en conceptrelease.
-
-Controleer vóór publicatie de conceptbeschrijving, de losse HTML, de uitgepakte ZIP en `SHA256SUMS.txt`. Op macOS controleer je de hashes met `shasum -a 256 -c SHA256SUMS.txt`; op Linux met `sha256sum -c SHA256SUMS.txt`. Open de uitgepakte HTML lokaal, controleer de documentatielinks en klik pas daarna in GitHub op **Publish release**. Publicatie gebeurt handmatig. Met immutable releases blijven de tag en bestanden na publicatie vaststaan; publiceer correcties onder een nieuwe versie.
-
-Bij een gedeeltelijk mislukte upload kies je **Re-run all jobs**, zodat dezelfde commit opnieuw wordt gecontroleerd. Bij een nieuwe workflowstart vul je naast dezelfde versie de volledige oorspronkelijke commit in; die moet in de geschiedenis van main liggen. De workflow behoudt identieke bestaande bestanden en voegt uitsluitend ontbrekende bestanden toe. Bij een afwijkende tag, beschrijving, commit, bestand of al gepubliceerde release stopt de workflow. Onderzoek dan de oorzaak; overschrijf geen bestaande releasebestanden.

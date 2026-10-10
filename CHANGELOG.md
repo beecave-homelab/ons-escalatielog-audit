@@ -8,6 +8,8 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ### Onderhoud
 
+- Behoud in de README uitsluitend gebruikersinformatie; releasebeheer hoort bij het beheerproces.
+
 - Herstel het hervatten van conceptreleases: vind bestaande concepten via de releaselijst en ruim lege restanten van mislukte uploads pas na alle conflictcontroles op.
 
 - Controleer alle opmaak-, lint-, versie- en synthetische regressietests in CI; de versiecontrole heeft een expliciete release-modus die ongepubliceerde wijzigingen blokkeert.
