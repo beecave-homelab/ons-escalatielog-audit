@@ -12,6 +12,8 @@ STANDARD_FIXTURE = ROOT / "tests/fixtures/synthetic-escalatielog.xlsx"
 
 
 def launch_browser(playwright: Playwright):
+    if executable := os.environ.get("PLAYWRIGHT_CHROMIUM_EXECUTABLE"):
+        return playwright.chromium.launch(executable_path=executable, headless=True)
     failures = []
     for channel in ("chrome", "msedge"):
         try:

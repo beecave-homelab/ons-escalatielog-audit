@@ -6,7 +6,10 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ### Onderhoud
 
+- Controleer alle opmaak-, lint-, versie- en synthetische regressietests in CI; de versiecontrole heeft een expliciete release-modus die ongepubliceerde wijzigingen blokkeert.
+
 - Beperk `docs/` op `main` tot de berekeningsdocumentatie en zes gebruikte SVG-diagrammen. Ontwikkelhandleidingen, mock-ups, ontwerpbesluiten en controlebewijs horen op `dev` of lokaal.
+
 - Controleer de volledige productiedocumentatie met een vaste toelatingslijst in pull requests naar `main`, de merge queue en pushes op `main`.
 
 ## [0.13.0] - 2026-10-09
