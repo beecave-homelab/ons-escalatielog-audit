@@ -4,6 +4,10 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+### Toegevoegd
+
+- Download alle visuals van Overzicht als losse PNG-bestanden in één lokaal gemaakte ZIP, met herkenbare namen, brongegevens en context per afbeelding.
+
 ## [0.14.0] - 2026-10-10
 
 ### Toegevoegd

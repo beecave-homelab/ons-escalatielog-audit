@@ -2,7 +2,7 @@
 title: Berekeningen, tellingen en patroonherkenning
 applies_to: escalatielog-audit-webui.html
 tags: [escalatielogs, audit, functioneel-beheer]
-updated: 2026-10-09
+updated: 2026-10-10
 ---
 
 ## Berekeningen, tellingen en patroonherkenning
@@ -560,3 +560,11 @@ De afbeelding heeft een vaste indeling van 1.200 logische pixels breed en wordt 
 Het bestand heet `<exportBaseName>_dashboard.png` en bevat bronbestand, waargenomen datumbereik, analysetijdstip, applicatieversie, toegepaste instellingen en de waarschuwing dat signalen geen bewijs zijn van dossierinzage of onrechtmatige toegang. Het datumbereik gebruikt, net als de overige exportbestandsnamen, geldige starttijden uit alle bronregels. Het bewijst geen volledige exportperiode. De PNG kan persoonsgegevens bevatten en moet volgens interne afspraken worden bewaard en gedeeld.
 
 Een export boven 48 miljoen pixels of 16.384 pixels hoogte wordt met een duidelijke foutmelding geweigerd, evenals een mislukte Canvas- of PNG-encodering. Tijdelijke tekenbuffers worden na de export vrijgegeven. Wijzigt de analyse tijdens PNG-encodering, dan wordt de verouderde download tegengehouden en vraagt de melding om opnieuw te exporteren. Een volgende export kan opnieuw worden geprobeerd; de analyse blijft beschikbaar. Na een geslaagde export vervangt een downloadbevestiging een eventuele eerdere exportfout.
+
+### Losse visuals als ZIP
+
+**Losse visuals als ZIP** behoudt de volledige dashboardexport en levert daarnaast één PNG per controleperspectief, KPI-kaart, donut, topgrafiek en aanwezig signaal. Auditflow, controlefocus, controlethema’s, tijdheatmap, medewerkerprofiel, beoordelingsroute en toegepaste instellingen krijgen elk één eigen PNG. Zonder signalen bevat de ZIP een afbeelding met de lege signaalweergave.
+
+Elke afbeelding is 1.200 pixels breed; de hoogte volgt alleen de betreffende visual en de context. Titel, bronbestand, waargenomen datumbereik, analysetijdstip, versie, toegangstermijn, nachtvenster en privacywaarschuwing blijven per afbeelding aanwezig. De afzonderlijke instellingenafbeelding bevat alle toegepaste instellingen. De bestandsnamen volgen `<exportBaseName>_overzicht_<volgnummer>_<visualnaam>.png`; de ZIP heet `<exportBaseName>_overzicht_visuals.zip`. De visualnaam volgt de titel op Overzicht, met onderscheid tussen kerncijfers, verhoudingen en signalen. Afbeeldingen kunnen na uitpakken afzonderlijk worden gebruikt, bijvoorbeeld in TOPdesk; de uiteindelijke weergavegrootte hangt af van het ontvangende systeem.
+
+De browser tekent elke visual rechtstreeks uit hetzelfde analysemodel als de volledige PNG, zonder een grote afbeelding bij te snijden. De ZIP wordt uitsluitend in het geheugen opgebouwd, met standaard ZIP-records, CRC-32 en zonder extra compressie van de al gecomprimeerde PNG’s. Er zijn geen externe bibliotheken, netwerkverkeer of browseropslag nodig. De ZIP is niet versleuteld en kan persoonsgegevens bevatten. Beide exportknoppen zijn tijdens generatie uitgeschakeld; bij gewijzigde analyse of een encoderingsfout wordt geen gedeeltelijke of verouderde ZIP gedownload. Tijdelijke canvassen worden na iedere visual vrijgegeven.

@@ -215,3 +215,101 @@ def test_png_reanalysis_empty_and_failures(page, tmp_path):
     page.locator("#analyzeBtn").click()
     page.locator("#workspace.show").wait_for(timeout=30_000)
     assert page.evaluate("dashboardPngModel().file") == "nieuw.xlsx"
+
+
+def test_overview_visuals_zip_individual_and_offline(page, tmp_path):
+    import io
+    import zipfile
+
+    expect(page.locator("#visualsZipBtn")).to_be_disabled()
+    load_analysis(page)
+    requests = []
+    page.on("request", lambda request: requests.append(request.url))
+    drawings = page.evaluate(
+        """() => {const model=dashboardPngModel();return overviewPngVisuals(model).map((v,i)=>{
+          const lines=[],original=CanvasRenderingContext2D.prototype.fillText;
+          CanvasRenderingContext2D.prototype.fillText=function(value,x,y){
+            lines.push({value:String(value),x,y,width:this.measureText(value).width,
+              size:Number(this.font.match(/([\\d.]+)px/)[1])});
+            return original.call(this,value,x,y);
+          };
+          let c;try{c=drawDashboardPng(v.model,v)}
+          finally{CanvasRenderingContext2D.prototype.fillText=original}
+          const drawing={name:visualPngName(exportBaseName(),v,i),title:v.title,
+            lines,width:c.width,height:c.height};c.width=0;c.height=0;return drawing;
+        })}"""
+    )
+    assert len(drawings) == page.evaluate("22 + dashboardPngModel().signals.length")
+    for drawing in drawings:
+        text = " ".join(line["value"] for line in drawing["lines"])
+        assert drawing["title"] in text
+        assert "01-05-2026" in text
+        assert "31-05-2026" in text
+        assert "geen bewijs van dossierinzage" in text
+        assert "persoonsgegevens" in text
+        assert drawing["width"] == 1200
+        assert 300 < drawing["height"] < 2000
+        for line in drawing["lines"]:
+            assert 0 <= line["x"] <= drawing["width"] - line["width"]
+            assert 0 <= line["y"] <= drawing["height"] - line["size"] * 1.4
+    page.set_viewport_size({"width": 390, "height": 844})
+    with page.expect_download(timeout=60_000) as pending:
+        page.locator("#visualsZipBtn").click()
+    path = tmp_path / "visuals.zip"
+    pending.value.save_as(path)
+    assert pending.value.suggested_filename.endswith("_overzicht_visuals.zip")
+    with zipfile.ZipFile(io.BytesIO(path.read_bytes())) as archive:
+        assert archive.testzip() is None
+        assert archive.namelist() == [drawing["name"] for drawing in drawings]
+        for drawing in drawings:
+            data = archive.read(drawing["name"])
+            assert data[:8] == b"\x89PNG\r\n\x1a\n"
+            assert struct.unpack(">II", data[16:24]) == (drawing["width"], drawing["height"])
+            assert "/" not in drawing["name"]
+            assert "_overzicht_" in drawing["name"]
+    assert not requests
+    expect(page.locator("#status")).to_contain_text("losse visuals als ZIP gedownload")
+    expect(page.locator("#pngBtn")).to_be_enabled()
+    expect(page.locator("#visualsZipBtn")).to_be_enabled()
+    # Keep a synthetic representative image for visual inspection outside the repo.
+    with zipfile.ZipFile(path) as archive:
+        heat = next(name for name in archive.namelist() if "tijdheatmap" in name)
+        (tmp_path / "heatmap.png").write_bytes(archive.read(heat))
+
+
+def test_visuals_zip_errors_stale_analysis_and_empty(page):
+    load_analysis(page)
+    downloads = []
+    page.on("download", lambda download: downloads.append(download.suggested_filename))
+    page.evaluate(
+        """async () => {const original=HTMLCanvasElement.prototype.toBlob;
+          HTMLCanvasElement.prototype.toBlob=function(cb){cb(null)};
+          await exportOverviewVisualsZip();HTMLCanvasElement.prototype.toBlob=original;
+        }"""
+    )
+    assert not downloads
+    expect(page.locator("#status")).to_contain_text("Losse visuals als ZIP is mislukt")
+    expect(page.locator("#visualsZipBtn")).to_be_enabled()
+    page.evaluate(
+        """async () => {const original=HTMLCanvasElement.prototype.toBlob;
+          HTMLCanvasElement.prototype.toBlob=function(cb){
+            original.call(this,blob=>setTimeout(()=>cb(blob),50),'image/png');
+          };
+          const pending=exportOverviewVisualsZip();exportOverviewVisualsZip();exportDashboardPng();
+          state.result=analyze([],state.settings);render();await pending;
+          HTMLCanvasElement.prototype.toBlob=original;
+        }"""
+    )
+    assert not downloads
+    expect(page.locator("#status")).to_contain_text("De analyse is intussen gewijzigd")
+    with page.expect_download():
+        page.evaluate("exportOverviewVisualsZip()")
+    expect(page.locator("#status")).to_contain_text("23 losse visuals als ZIP gedownload")
+    page.locator("#fileInput").set_input_files(
+        {
+            "name": "nieuwe-visuals.xlsx",
+            "mimeType": "application/octet-stream",
+            "buffer": STANDARD_FIXTURE.read_bytes(),
+        }
+    )
+    expect(page.locator("#visualsZipBtn")).to_be_disabled()
