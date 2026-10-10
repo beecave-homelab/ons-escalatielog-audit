@@ -223,6 +223,15 @@ def test_overview_visuals_zip_individual_and_offline(page, tmp_path):
 
     expect(page.locator("#visualsZipBtn")).to_be_disabled()
     load_analysis(page)
+    # A separator at the 100-character cutoff must not remain before .png.
+    assert (
+        page.evaluate("visualPngName('base',{title:'A'.repeat(99)+' B'},0)")
+        == "base_overzicht_01_" + "a" * 99 + ".png"
+    )
+    assert (
+        page.evaluate("visualPngName('base',{title:' --Cliënten / teams-- '},1)")
+        == "base_overzicht_02_clienten-teams.png"
+    )
     requests = []
     page.on("request", lambda request: requests.append(request.url))
     drawings = page.evaluate(
