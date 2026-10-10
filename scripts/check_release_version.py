@@ -53,8 +53,11 @@ def check_version(read, version: str | None = None, *, release: bool = False) ->
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--version")
+    parser.add_argument(
+        "--release", action="store_true", help="Blokkeer ongepubliceerde wijzigingen"
+    )
     args = parser.parse_args()
-    check_version(lambda name: Path(name).read_text(), args.version)
+    check_version(lambda name: Path(name).read_text(), args.version, release=args.release)
     print("Versies en gedateerde changelogsectie komen overeen.")
 
 
