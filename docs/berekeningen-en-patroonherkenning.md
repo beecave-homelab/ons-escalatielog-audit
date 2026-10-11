@@ -2,7 +2,7 @@
 title: Berekeningen, tellingen en patroonherkenning
 applies_to: escalatielog-audit-webui.html
 tags: [escalatielogs, audit, functioneel-beheer]
-updated: 2026-10-10
+updated: 2026-10-11
 ---
 
 ## Berekeningen, tellingen en patroonherkenning
@@ -409,6 +409,10 @@ De scatterplot zet het volume af tegen het aantal herkenbare unieke cliënten. P
 **Aandachtspunten CSV** exporteert alle aandachtspunten uit de analyse, niet alleen de regels die na filteren zichtbaar zijn. **Bronregels CSV** exporteert de volledige geopende detailselectie; zoeken en kolomfilters in het dialoogvenster beperken deze export niet. Begint een waarde met `=`, `+`, `@` of `-`, dan zet de webui er bij de CSV-export een apostrof voor om interpretatie als formule te beperken. De losse plaatshouder `-` en gewone, ook negatieve, getallen blijven ongewijzigd.
 
 Het HTML-rapport bevat de gebruikte instellingen, definities en analysetabellen. Onder de samenvatting staat een inhoudsopgave met regeltellingen die naar elke sectie verwijst. De tabellen staan gegroepeerd in inklapbare secties: tabellen met weinig regels staan open en uitgebreide tabellen zijn dichtgeklapt. De aandachtspunten zijn gesplitst per controleprioriteit. Bij afdrukken opent het rapport alle secties. Voor sommige tabellen geldt een weergavelimiet. Kapt de webui een tabel af, dan vermeldt het rapport hoeveel regels het toont. Het rapport bevat daardoor niet altijd alle onderliggende bronregels.
+
+Direct boven iedere opgenomen analysetabel staan een vrij zoekveld, keuzefilters voor de aanwezige kolommen Team, Deskundigheid, Doeltype, Signalen/Auditcontext en Thema, een teller en **Filters wissen**. Zoeken is hoofdletterongevoelig en doorzoekt de getoonde kolommen en eventuele prioriteitsuitleg. Keuzefilters vergelijken de volledige kolomwaarde exact; meerdere filters en de zoekterm werken samen. De teller telt gegevensregels, niet de afzonderlijke regels met prioriteitsuitleg. Iedere tabel heeft een eigen selectie. Filters wijzigen alleen de weergave, nooit analyse-uitkomsten, samenvattingen, grafieken, brongegevens of CSV-exports.
+
+Zoeken en filters doorzoeken uitsluitend de regels die binnen de bestaande rapportlimiet zijn opgenomen; bij een afgekorte tabel wordt dit expliciet vermeld. Het zelfstandige rapport werkt lokaal zonder netwerkverkeer, externe code of browseropslag. Zonder JavaScript verschijnt geen filterbediening en blijven alle opgenomen regels leesbaar. Bij afdrukken opent het rapport alle secties, toont het alle opgenomen gegevensregels met hun prioriteitsuitleg en verbergt het de filterbediening. Na afdrukken keren de schermfilters en de eerdere open/dichtstand van de secties terug.
 
 Het rapport bevat daarnaast dezelfde visuele oriëntatie als het webui-overzicht, telkens binnen de sectie van de bijbehorende tabel: de auditflow als verdelingstabel (bronbestand = systeemmeldingen + duplicaatkopieën + auditpopulatie, met aandachtspunten als selectie binnen de auditpopulatie), unieke regels per controlethema als balken, tijdpatronen als weekdag/uur-matrix in twee blokken van twaalf uur, en de topgrafieken voor medewerkers en cliënten boven hun tabellen met een leeswijzer over de topselectie en gelijke standen. Webui en rapport gebruiken hiervoor hetzelfde analyseresultaat; de medewerkerspreiding en verhoudingsdonuts zijn bewust niet overgenomen.
 
