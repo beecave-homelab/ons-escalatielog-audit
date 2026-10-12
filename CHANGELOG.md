@@ -4,6 +4,8 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+## [0.15.0] - 2026-10-12
+
 ### Toegevoegd
 
 - Zoek en filter per tabel in het zelfstandige HTML-rapport, met compacte kolomkoppen, een regelteller en een wisknop. Schermlezers krijgen tabelcontext bij de teller en een gekoppelde lege-resultaatmelding. Afdrukken toont alle opgenomen regels en herstelt daarna de schermselectie. Zonder JavaScript blijven de tabellen leesbaar.
