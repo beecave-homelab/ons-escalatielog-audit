@@ -2,7 +2,7 @@
 title: Berekeningen, tellingen en patroonherkenning
 applies_to: escalatielog-audit-webui.html
 tags: [escalatielogs, audit, functioneel-beheer]
-updated: 2026-10-11
+updated: 2026-10-12
 ---
 
 ## Berekeningen, tellingen en patroonherkenning
@@ -410,7 +410,7 @@ De scatterplot zet het volume af tegen het aantal herkenbare unieke cliënten. P
 
 Het HTML-rapport bevat de gebruikte instellingen, definities en analysetabellen. Onder de samenvatting staat een inhoudsopgave met regeltellingen die naar elke sectie verwijst. De tabellen staan gegroepeerd in inklapbare secties: tabellen met weinig regels staan open en uitgebreide tabellen zijn dichtgeklapt. De aandachtspunten zijn gesplitst per controleprioriteit. Bij afdrukken opent het rapport alle secties. Voor sommige tabellen geldt een weergavelimiet. Kapt de webui een tabel af, dan vermeldt het rapport hoeveel regels het toont. Het rapport bevat daardoor niet altijd alle onderliggende bronregels.
 
-Direct boven iedere opgenomen analysetabel staan een vrij zoekveld, keuzefilters voor de aanwezige kolommen Team, Deskundigheid, Doeltype, Signalen/Auditcontext en Thema, een teller en **Filters wissen**. Zoeken is hoofdletterongevoelig en doorzoekt de getoonde kolommen en eventuele prioriteitsuitleg. Keuzefilters vergelijken de volledige kolomwaarde exact; meerdere filters en de zoekterm werken samen. De teller telt gegevensregels, niet de afzonderlijke regels met prioriteitsuitleg. Iedere tabel heeft een eigen selectie. Filters wijzigen alleen de weergave, nooit analyse-uitkomsten, samenvattingen, grafieken, brongegevens of CSV-exports.
+Direct boven iedere opgenomen analysetabel staan een vrij zoekveld, keuzefilters voor de aanwezige kolommen Team, Deskundigheid, Doeltype, Signalen/Auditcontext en Thema, een teller en **Filters wissen**. Zoeken is hoofdletterongevoelig en doorzoekt de getoonde kolommen en eventuele prioriteitsuitleg. Keuzefilters vergelijken de volledige kolomwaarde exact; meerdere filters en de zoekterm werken samen. De teller telt gegevensregels, niet de afzonderlijke regels met prioriteitsuitleg. Iedere tabel heeft een eigen selectie. Voor schermlezers vermeldt de teller ook de tabelnaam en is de lege-resultaatmelding gekoppeld aan het zoekveld. Filters wijzigen alleen de weergave, nooit analyse-uitkomsten, samenvattingen, grafieken, brongegevens of CSV-exports.
 
 Zoeken en filters doorzoeken uitsluitend de regels die binnen de bestaande rapportlimiet zijn opgenomen; bij een afgekorte tabel wordt dit expliciet vermeld. Het zelfstandige rapport werkt lokaal zonder netwerkverkeer, externe code of browseropslag. Zonder JavaScript verschijnt geen filterbediening en blijven alle opgenomen regels leesbaar. Bij afdrukken opent het rapport alle secties, toont het alle opgenomen gegevensregels met hun prioriteitsuitleg en verbergt het de filterbediening. Na afdrukken keren de schermfilters en de eerdere open/dichtstand van de secties terug.
 

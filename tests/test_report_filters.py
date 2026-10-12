@@ -54,7 +54,16 @@ def test_report_filters_combine_and_restore_after_print(tmp_path: Path) -> None:
             "Team <A>",
             "Team B",
         ]
-        assert section.locator(".report-count").text_content() == "4 van 4"
+        assert section.locator(".report-count-value").text_content() == "4 van 4"
+        status = section.get_by_role("status")
+        assert (
+            status.text_content()
+            == "Zichtbare regels in Aandachtspunten · prioriteit Hoog: 4 van 4"
+        )
+        assert status.get_attribute("aria-atomic") == "true"
+        assert search.get_attribute("aria-describedby") == section.locator(
+            ".report-empty"
+        ).get_attribute("id")
         assert section.locator(".data-row b").count() == 0
         assert "Alpha <b>" in " ".join(section.locator(".data-row").all_text_contents())
         unchanged = page.locator(".k, .priority, .r-bars, .toc").all_text_contents()
@@ -62,18 +71,22 @@ def test_report_filters_combine_and_restore_after_print(tmp_path: Path) -> None:
         page.keyboard.press("Tab")
         assert expertise.evaluate("el => el === document.activeElement")
         team.select_option("Team <A>")
-        assert section.locator(".report-count").text_content() == "2 van 4"
+        assert section.locator(".report-count-value").text_content() == "2 van 4"
         expertise.select_option("Arts")
         target.select_option("Cliënt")
         search.fill("ALPHA")
-        assert section.locator(".report-count").text_content() == "1 van 4"
+        assert section.locator(".report-count-value").text_content() == "1 van 4"
         assert section.locator(".data-row:visible").count() == 1
         assert section.locator(".reason-row:visible").count() == 1
-        assert page.locator("#s-medewerkers .report-count").text_content() == "4 van 4"
+        assert page.locator("#s-medewerkers .report-count-value").text_content() == "4 van 4"
         assert page.locator(".k, .priority, .r-bars, .toc").all_text_contents() == unchanged
         search.fill("Gamma")
-        assert section.locator(".report-count").text_content() == "0 van 4"
+        assert section.locator(".report-count-value").text_content() == "0 van 4"
         assert section.locator(".report-empty").is_visible()
+        assert search.get_attribute("aria-describedby") == section.locator(
+            ".report-empty"
+        ).get_attribute("id")
+        assert status.text_content().endswith(": 0 van 4")
         assert section.locator("tbody tr:visible").count() == 0
         search.fill("alpha")
         closed = page.locator("details:not([open])").count()
@@ -94,7 +107,7 @@ def test_report_filters_combine_and_restore_after_print(tmp_path: Path) -> None:
         assert section.locator(".data-row:visible").count() == 1
         assert section.locator(".reason-row:visible").count() == 1
         section.get_by_role("button", name="Filters wissen").click()
-        assert section.locator(".report-count").text_content() == "4 van 4"
+        assert section.locator(".report-count-value").text_content() == "4 van 4"
         assert search.evaluate("el => el === document.activeElement")
         assert team.input_value() == expertise.input_value() == target.input_value() == ""
         assert not section.locator(".report-empty").is_visible()
@@ -117,11 +130,11 @@ def test_report_limits_and_no_javascript(tmp_path: Path) -> None:
         report = tmp_path / "limited-report.html"
         export_report(page, report, 501)
         section = page.locator("#s-hoog")
-        assert section.locator(".report-count").text_content() == "500 van 500"
+        assert section.locator(".report-count-value").text_content() == "500 van 500"
         assert "Getoond: 500 van 501 regels" in section.locator(".report-limit").text_content()
         assert "alleen deze 500 opgenomen regels" in section.locator(".report-limit").text_content()
         section.get_by_role("searchbox").fill("Buiten limiet")
-        assert section.locator(".report-count").text_content() == "0 van 500"
+        assert section.locator(".report-count-value").text_content() == "0 van 500"
         section.get_by_role("button", name="Filters wissen").click()
         section.get_by_role("combobox", name="Filter op Signalen", exact=True).select_option(
             index=1

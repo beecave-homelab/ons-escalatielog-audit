@@ -6,7 +6,7 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ### Toegevoegd
 
-- Zoek en filter per tabel in het zelfstandige HTML-rapport, met compacte kolomkoppen, een regelteller en een wisknop. Afdrukken toont alle opgenomen regels en herstelt daarna de schermselectie. Zonder JavaScript blijven de tabellen leesbaar.
+- Zoek en filter per tabel in het zelfstandige HTML-rapport, met compacte kolomkoppen, een regelteller en een wisknop. Schermlezers krijgen tabelcontext bij de teller en een gekoppelde lege-resultaatmelding. Afdrukken toont alle opgenomen regels en herstelt daarna de schermselectie. Zonder JavaScript blijven de tabellen leesbaar.
 
 - Download alle visuals van Overzicht als losse PNG-bestanden in één lokaal gemaakte ZIP, met herkenbare namen, brongegevens en context per afbeelding.
 
