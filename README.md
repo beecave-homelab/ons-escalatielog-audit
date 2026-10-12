@@ -29,7 +29,7 @@ De webui:
 - Koppelt cijfers, grafieken en tabellen aan de bijbehorende Excelregels.
 - Exporteert alle visuals van Overzicht ook los als PNG in één ZIP, met herkenbare namen en brongegevens per afbeelding. Handig om één grafiek of kaart in bijvoorbeeld TOPdesk te gebruiken.
 - Exporteert het volledige visuele dashboard als één PNG met een vaste indeling, inclusief onderdelen buiten beeld, volledige labels, periode, analysetijdstip, versie en toegepaste instellingen.
-- Exporteert aandachtspunten, bronregels en een zelfstandig HTML-rapport met dezelfde visuele oriëntatie als het webui-overzicht: auditflow, themabalken, tijdpatronen per weekdag en uur, en topgrafieken bij hun tabellen. Brede rapporttabellen kun je horizontaal verschuiven.
+- Exporteert aandachtspunten, bronregels en een zelfstandig HTML-rapport met dezelfde visuele oriëntatie als het webui-overzicht: auditflow, themabalken, tijdpatronen per weekdag en uur, en topgrafieken bij hun tabellen. Zoek en filter direct boven de rapporttabellen; de teller laat zien hoeveel opgenomen regels zichtbaar zijn. Brede rapporttabellen kun je horizontaal verschuiven. Afdrukken toont alle opgenomen regels, ook bij actieve filters.
 
 In [Berekeningen, tellingen en patroonherkenning](docs/berekeningen-en-patroonherkenning.md) lees je hoe de webui telt, groepeert en patronen herkent.
 
