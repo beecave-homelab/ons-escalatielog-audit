@@ -54,6 +54,14 @@ Always HTML-escape with `esc()` before inserting data into the DOM or the report
 - **Docs follow code**: the docs state that the implementation wins on conflict and must be updated. Any behavioural change ⇒ update the relevant section in `docs/berekeningen-en-patroonherkenning.md` (and its `updated:` date) and, if user-visible, `README.md`.
 - **Version**: semver only (`0.6.0` style). Keep `APP_VERSION` in the HTML, `project.version` in `pyproject.toml` and the badge in `README.md` equal, and record each release in `CHANGELOG.md`. Never write `v6`, `v6.0`, etc.
 
+## Versiebeleid vóór merge naar main
+
+- Iedere wijziging aan `escalatielog-audit-webui.html` naar `main` bevat in dezelfde PR een hogere SemVer en een nieuwe of bijgewerkte gedateerde changelogsectie voor die versie. Nieuwe functionaliteit verhoogt minor; bugfixes verhogen patch. Beoordeel breaking changes bewust volgens SemVer, met aandacht voor de pre-1.0-status. CI controleert dat de versie stijgt, maar bepaalt niet het wijzigingstype.
+- Houd `APP_VERSION`, `project.version`, de README-badge en de projectversie in `uv.lock` gelijk. Bij productwijzigingen naar `main` is *Nog niet uitgebracht* leeg. Op `dev` mogen wijzigingen daar worden verzameld.
+- Wijzigingen uitsluitend aan documentatie, tests, scripts of CI vereisen geen productbump. De single-file HTML is de volledige runtime; ook HTML-opmaakwijzigingen tellen conservatief als productwijziging. Analyse en visuele veranderingen blijven onder de bestaande documentatie- en bewijsregels vallen.
+- Controleer de gecommitteerde wijziging lokaal met `uv run python scripts/check_main_version.py --base origin/main --head HEAD` na het ophalen van de actuele doelbranch. De controle vergelijkt Git-commits, niet ongecommitteerde bestanden.
+- De bestaande verplichte CI-status **Versiecontrole** controleert de doelbranch-SHA voor PR's naar `main`, de merge queue en pushes op `main`, zonder padfilter. Ontbrekende refs zijn een fout. Publiceren blijft een afzonderlijke handmatige stap via de bestaande releaseworkflow; een merge publiceert geen release automatisch.
+
 ## Verifying changes
 
 Run `scripts/install-dependencies.sh --check` to prepare and validate a fresh Linux Codex Cloud environment. The script installs uv when needed, synchronizes the lockfile and prefers a distribution-provided Chromium so setup does not depend on the Playwright browser download.
