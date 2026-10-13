@@ -2,43 +2,53 @@
 title: Berekeningen, tellingen en patroonherkenning
 applies_to: escalatielog-audit-webui.html
 tags: [escalatielogs, audit, functioneel-beheer]
-updated: 2026-10-12
+updated: 2026-10-13
 ---
 
 ## Berekeningen, tellingen en patroonherkenning
 
-Dit document legt de berekeningen in `escalatielog-audit-webui.html` technisch en functioneel uit. Per analyse staat er welke regels meetellen, hoe de webui sleutels en unieke waarden bepaalt en welke teller en noemer bij een uitkomst horen. Ook de verwerking van grenswaarden, tijdvensters en gelijkstanden komt aan bod.
+Dit document beschrijft de berekeningen in `escalatielog-audit-webui.html`. Je leest welke regels meetellen, hoe de webui gegevens groepeert en welke tellers en noemers bij de uitkomsten horen. Ook de verwerking van grenswaarden, tijdvensters en gelijke standen wordt uitgelegd.
 
-De HTML-code bepaalt hoe de webui zich gedraagt. Wijkt dit document daarvan af, dan geldt de implementatie. Werk in dat geval de uitleg bij.
+De HTML-code bepaalt het daadwerkelijke gedrag van de webui. Als de documentatie en implementatie van elkaar afwijken, geldt de implementatie. De documentatie moet dan worden bijgewerkt.
 
-Een escalatieregel legt een poging of gebeurtenis rond uitzonderlijke toegang vast. Een geregistreerde activatie bewijst niet dat iemand daarna dossiergegevens heeft bekeken. Een auditsignaal wijst alleen een regel aan die controle nodig heeft; het bewijst geen onrechtmatige toegang.
+Een escalatieregel registreert een poging of gebeurtenis rond uitzonderlijke toegang. Een geregistreerde activatie bewijst niet dat iemand daarna dossiergegevens heeft bekeken. Een auditsignaal wijst op een gebeurtenis die nader onderzoek vraagt, maar bewijst geen onrechtmatige toegang.
 
 ## 1. Reikwijdte
 
-De webui verwerkt per analyse één Excelbestand. In de eerste tien rijen zoekt het naar een rij met alle vereiste kolomkoppen en kiest het eerste passende werkblad. Het voegt werkbladen niet samen. De berekeningen gaan uit van de ingelezen export en de instellingen van de laatste analyse.
+De webui verwerkt per analyse één Excelbestand. Het zoekt in de eerste tien rijen naar alle vereiste kolomkoppen en kiest het eerste passende werkblad. Meerdere werkbladen worden niet samengevoegd.
 
-Zoeken, sorteren en filteren verandert alleen wat de tabel laat zien. De analysepopulatie, aggregaties, grafieken en exports blijven gelijk.
+Alle berekeningen gebruiken de ingelezen export en de instellingen van de laatst uitgevoerde analyse.
 
-Deze referentie legt het gedrag van de huidige implementatie uit. Ze bevestigt geen leveranciersspecificaties, wettelijke verplichtingen of volledige naleving van normen. Controleer daarom eerst de inrichting en beschikbare logging van Nedap Ons voordat je de uitkomsten inhoudelijk beoordeelt.
+Zoeken, sorteren en filteren verandert alleen de tabelweergave. De auditpopulatie, berekeningen, grafieken en exports blijven gelijk.
 
-De ingebouwde XLSX-lezer is gemaakt voor een Nedap Ons-export met één werkblad en tekst- of getalcellen. De lezer ondersteunt geen foutcellen (`#N/A` en vergelijkbaar), fonetische tekst in gedeelde tekenreeksen of ZIP64-bestanden. Voor de webui is een browser met `DecompressionStream` nodig: Edge/Chrome 80+, Firefox 113+ of Safari 16.4+.
+Dit document beschrijft het gedrag van de huidige implementatie. Het bevestigt geen leveranciersspecificaties, wettelijke verplichtingen of volledige naleving van normen. Controleer daarom de inrichting en beschikbare logging van Nedap Ons voordat je de uitkomsten inhoudelijk beoordeelt.
+
+De ingebouwde XLSX-lezer is bedoeld voor een escalatielog-export uit de Autorisatie-module van Nedap Ons, met één werkblad en tekst- of getalcellen. De lezer ondersteunt niet:
+
+- Foutcellen zoals `#N/A`.
+- Fonetische tekst in gedeelde tekenreeksen.
+- ZIP64-bestanden.
+
+De browser moet `DecompressionStream` ondersteunen. De minimale browserversies zijn Edge/Chrome 80, Firefox 113 en Safari 16.4.
 
 ## 2. Technische uitgangspunten
 
-De populatie waarop een getal is gebaseerd, is onderdeel van de definitie:
+Bij iedere telling is van belang welke regels meetellen. De webui gebruikt hiervoor verschillende verzamelingen.
 
-- **Inhoudelijke analyses:** gebruiken `auditRows`, dus niet-systeemregels na exacte ontdubbeling.
-- **Datakwaliteit:** gebruikt `manualRows`, dus niet-systeemregels vóór ontdubbeling. Daardoor blijven duplicaten als kwaliteitsbevinding zichtbaar.
-- **Auditlogica:** gebruikt `allRows`, dus alle geïmporteerde niet-lege bronregels, inclusief later uitgesloten systeemregels en duplicaten.
-- **Ontbrekende sleutels:** verwijderen een regel niet automatisch uit `auditRows`. De regel kan wel ontbreken in een aggregatie waarvoor die sleutel vereist is.
-- **Signaalfrequenties:** tellen regels per signaal en mogen overlappen. Eén regel met drie signalen draagt aan drie signaalfrequenties bij.
-- **Aandachtspunten:** tellen unieke auditregels met ten minste één ingeschakeld signaal. Dezelfde regel telt hier altijd eenmaal.
+- **Inhoudelijke analyses** gebruiken `auditRows`. Dit zijn niet-systeemregels na exacte ontdubbeling.
+- **Datakwaliteit** gebruikt `manualRows`. Dit zijn niet-systeemregels vóór ontdubbeling, zodat duplicaten zichtbaar blijven.
+- **Auditlogica** gebruikt `allRows`. Dit zijn alle geïmporteerde niet-lege bronregels, inclusief systeemregels en duplicaten die later worden uitgesloten.
+- **Ontbrekende sleutels** verwijderen een regel niet automatisch uit `auditRows`. De regel kan wel ontbreken in een telling waarvoor die sleutel nodig is.
+- **Signaalfrequenties** tellen het aantal regels per signaal. Eén regel met drie signalen telt bij alle drie de signalen mee.
+- **Aandachtspunten** tellen unieke auditregels met minimaal één ingeschakeld signaal. Iedere regel telt hier eenmaal, ongeacht het aantal signalen.
 
-De tabellen voor medewerkers, cliënten, locaties, teams, deskundigheden en redenen tonen samengevoegde resultaten. Als je op een regel klikt, zie je alle auditregels die aan die groep bijdragen. De selectie beperkt zich dus niet tot de waarde in één kolom.
+De tabellen voor medewerkers, cliënten, locaties, teams, deskundigheden en redenen tonen gegroepeerde resultaten.
+
+Klik je op een tabelregel, dan opent de webui alle auditregels die aan de betreffende groep bijdragen. De selectie beperkt zich niet tot de waarde in één afzonderlijke kolom.
 
 ## 3. Invoervelden en hun gebruik
 
-De webui verwacht de onderstaande 14 kolomnamen. Het zoekt in de eerste tien rijen naar een werkblad met deze kopregel en kiest het eerste passende werkblad. Het voegt meerdere werkbladen niet samen.
+De webui verwacht 14 kolommen. De kolomkoppen moeten binnen de eerste tien rijen van een werkblad staan. De webui gebruikt het eerste werkblad dat aan alle eisen voldoet en voegt werkbladen niet samen.
 
 | Kolom | Gebruik | Beperking |
 | -- | -- | -- |
@@ -59,27 +69,79 @@ De webui verwacht de onderstaande 14 kolomnamen. Het zoekt in de eerste tien rij
 
 ### Importdiagnostiek
 
-Als geen werkblad alle vereiste kolommen bevat, toont de foutmelding het dynamische aantal vereiste kolommen en het aantal leesbare werkbladen. De controle blijft beperkt tot de eerste tien Excelrijen van elk leesbaar werkblad; koppen op rij 11 of later worden niet geaccepteerd.
+Als geen werkblad alle vereiste kolommen bevat, toont de webui een foutmelding. Deze vermeldt hoeveel kolommen vereist zijn en hoeveel leesbare werkbladen zijn gevonden.
 
-De diagnose gebruikt de kandidaatrij met de meeste overeenkomende vereiste kolomnamen. De melding noemt de werkbladnaam, het Excel-rijnummer (vanaf 1), het aantal herkende vereiste kolommen (bijvoorbeeld 13 van 14) en de ontbrekende kolommen in de volgorde van de vereiste kolommenlijst. Bij gelijkstand wint de eerste kandidaat in werkbladvolgorde en daarna rijvolgorde. Kolomkoppen uit verschillende rijen of werkbladen worden niet gecombineerd. De overige celinhoud wordt niet in de diagnose opgenomen; de werkbladnaam wordt als tekst getoond.
+De controle bekijkt uitsluitend de eerste tien Excelrijen van ieder leesbaar werkblad. Een kopregel op rij 11 of later wordt niet geaccepteerd.
 
-Als geen gecontroleerde rij ook maar één vereiste kolomnaam bevat, vermeldt de melding dat expliciet en noemt zij alle ontbrekende kolommen zonder een best passende rij aan te wijzen. Een bestand zonder leesbare werkbladen behoudt de aparte melding `Geen leesbaar werkblad gevonden.` De kolomvereisten en de selectie van het eerste volledig passende werkblad blijven gelijk.
+Voor de diagnose kiest de webui de rij met de meeste overeenkomende kolomnamen. De melding bevat:
+
+- De naam van het best passende werkblad.
+- Het Excel-rijnummer van de mogelijke kopregel, geteld vanaf 1.
+- Het aantal herkende vereiste kolommen, bijvoorbeeld 13 van 14.
+- De ontbrekende kolommen, in dezelfde volgorde als de vereiste kolommenlijst.
+
+Bij een gelijke stand kiest de webui eerst op werkbladvolgorde en daarna op rijvolgorde.
+
+Kolomkoppen uit verschillende rijen of werkbladen worden niet gecombineerd. De diagnose toont geen overige celinhoud. De werkbladnaam verschijnt als tekst.
+
+Als geen gecontroleerde rij een vereiste kolomnaam bevat, meldt de webui dat expliciet. Alle ontbrekende kolommen worden genoemd, zonder een best passende rij aan te wijzen.
+
+Een bestand zonder leesbare werkbladen geeft de afzonderlijke foutmelding `Geen leesbaar werkblad gevonden.`
+
+De vereiste kolommen en de selectie van het eerste volledig passende werkblad veranderen door deze diagnose niet.
 
 ### 3.1 Sleutels en normalisatie
 
-Voor de medewerkersleutel gebruikt de webui de eerste beschikbare waarde uit `Medewerkernummer`, `Gebruikersnaam` en `Gebruiker`. Een lege waarde of `-` telt als ontbrekend. Ontbreken ze alle drie, dan blijft de regel in de auditpopulatie staan maar verschijnt hij niet in het medewerkersoverzicht. Koppelen op naam is minder betrouwbaar. De webui meldt conflicten tussen identifiers, maar lost ze niet automatisch op.
+Voor de medewerkersleutel gebruikt de webui de eerste beschikbare waarde uit:
 
-De webui groepeert cliënten op doel-ID bij doeltype `Cliënt` en locaties op doel-ID bij doeltype `Locatie`. Bij gemengde doelen bestaat de sleutel uit het doeltype en het doel-ID. Een cliënt en een locatie met hetzelfde nummer blijven zo twee verschillende doelen.
+1. `Medewerkernummer`
+2. `Gebruikersnaam`
+3. `Gebruiker`
 
-De webui verwijdert witruimte aan het begin en einde van tekstwaarden. Voor groepering en systeemherkenning zet het escalatieredenen ook om in kleine letters en vervangt het opeenvolgende spaties door één spatie. Synoniemen en inhoudelijk vergelijkbare redenen blijven aparte groepen. Voor teams en deskundigheden geldt deze normalisatie niet, waardoor schrijfvarianten daar los van elkaar kunnen blijven staan.
+Een lege waarde of `-` geldt als ontbrekend.
 
-In samenvattingen toont de webui vaak de meest voorkomende naam, teamwaarde of deskundigheid. Dat is alleen een keuze voor de weergave en zegt niets over de actuele organisatorische indeling. Bij bursts en concentratie komen team en deskundigheid uit de eerste bijbehorende regel. Controleer de bronregels als de context wisselt.
+Als alle drie ontbreken, blijft de regel in de auditpopulatie staan. De regel verschijnt dan niet in het medewerkersoverzicht.
+
+Identificatie op naam is minder betrouwbaar dan identificatie op nummer. De webui meldt conflicten tussen identifiers, maar corrigeert of combineert deze niet automatisch.
+
+Voor cliënten en locaties gebruikt de webui het doel-ID:
+
+- Cliënten worden gegroepeerd op doel-ID bij doeltype `Cliënt`.
+- Locaties worden gegroepeerd op doel-ID bij doeltype `Locatie`.
+- Bij gemengde doelen bestaat de sleutel uit doeltype en doel-ID.
+
+Een cliënt en locatie met hetzelfde nummer blijven hierdoor twee verschillende doelen.
+
+De webui verwijdert witruimte aan het begin en einde van tekstwaarden.
+
+Bij escalatieredenen past de webui aanvullende normalisatie toe. De tekst wordt omgezet naar kleine letters en opeenvolgende spaties worden vervangen door één spatie. Dit geldt voor groepering en herkenning van systeemredenen.
+
+Synoniemen en inhoudelijk vergelijkbare redenen blijven afzonderlijke groepen. Teams en deskundigheden krijgen deze aanvullende normalisatie niet. Schrijfvarianten kunnen daardoor als aparte groepen verschijnen.
+
+In samenvattingen toont de webui vaak de meest voorkomende naam, teamwaarde of deskundigheid. Dit is uitsluitend een keuze voor de weergave en zegt niets over de actuele organisatorische indeling.
+
+Bij bursts en concentratie gebruikt de webui het team en de deskundigheid uit de eerste bijbehorende regel. Controleer de bronregels wanneer de context binnen een groep wisselt.
 
 ### 3.2 Ontbrekende cliëntgegevens
 
-Een cliëntgerichte regel zonder doel-ID telt wel mee in de auditpopulatie en, waar mogelijk, in medewerker-, team-, reden- en tijdanalyses. Deze regel telt niet mee bij unieke cliënten, cliëntspecifieke signalen, cliëntclusters of her-escalaties voor dezelfde cliënt. Een ontbrekende cliëntnaam met een aanwezig ID verhindert groepering niet, maar geeft wel een volledigheidssignaal.
+Een cliëntgerichte regel zonder doel-ID blijft meetellen in de auditpopulatie.
 
-Het referentiebestand bevat 1.611 cliëntgerichte auditregels: 1.554 met herkenbaar cliënt-ID en 57 zonder herkenbaar cliënt-ID. Van de 310 niet-geactiveerde regels zijn er 7 cliëntgericht zonder herkenbaar doel-ID. Dat verband is een bevinding uit dit bestand en geen algemene regel voor toekomstige exports.
+Waar mogelijk telt deze regel ook mee in analyses per medewerker, team, reden en tijdstip.
+
+Zonder herkenbaar cliënt-ID telt de regel niet mee bij:
+
+- Unieke cliënten.
+- Cliëntspecifieke signalen.
+- Cliëntclusters.
+- Her-escalaties voor dezelfde cliënt.
+
+Ontbreekt alleen de cliëntnaam en is het ID wel aanwezig, dan kan de webui de regel groeperen. Er ontstaat wel een volledigheidssignaal.
+
+Het referentiebestand bevat 1.611 cliëntgerichte auditregels. Daarvan hebben 1.554 een herkenbaar cliënt-ID en 57 geen herkenbaar cliënt-ID.
+
+Van de 310 niet-geactiveerde regels zijn er 7 cliëntgericht zonder herkenbaar doel-ID.
+
+Deze aantallen beschrijven uitsluitend het referentiebestand. Ze vormen geen algemene regel voor andere exports.
 
 ## 4. Van bronbestand naar auditpopulatie
 
@@ -92,24 +154,26 @@ Het referentiebestand bevat 1.611 cliëntgerichte auditregels: 1.554 met herkenb
 | `auditRows` | `manualRows` na ontdubbeling; basis voor inhoudelijke analyses |
 | `attention` | Auditregels met minimaal één ingeschakeld signaal |
 
-De naam `manualRows` betekent hier dat het systeemfilter de regel niet heeft herkend. Een onbekende nieuwe systeemreden kan dus voorlopig in deze verzameling terechtkomen.
+De naam `manualRows` betekent dat het systeemfilter de betreffende regel niet heeft herkend. Een nieuwe of onbekende systeemreden kan daardoor in deze verzameling terechtkomen.
 
 ![Verdeling van bronregels over systeemregels, auditregels en aandachtspunten](assets/auditpopulatie.svg)
 
-Het diagram gebruikt het synthetisch referentiebestand als voorbeeld. De bandbreedtes en aantallen gelden alleen voor dat referentiebestand; de verzamelingen en rekenregels gelden voor iedere analyse.
+Het diagram gebruikt het synthetische referentiebestand. De getoonde aantallen en verhoudingen gelden alleen voor dat bestand. De verzamelingen en rekenregels gelden voor iedere analyse.
 
-De aantallen moeten aansluiten volgens:
+De aantallen moeten voldoen aan:
 
 ```text
 bronregels = systeemregels + duplicaatkopieën + auditregels
 auditregels = regels met minimaal één signaal + regels zonder ingeschakeld signaal
 ```
 
-De webui slaat volledig lege rijen over. Andere instructie- of totaalrijen verwijdert het niet automatisch. Gebruik daarom een export met echte logregels onder de kolomkoppen.
+De webui slaat volledig lege rijen over. Andere instructie- of totaalrijen worden niet automatisch verwijderd.
+
+Gebruik daarom een export waarin onder de kolomkoppen uitsluitend werkelijke logregels staan.
 
 ### 4.1 Systeemfilter
 
-De webui sluit een regel uit als de genormaliseerde reden precies overeenkomt met een van deze teksten:
+De webui sluit regels uit waarvan de genormaliseerde escalatiereden precies overeenkomt met een van deze teksten:
 
 ```text
 Cliënt gekoppeld aan item in Ons Ketenverkeer
@@ -117,21 +181,51 @@ Systeemescalatie: sta 30 minuten toegang toe tot cliënt na aanmaken.
 Toegang tot cliënt nadat deze is aangemaakt door Ons Ketenverkeer
 ```
 
-De duur speelt bij deze herkenning geen rol. Met `excludeDuration30` kun je daarnaast alle regels uitsluiten waarvan de numerieke duur 30 minuten is. Deze optie staat standaard **uit**. Een onbekende reden met een duur van 30 minuten blijft daarom normaal in de auditpopulatie staan en verschijnt als controlepunt in **Auditlogica**.
+De tijdsduur speelt bij deze herkenning geen rol.
 
-Controleer na wijzigingen in de export of applicatie opnieuw de verdeling van redenen en duur. Het referentiebestand bevat 156 herkende systeemregels: 44 voor de eerste reden, 51 voor de tweede en 61 voor de derde. Al deze regels duren 30 minuten. In de auditpopulatie staan daarnaast 337 handmatige regels met een duur van precies 30 minuten. Het aanvullende duurfilter sluit bij dit bestand dus extra regels uit; zet het aan en uit om het verschil te zien.
+Met `excludeDuration30` kun je daarnaast alle regels uitsluiten waarvan de numerieke duur precies 30 minuten is. Deze instelling staat standaard **uit**.
+
+Een onbekende reden met een duur van 30 minuten blijft daardoor normaal meetellen in de auditpopulatie. De webui toont deze regels als controlepunt onder **Auditlogica**.
+
+Controleer de verdeling van redenen en tijdsduren opnieuw wanneer de export of de applicatie verandert.
+
+In het referentiebestand herkent de webui 156 systeemregels:
+
+- 44 regels met de eerste reden.
+- 51 regels met de tweede reden.
+- 61 regels met de derde reden.
+
+Al deze regels hebben een duur van 30 minuten.
+
+Daarnaast bevat de auditpopulatie 337 handmatige regels met een duur van precies 30 minuten.
+
+Het aanvullende duurfilter sluit in dit bestand dus extra regels uit. Door de instelling aan en uit te zetten, kun je het verschil controleren.
 
 ### 4.2 Duplicaten
 
-De webui vergelijkt bij alle niet-uitgesloten regels de 14 bronvelden nadat ze zijn ingelezen en de witruimte aan begin en einde is verwijderd. Zijn de waarden gelijk, dan blijft het eerste exemplaar in de auditpopulatie staan. Latere exemplaren vallen af en verwijzen naar de oorspronkelijke Excel-rij.
+De webui vergelijkt de 14 ingelezen bronvelden van alle niet-uitgesloten regels. Vooraf wordt witruimte aan het begin en einde van de waarden verwijderd.
 
-De vergelijking kijkt naar de ingelezen veldwaarden, niet naar de bytes van het bestand. Omdat een uniek gebeurtenis-ID ontbreekt, kan de webui twee verder identieke gebeurtenissen niet van elkaar onderscheiden. Ontdubbeling is dus een bewuste analysekeuze. Beoordeel die keuze opnieuw als de definitie van de export verandert.
+Zijn alle waarden gelijk, dan behoudt de webui het eerste exemplaar. Latere exemplaren worden uitgesloten van de auditpopulatie en verwijzen naar de oorspronkelijke Excel-rij.
 
-De webui zet systeemregels al voor deze stap apart en ontdubbelt die niet. Het aantal systeemregels is daarom gelijk aan het aantal uitgesloten bronregels. Een duplicaatgroep kan bij **Datakwaliteit** drie exemplaren bevatten, terwijl **Duplicaten** in de auditflow twee uitgesloten kopieën telt.
+De vergelijking gebruikt de ingelezen veldwaarden, niet de oorspronkelijke bestandsbytes.
+
+Omdat de export geen uniek gebeurtenis-ID bevat, kan de webui twee verder identieke gebeurtenissen niet van elkaar onderscheiden.
+
+Exacte ontdubbeling is daarom een bewuste analysekeuze. Beoordeel deze opnieuw als de definitie van de export verandert.
+
+Systeemregels worden vóór deze stap apart gezet en niet ontdubbeld. Het aantal systeemregels is daardoor gelijk aan het aantal uitgesloten bronregels.
+
+Een duplicaatgroep kan bij **Datakwaliteit** drie exemplaren bevatten, terwijl de auditflow bij **Duplicaten** twee uitgesloten kopieën toont.
 
 ### 4.3 Datakwaliteit heeft een andere basis
 
-De inhoudelijke tellingen gebruiken `auditRows`. **Datakwaliteit** bekijkt de niet-uitgesloten regels vóór ontdubbeling, zodat duplicaten zichtbaar blijven. **Auditlogica** controleert alle bronregels op duur, reden, doeltype en bronwaarde. De tabbladen gebruiken dus verschillende populaties. Je kunt hun aantallen niet zomaar vergelijken of bij elkaar optellen.
+De onderdelen gebruiken verschillende verzamelingen:
+
+- Inhoudelijke tellingen gebruiken `auditRows`.
+- **Datakwaliteit** onderzoekt niet-uitgesloten regels vóór ontdubbeling. Daardoor blijven duplicaten zichtbaar.
+- **Auditlogica** onderzoekt alle bronregels op tijdsduur, reden, doeltype en bronwaarde.
+
+De aantallen uit deze onderdelen hebben dus niet altijd dezelfde basis. Je kunt ze niet zonder meer vergelijken of bij elkaar optellen.
 
 ## 5. Kerncijfers, tellers en noemers
 
@@ -148,70 +242,183 @@ De inhoudelijke tellingen gebruiken `auditRows`. **Datakwaliteit** bekijkt de ni
 | Signaalfrequentie | Aantal auditregels waarop één specifiek signaal staat | Frequenties van verschillende signalen kunnen overlappen |
 | Regels per controlethema | Unieke auditregels met minimaal één signaal binnen dat thema | Binnen een thema eenmaal tellen; tussen thema's is overlap mogelijk |
 
-De webui leidt de totalen voor her-escalaties en zeer snelle her-escalaties af uit de berekende intervallen. De bijbehorende schakelaars bepalen alleen of deze regels ook onder **Aandachtspunten** vallen. Als je een signaal uitschakelt, kan het beschrijvende aantal dus nog steeds in een overzicht staan.
+De webui berekent her-escalaties en zeer snelle her-escalaties op basis van de gevonden intervallen.
 
-De meeste percentages krijgen één decimaal; peer-ratio's krijgen er twee. Algemene percentagefuncties tonen bij een lege populatie `0%`. Dat betekent dat de basis leeg is, niet dat het verschijnsel aantoonbaar niet voorkwam. Een peer-ratio blijft leeg bij te weinig vergelijkingsmateriaal of een mediaan van nul.
+De bijbehorende schakelaars bepalen alleen of deze gebeurtenissen ook als aandachtspunt meetellen. Een beschrijvend aantal kan dus zichtbaar blijven wanneer je het betreffende signaal uitschakelt.
+
+De meeste percentages worden met één decimaal weergegeven. Peer-ratio's krijgen twee decimalen.
+
+Algemene percentagefuncties tonen bij een lege populatie `0%`. Dit betekent dat de berekeningsbasis leeg is, niet dat het verschijnsel aantoonbaar niet is voorgekomen.
+
+Een peer-ratio blijft leeg wanneer er te weinig vergelijkingsmateriaal is of wanneer de groepsmediaan nul is.
 
 ## 6. Basisanalyses en vergelijkbaarheid
 
 ### 6.1 Medewerkers
 
-Per medewerkersleutel telt de webui de auditregels, unieke herkenbare cliënten en locaties, redenen, actieve dagen en het hoogste dagvolume. Ook toont het niet-geactiveerde pogingen, nacht- en weekendregels, berekende her-escalaties, regels met signalen en het eerste en laatste geldige starttijdstip.
+De webui berekent per medewerkersleutel:
 
-Een actieve dag is een kalenderdag met minimaal één auditregel met geldige startdatum. Het is geen gewerkte dag of dienst. Een medewerker kan in deze tabel over meerdere teams of deskundigheden zijn samengevat; de peeranalyse stelt daarom aanvullende voorwaarden.
+- Het aantal auditregels.
+- Het aantal unieke herkenbare cliënten en locaties.
+- De gebruikte escalatieredenen.
+- Het aantal actieve dagen en het hoogste dagvolume.
+- Niet-geactiveerde pogingen.
+- Nacht- en weekendregels.
+- Berekende her-escalaties.
+- Regels met signalen.
+- Het eerste en laatste geldige starttijdstip.
+
+Een actieve dag is een kalenderdag waarop minimaal één auditregel met een geldige startdatum voorkomt. Dit is niet hetzelfde als een gewerkte dag of dienst.
+
+Een medewerker kan in het overzicht over meerdere teams of deskundigheden zijn samengevat. Voor peervergelijkingen gelden daarom aanvullende voorwaarden.
 
 ### 6.2 Cliënten en locaties
 
-Deze tabellen groeperen auditregels op doeltype en doel-ID. Ze tonen het volume en de spreiding over medewerkers, teams, deskundigheden en redenen. Niet-geactiveerde pogingen met een herkenbaar doel tellen mee.
+De tabellen groeperen auditregels op doeltype en doel-ID.
 
-Het aantal verschillende medewerkers rond een cliënt is het aantal geregistreerde medewerkers met een escalatiepoging. Het is geen telling van medewerkers die aantoonbaar het dossier hebben ingezien. De kolom `Hoofdlocatie` bij een cliënt is context; het tabblad **Locaties** gaat over escalaties met doeltype `Locatie`.
+Per groep toont de webui het volume en de spreiding over medewerkers, teams, deskundigheden en redenen.
+
+Niet-geactiveerde pogingen met een herkenbaar doel tellen mee.
+
+Het aantal verschillende medewerkers bij een cliënt is het aantal geregistreerde medewerkers met een escalatiepoging. Het zegt niet hoeveel medewerkers daadwerkelijk het dossier hebben ingezien.
+
+De kolom `Hoofdlocatie` bij een cliënt biedt aanvullende context. Het tabblad **Locaties** gaat uitsluitend over escalaties met doeltype `Locatie`.
 
 ### 6.3 Teams en deskundigheden
 
-De webui wijst iedere bronregel toe aan het team en de deskundigheid die in die regel staan. Komt een medewerker bij verschillende teams voor, dan kan die persoon in meerdere teamgroepen meetellen. Tel unieke aantallen uit verschillende groepen niet bij elkaar op tot een organisatietotaal.
+De webui gebruikt voor iedere regel het geregistreerde team en de deskundigheid.
+
+Komt een medewerker bij meerdere teams voor, dan kan die persoon in verschillende teamgroepen meetellen.
+
+Tel unieke aantallen uit afzonderlijke groepen daarom niet op tot één organisatietotaal.
 
 ```text
 escalaties per waargenomen medewerker =
   aantal auditregels van de groep / aantal herkenbare medewerkers in die groep
 ```
 
-In de noemer staan alleen medewerkers uit de auditpopulatie. Medewerkers zonder escalaties ontbreken, net als gegevens over FTE, gewerkte uren, diensten en caseload. De maat corrigeert daarom niet voor de volledige teamomvang of werklast. Als medewerkersleutels ontbreken, kan de teller regels bevatten van medewerkers die niet in de noemer staan. Technisch gebruikt de implementatie minimaal 1 als deler. Zijn er geen herkenbare medewerkers, dan is de getoonde uitkomst geen bruikbaar gemiddelde.
+De noemer bevat uitsluitend medewerkers die in de auditpopulatie voorkomen.
 
-Het nachtpercentage per deskundigheid is het aantal nachtregels gedeeld door alle auditregels van die deskundigheid. Regels met een ongeldige startdatum blijven in de noemer staan, maar de webui kan ze niet als nachtregel herkennen. Controleer dus eerst de datakwaliteit voordat je percentages tussen groepen vergelijkt.
+Medewerkers zonder escalaties ontbreken. De export bevat bovendien geen volledige gegevens over FTE, gewerkte uren, diensten of caseload.
+
+De maat corrigeert daardoor niet voor teamomvang of werklast.
+
+Wanneer medewerkersleutels ontbreken, kan de teller auditregels bevatten waarvan de medewerkers niet in de noemer staan.
+
+De implementatie gebruikt technisch minimaal 1 als deler. Als er geen herkenbare medewerkers zijn, is de getoonde uitkomst geen bruikbaar gemiddelde.
+
+Het nachtpercentage per deskundigheid wordt berekend als:
+
+```text
+nachtpercentage =
+  aantal nachtregels / alle auditregels van de deskundigheid
+```
+
+Regels met een ongeldige startdatum blijven in de noemer staan. De webui kan ze echter niet als nachtregel herkennen.
+
+Controleer daarom eerst de datakwaliteit voordat je percentages tussen groepen vergelijkt.
 
 ### 6.4 Redenen
 
-Na normalisatie groepeert de webui dezelfde redenen. De tabel toont aantallen, schrijfvarianten, betrokken medewerkers, cliënten en teams, niet-geactiveerde pogingen en regels met signalen. De meest voorkomende duur is alleen een beschrijvende waarde. De webui leidt er geen geldigheidsduur van de toegang uit af.
+De webui groepeert escalatieredenen na normalisatie.
 
-Ontbrekende waarden kunnen als lege categorie verschijnen. Tellingen van unieke redenen in de verschillende samenvattingen behandelen ontbrekende waarden niet overal hetzelfde. Gebruik het tabblad **Redenen** en de bronregels voor een vergelijking waarbij ontbrekende redenen relevant zijn.
+De tabel toont:
+
+- Aantallen en schrijfvarianten.
+- Betrokken medewerkers, cliënten en teams.
+- Niet-geactiveerde pogingen.
+- Regels met signalen.
+
+De meest voorkomende tijdsduur is een beschrijvende waarde. De webui gebruikt deze niet om de geldigheidsduur van toegang vast te stellen.
+
+Ontbrekende redenen kunnen als lege categorie verschijnen.
+
+Niet alle samenvattingen behandelen ontbrekende waarden hetzelfde bij het tellen van unieke redenen. Gebruik daarom het tabblad **Redenen** en de bronregels wanneer ontbrekende waarden van belang zijn voor je vergelijking.
 
 ### 6.5 Tijdpatronen
 
-De webui telt geldige starttijdstippen per datum, uur en weekdag. De heatmap combineert weekdag en uur; deze gecombineerde telling hoort bij het analyseresultaat, zodat de webui-heatmap en de weekdag/uur-matrix in het HTML-rapport dezelfde waarden gebruiken. Ongeldige startdatums blijven in de auditpopulatie maar vallen buiten tijdgebonden berekeningen; het rapport vermeldt dit aantal apart en de som van alle matrixcellen plus dit aantal is de auditpopulatie.
+De webui groepeert auditregels met een geldig starttijdstip per datum, uur en weekdag.
 
-De grafieken tonen ruwe volumes. Ze houden geen rekening met het aantal maandagen of zondagen in het bestand, de bezetting van diensten of ontbrekende exportdagen. Het datumoverzicht bevat alleen dagen waarop geldige auditregels voorkomen. Ontbreekt een datum, dan bewijst dat niet dat er die dag geen activiteit was.
+De heatmap combineert weekdag en uur. Deze telling wordt vastgelegd in het analyseresultaat, zodat de heatmap in de webui en de weekdag/uur-matrix in het HTML-rapport dezelfde waarden tonen.
 
-Het getoonde datumbereik loopt van het eerste tot het laatste geldige starttijdstip dat de webui vindt. Op het overzicht komt dit bereik uit de auditpopulatie; voor exportnamen en het rapport gebruikt de webui de bronpopulatie. De bereiken kunnen verschillen als op de eerste of laatste dagen alleen systeemregels staan. Geen van beide bereiken bewijst dat de bedoelde exportperiode volledig aanwezig is.
+Auditregels met een ongeldige startdatum blijven in de auditpopulatie, maar tellen niet mee bij tijdgebonden berekeningen.
+
+Het HTML-rapport vermeldt het aantal regels zonder geldige startdatum afzonderlijk.
+
+De volgende controle moet daarom kloppen:
+
+```text
+som van alle matrixcellen + regels zonder geldige startdatum = auditpopulatie
+```
+
+De grafieken tonen ruwe aantallen. Ze corrigeren niet voor:
+
+- Het aantal maandagen of zondagen in de export.
+- De bezetting van diensten.
+- Ontbrekende exportdagen.
+
+Het datumoverzicht bevat alleen dagen waarop auditregels met een geldige startdatum voorkomen.
+
+Een ontbrekende datum bewijst niet dat er die dag geen activiteit was.
+
+Het getoonde datumbereik loopt van het eerste tot het laatste geldige starttijdstip dat de webui vindt.
+
+De gebruikte populatie verschilt per onderdeel:
+
+- Het overzicht gebruikt de auditpopulatie.
+- Exportbestandsnamen en het HTML-rapport gebruiken de bronpopulatie.
+
+Deze bereiken kunnen verschillen wanneer op de eerste of laatste dagen alleen systeemregels voorkomen.
+
+Geen van beide bereiken bewijst dat de volledige bedoelde exportperiode aanwezig is.
 
 ## 7. Tijdstippen en toegangstermijn
 
-De parser kan overweg met numerieke Excel-datums in het 1900-datumsysteem, datumtijdtekst zoals `01-05-2026, 09:30:00` en de ondersteunde ISO-vorm zonder tijdzone. Onmogelijke kalenderdatums en kloktijden wijst hij af. Een datum zonder tijd, zoals `01-05-2026`, herkent hij niet en telt daarom als ongeldige startdatum. Bij een bestand met het 1904-datumsysteem verschijnt een foutmelding.
+De datumparser ondersteunt numerieke Excel-datums in het 1900-datumsysteem, datumtijdtekst zoals `01-05-2026, 09:30:00` en de ondersteunde ISO-vorm zonder tijdzone.
 
-De webui behandelt tijdstippen als de kloktijden uit de export, los van de tijdzone van de browser. Het stelt de tijdzone van de bron niet vast en rekent tijden niet om. Daardoor zijn tijdverschillen rond de overgang tussen zomer- en wintertijd onzeker. Gebeurtenissen van vóór het begin van de export zijn evenmin bekend.
+Onmogelijke kalenderdatums en kloktijden worden afgewezen.
 
-In het referentiebestand lopen de voorkomende tijdsduren van 15 tot en met 840 minuten (15: 388, 30: 337, 60: 345, 120: 349 en 840: 383 regels). Voor her-escalaties gebruikt de webui daarnaast `activeAccessMinutes = 840`. Die 14 uur is een overgenomen functionele aanname voor triage. De export bevestigt deze termijn niet en laat ook niet zien of toegang tussentijds is ingetrokken.
+Een datum zonder tijd, zoals `01-05-2026`, wordt niet herkend en telt daarom als ongeldige startdatum.
 
-Laat FAB controleren of de gebruikte toegangstermijn overeenkomt met de inrichting. Een verkeerde termijn verandert welke her-escalaties de webui selecteert. Bewaar daarom bij iedere beoordeling de toegepaste instellingen.
+Bij een bestand met het 1904-datumsysteem toont de webui een foutmelding.
+
+De webui gebruikt de kloktijden uit de export, onafhankelijk van de tijdzone van de browser. De tijdzone van de bron wordt niet vastgesteld en tijdstippen worden niet omgerekend.
+
+Tijdsverschillen rond de overgang tussen zomer- en wintertijd zijn daardoor onzeker.
+
+Ook gebeurtenissen die plaatsvonden vóór het begin van de export zijn niet bekend.
+
+In het referentiebestand komen de volgende tijdsduren voor:
+
+| Duur (minuten) | Auditregels |
+| -- | -: |
+| 15 | 388 |
+| 30 | 337 |
+| 60 | 345 |
+| 120 | 349 |
+| 840 | 383 |
+
+Voor her-escalaties gebruikt de webui daarnaast `activeAccessMinutes = 840`.
+
+Deze periode van 14 uur is een overgenomen functionele aanname voor triage. De export bevestigt niet dat toegang gedurende deze volledige periode geldig bleef of dat deze niet tussentijds is ingetrokken.
+
+Laat FAB controleren of de ingestelde toegangstermijn overeenkomt met de inrichting van Nedap Ons.
+
+Een onjuiste termijn verandert welke her-escalaties worden geselecteerd. Bewaar daarom bij iedere beoordeling de toegepaste instellingen.
 
 ## 8. Her-escalaties en activatievertraging
 
 ### 8.1 Her-escalatie tijdens aangenomen actieve toegang
 
-Voor een nieuwe regel B zoekt de webui binnen de auditpopulatie naar een eerdere regel A van dezelfde medewerkersleutel en dezelfde herkenbare cliënt-ID. Beide starttijdstippen moeten geldig zijn. Regel A moet een leesbare activatie hebben die niet vóór de eigen start ligt.
+Voor een nieuwe regel B zoekt de webui een eerdere regel A in dezelfde auditpopulatie.
+
+Beide regels moeten dezelfde medewerkersleutel en hetzelfde herkenbare cliënt-ID hebben. Ook moeten beide starttijdstippen geldig zijn.
+
+Regel A moet een leesbare activatie bevatten die niet vóór de eigen start ligt.
 
 ![Sequentie waarin regel B aan een eerdere activatie van regel A wordt gekoppeld](assets/her-escalatie.svg)
 
-De tijdsvoorwaarden zijn:
+De webui gebruikt deze tijdsvoorwaarden:
 
 ```text
 start A <= start B
@@ -219,37 +426,67 @@ start A <= activatie A <= start B
 0 <= start B - activatie A <= activeAccessMinutes
 ```
 
-De grenzen tellen mee. Hebben twee regels dezelfde starttijd, dan behandelt de webui de lagere Excel-rij als de eerdere regel. Zo levert dezelfde invoer steeds dezelfde uitkomst op, maar dit bewijst geen werkelijke volgorde binnen die seconde. Regel B hoeft zelf niet geactiveerd te zijn.
+Alle grenswaarden tellen mee.
 
-De webui gebruikt de meest recente beschikbare activatie van de passende eerdere regels. Een eerdere poging die pas na de start van B activeert, verdringt een activatie die op dat moment al beschikbaar was niet. Bij het aandachtspunt bewaart de webui de geselecteerde eerdere bronrij en toont die bij doorklikken.
+Als twee regels dezelfde starttijd hebben, beschouwt de webui de regel met het laagste Excel-rijnummer als de eerdere regel.
 
-Zonder cliënt-ID, medewerkersleutel of startdatum kan de webui de regels niet koppelen. Een activatie vóór de eigen start geldt bij deze controle niet als geldige eerdere activatie.
+Hierdoor is de uitkomst bij dezelfde invoer reproduceerbaar. Het bewijst niet welke gebeurtenis binnen die seconde werkelijk als eerste plaatsvond.
+
+Regel B hoeft zelf niet geactiveerd te zijn.
+
+Van alle passende eerdere regels gebruikt de webui de meest recente activatie die op het startmoment van B al beschikbaar was.
+
+Een eerdere poging die pas ná de start van B activeert, verdringt een al beschikbare activatie niet.
+
+Bij het aandachtspunt bewaart de webui het rijnummer van de geselecteerde eerdere regel. Dit nummer wordt bij doorklikken getoond.
+
+Zonder cliënt-ID, medewerkersleutel of startdatum kan de webui geen koppeling maken.
+
+Een activatie vóór de eigen start is voor deze controle geen geldige eerdere activatie.
 
 ### 8.2 Zeer snelle her-escalatie
 
-Dit is een aanvullend kenmerk van dezelfde geselecteerde relatie A/B:
+Een zeer snelle her-escalatie is een aanvullend kenmerk van dezelfde geselecteerde relatie tussen A en B.
 
 ```text
 her-escalatie volgens paragraaf 8.1
 en 0 <= start B - start A <= veryFastRepeatMinutes
 ```
 
-De standaard is 5 minuten. Deze maat vergelijkt dus met de eerdere regel die voor de actieve-toegangscontrole is gekozen, niet met iedere willekeurige vorige poging. Een reeks niet-geactiveerde pogingen zonder geldige eerdere activatie krijgt op deze grond geen zeer-snel-signaal.
+De standaardgrens is 5 minuten.
+
+De webui vergelijkt hiervoor de starttijd van B met de starttijd van de eerdere regel A die bij de actieve-toegangscontrole is geselecteerd.
+
+Het gaat dus niet om iedere willekeurige eerdere escalatiepoging.
+
+Een reeks niet-geactiveerde pogingen zonder geldige eerdere activatie krijgt op deze grond geen zeer-snel-signaal.
 
 ### 8.3 Activatievertraging
+
+De webui berekent activatievertraging als:
 
 ```text
 activatievertraging in minuten = (activatie - start) / 60 seconden
 late activatie als activatievertraging > activationDelayThresholdMinutes
 ```
 
-De standaardgrens ligt strikt boven 2 minuten. De webui beoordeelt het ongeronde tijdsverschil, terwijl de tabel een afgeronde waarde toont. Precies 2 minuten telt daarom niet als late activatie; 2 minuten en 1 seconde wel.
+De standaardgrens is strikt meer dan 2 minuten.
 
-Een negatieve vertraging krijgt een datakwaliteitssignaal. Dat geldt ook voor een lege of onleesbare activatie, behalve als het veld letterlijk `Niet geactiveerd` bevat. Dit is een aparte geregistreerde toestand. Uit de tekst blijkt niet wat de oorzaak was.
+De berekening gebruikt het ongeronde tijdsverschil. De tabel toont een afgeronde waarde.
+
+Een activatie na precies 2 minuten krijgt dus geen signaal voor late activatie. Een activatie na 2 minuten en 1 seconde wel.
+
+Een negatieve vertraging krijgt een datakwaliteitssignaal.
+
+Dat geldt ook wanneer de activatie ontbreekt of niet leesbaar is, behalve als het veld letterlijk `Niet geactiveerd` bevat.
+
+`Niet geactiveerd` is een afzonderlijke geregistreerde toestand. De tekst vertelt niet waarom de activatie uitbleef.
 
 ## 9. Auditsignalen
 
-De onderstaande criteria gelden voor auditregels en de toegepaste instellingen. Drempels selecteren patronen; het zijn geen normen voor toelaatbaar gedrag.
+De webui kent signalen toe aan auditregels op basis van de toegepaste instellingen.
+
+Drempelwaarden helpen bij het selecteren van patronen. Het zijn geen normen voor toegestaan of ongeoorloofd gedrag.
 
 | Signaal | Standaardcriterium | Welke regels krijgen het signaal? |
 | -- | -- | -- |
@@ -270,13 +507,19 @@ De onderstaande criteria gelden voor auditregels en de toegepaste instellingen. 
 | `ONGELDIGE_ACTIVATIE` | Datakwaliteit aan | Activatie ontbreekt, is onleesbaar of ligt vóór de start; expliciet niet-geactiveerde regels uitgezonderd |
 | `ONGELDIGE_DUUR` | Datakwaliteit aan | Duur ontbreekt, is niet numeriek of is negatief |
 
-Eén groepssignaal kan op veel regels staan. Honderd regels met `HOOG_DAGVOLUME` betekenen bijvoorbeeld niet dat er honderd verschillende piekdagen waren. De drempels voor cliënten en medewerkers gelden voor het hele bestand. De lengte van de exportperiode beïnvloedt deze signalen dus.
+Eén groepssignaal kan aan veel regels worden toegekend.
 
-Als begin- en einduur gelijk zijn, is het nachtvenster leeg. De opgetelde nacht- en weekendtellingen blijven wel beschikbaar wanneer je het bijbehorende signaal uitschakelt.
+Honderd regels met `HOOG_DAGVOLUME` betekenen bijvoorbeeld niet dat er honderd afzonderlijke piekdagen waren.
+
+De drempels voor medewerkers en cliënten worden toegepast op het volledige bestand. De lengte van de exportperiode beïnvloedt daardoor welke signalen ontstaan.
+
+Als het begin- en einduur van het nachtvenster gelijk zijn, is het venster leeg.
+
+De webui blijft nacht- en weekendtellingen berekenen wanneer je de bijbehorende signalen uitschakelt.
 
 ## 10. Controleprioriteit en overlap
 
-De webui groepeert signalen in vier thema's:
+De webui deelt signalen in vier controlethema's in.
 
 | Thema | Signalen |
 | -- | -- |
@@ -287,9 +530,13 @@ De webui groepeert signalen in vier thema's:
 
 ![Overlap tussen controlethema's en unieke aandachtspunten](assets/signaaloverlap.svg)
 
-Het diagram toont drie van de vier thema's om de overlap leesbaar te houden. Ook datakwaliteit kan met deze thema's op dezelfde auditregel voorkomen. Signaal- en thematellingen mogen die regel ieder tellen, maar bij **Aandachtspunten** telt hij eenmaal.
+Het diagram toont drie van de vier thema's om de overlap leesbaar te houden.
 
-De webui bepaalt de controleprioriteit alleen voor aandachtspunten:
+Ook datakwaliteit kan op dezelfde auditregel voorkomen als een of meer andere thema's.
+
+Een regel mag meetellen bij meerdere signalen en thema's. In **Aandachtspunten** telt iedere auditregel echter maar één keer.
+
+De webui kent alleen aan aandachtspunten een controleprioriteit toe.
 
 | Prioriteit | Regel |
 | -- | -- |
@@ -297,25 +544,51 @@ De webui bepaalt de controleprioriteit alleen voor aandachtspunten:
 | Midden | Twee thema's, zonder de bovenstaande hoge prioriteit |
 | Basis | Overige aandachtspunten |
 
-Bij een niet-geactiveerde poging telt `ONVOLLEDIG_CLIENTDOEL` niet nogmaals mee voor het aantal prioriteitsthema's. Het signaal blijft wel zichtbaar en telt mee in de datakwaliteitsthemakaart. Je kunt de aantallen uit de themakaarten en prioriteitsgroepen daarom niet rechtstreeks bij elkaar optellen.
+Bij een niet-geactiveerde poging telt `ONVOLLEDIG_CLIENTDOEL` niet opnieuw mee bij het bepalen van het aantal prioriteitsthema's.
 
-Deze indeling bepaalt alleen de werkvolgorde. Het is niet aangetoond dat de thema's onafhankelijk van elkaar zijn. Ook zeggen de labels niets over de ernst van een mogelijke overtreding of de kans daarop. De aandachtspuntentabel sorteert eerst op prioriteit, dan op het aantal signalen en tot slot op starttijd.
+Het signaal blijft wel zichtbaar en telt mee in de datakwaliteitsthemakaart.
 
-In het referentiebestand is er sprake van gedeeltelijke overlap: `ONVOLLEDIG_CLIENTDOEL` staat op dezelfde 57 regels zonder herkenbaar doel-ID, waarvan 7 ook `NIET_GEACTIVEERD` hebben. Deze regels zijn samen 57 unieke regels, geen 114 losse bevindingen. Ook een zeer snelle her-escalatie en een her-escalatie kunnen hetzelfde patroon beschrijven.
+Hierdoor kun je de aantallen van themakaarten en prioriteitsgroepen niet rechtstreeks bij elkaar optellen.
+
+De prioriteit bepaalt uitsluitend de volgorde van controle.
+
+De webui toont hiermee niet aan dat de thema's onafhankelijk van elkaar zijn. De prioriteitslabels geven ook geen oordeel over de ernst of waarschijnlijkheid van een overtreding.
+
+De aandachtspuntentabel sorteert op:
+
+1. Controleprioriteit.
+2. Aantal signalen.
+3. Starttijd.
+
+In het referentiebestand overlappen verschillende signalen.
+
+`ONVOLLEDIG_CLIENTDOEL` komt voor op 57 regels zonder herkenbaar doel-ID. Daarvan hebben 7 ook `NIET_GEACTIVEERD`.
+
+Samen blijven dit 57 unieke regels, geen 114 afzonderlijke bevindingen.
+
+Ook een zeer snelle her-escalatie en een her-escalatie kunnen hetzelfde patroon beschrijven.
 
 ## 11. Verdiepende analyses
 
 ### 11.1 Peervergelijking
 
-De webui kan een medewerker vergelijken als alle bijbehorende auditregels precies één ingevuld team en één ingevulde deskundigheid bevatten. Wisselt deze context of ontbreekt er een waarde, dan krijgt de medewerker geen peer-ratio en telt die ook niet mee als peer van anderen.
+De webui kan een medewerker alleen met peers vergelijken wanneer alle bijbehorende auditregels precies één ingevuld team en één ingevulde deskundigheid bevatten.
 
-Voor iedere vergelijkbare medewerker maakt de webui drie groepen met andere vergelijkbare medewerkers:
+Als het team of de deskundigheid wisselt of een waarde ontbreekt, berekent de webui geen peer-ratio voor deze medewerker.
 
-1. hetzelfde team;
-2. dezelfde deskundigheid;
-3. hetzelfde team én dezelfde deskundigheid.
+De medewerker wordt dan ook niet als peer van andere medewerkers gebruikt.
 
-De medewerker zelf telt niet mee in deze groepen. Per groep zijn standaard minimaal drie **andere** medewerkers nodig. Na het sorteren is de mediaan het middelste persoonsaantal. Bij een even aantal peers neemt de webui het gemiddelde van de twee middelste waarden.
+Voor iedere vergelijkbare medewerker maakt de webui drie groepen met andere medewerkers:
+
+1. Medewerkers uit hetzelfde team.
+2. Medewerkers met dezelfde deskundigheid.
+3. Medewerkers met hetzelfde team én dezelfde deskundigheid.
+
+De medewerker zelf telt niet mee.
+
+Standaard moeten per groep minimaal drie **andere** medewerkers beschikbaar zijn.
+
+De webui sorteert de waarden en bepaalt vervolgens de mediaan. Bij een oneven aantal peers is dit de middelste waarde. Bij een even aantal gebruikt de webui het gemiddelde van de twee middelste waarden.
 
 ![Beslisroute van medewerkerscontext naar een beschikbare peer-ratio](assets/peervergelijking.svg)
 
@@ -326,39 +599,113 @@ De medewerker zelf telt niet mee in deze groepen. Per groep zijn standaard minim
 | Volume / deskundigheid | Auditregels medewerker | Mediaan auditregels van andere vergelijkbare medewerkers met die deskundigheid |
 | Volume / team+deskundigheid | Auditregels medewerker | Mediaan auditregels van andere vergelijkbare medewerkers met die combinatie |
 
-De ratio blijft leeg als er te weinig peers zijn of als de noemer nul is. Een ratio van 2 betekent dat de uitkomst binnen deze export tweemaal zo hoog is als de groepsmediaan. Het betekent niet dat de werklast of het risico tweemaal zo hoog is.
+De ratio blijft leeg bij te weinig peers of een mediaan van nul.
 
-Voorbeeld: medewerker A heeft 20 regels. Drie andere passende medewerkers hebben er 4, 10 en 16. De mediaan van deze peers is 10 en de ratio van A is `20 / 10 = 2,00`. Zijn er maar twee passende anderen, dan blijft de ratio met de standaardinstelling leeg.
+Een ratio van 2 betekent dat de gemeten waarde binnen deze export tweemaal zo hoog is als de groepsmediaan.
 
-Medewerkers zonder auditregels zijn niet zichtbaar. De vergelijking selecteert dus op escalatiegebruik en corrigeert niet voor diensten, FTE, inzetduur, caseload of verschillen in autorisatie. Voor het nachtpercentage en het aantal cliënten per deskundigheid berekent de webui geen peer-ratio.
+Dit betekent niet dat de werklast of het risico tweemaal zo hoog is.
 
-Bij doorklikken zie je de bronregels van de medewerker en alle gebruikte team- en deskundigheidspeers. De combinatiegroep is de overlap tussen deze groepen. Daardoor bevat het venster met bronregels meer regels dan alleen de teller van één ratio.
+**Rekenvoorbeeld**
 
-De webui en het HTML-rapport tonen deze formule, de vier teller-noemercombinaties, een rekenvoorbeeld en de betekenis van `0,50`, `1,00` en `2,00` direct bij de peeranalysetabel. In het rapport valt de uitleg binnen dezelfde inklapbare sectie als de tabel. De beperkingen blijven daar eveneens zichtbaar. Het doorklikvenster heet **Bronregels achter peeranalyse** en dient om de onderliggende regels te controleren; de ratio-uitleg staat bij de tabel zelf.
+Medewerker A heeft 20 auditregels. Drie passende medewerkers hebben respectievelijk 4, 10 en 16 regels.
+
+De mediaan is 10. De ratio van medewerker A is dan `20 / 10 = 2,00`.
+
+Zijn er slechts twee passende medewerkers, dan blijft de ratio met de standaardinstellingen leeg.
+
+De vergelijking bevat uitsluitend medewerkers die in de auditpopulatie voorkomen. Medewerkers zonder auditregels ontbreken.
+
+De webui corrigeert niet voor:
+
+- Diensten.
+- FTE.
+- Inzetduur.
+- Caseload.
+- Verschillen in autorisatie.
+
+Voor het nachtpercentage en het aantal cliënten per deskundigheid berekent de webui geen peer-ratio.
+
+Bij doorklikken toont de webui de bronregels van de medewerker en de gebruikte peers uit de team- en deskundigheidsgroepen.
+
+De combinatiegroep bestaat uit medewerkers die in beide groepen voorkomen.
+
+Daardoor bevat het bronregelvenster meer regels dan alleen de teller van één ratio.
+
+De webui en het HTML-rapport tonen bij de peeranalysetabel:
+
+- De gebruikte formule en vier teller-noemercombinaties.
+- Een rekenvoorbeeld.
+- De betekenis van de referentiewaarden `0,50`, `1,00` en `2,00`.
+- De beperkingen van de vergelijking.
+
+In het HTML-rapport staat deze uitleg binnen dezelfde inklapbare sectie als de tabel.
+
+Het doorklikvenster **Bronregels achter peeranalyse** is bedoeld om de onderliggende regels te controleren. De uitleg van de ratio's staat bij de tabel.
 
 ### 11.2 Bursts per medewerker
 
-Een burst is een groot aantal pogingen van één medewerker binnen een voortschrijdend tijdvenster. Alleen regels met een medewerkersleutel en een geldige starttijd tellen mee. Alle doeltypen kunnen bijdragen. Een onbekend doel-ID telt wel als poging, maar niet als herkenbaar uniek doel.
+Een burst is een groot aantal escalatiepogingen van één medewerker binnen een voortschrijdend tijdvenster.
 
-Het standaardvenster is 60 minuten en de drempel is 5 regels. Ook gebeurtenissen precies op de tijdsgrens tellen mee. De webui toont per medewerker één venster. Het kiest eerst het venster met de meeste regels en bij een gelijke stand het venster met de meeste verschillende herkenbare doelen. Is ook dat gelijk, dan blijft het eerst gevonden venster staan.
+De analyse gebruikt alleen auditregels met een medewerkersleutel en een geldige starttijd.
 
-De getoonde begin- en eindtijd horen bij de eerste en laatste gebeurtenis in het venster. Het verschil kan korter zijn dan 60 minuten. De tabel telt medewerkers met een geselecteerd venster, niet het aantal losse incidenten of alle mogelijke bursts.
+Alle doeltypen kunnen meetellen. Een ontbrekend doel-ID telt wel als poging, maar niet als herkenbaar uniek doel.
+
+Het standaardvenster is 60 minuten. De standaarddrempel is 5 regels.
+
+Gebeurtenissen precies op de tijdsgrens tellen mee.
+
+De webui selecteert per medewerker maximaal één venster volgens deze volgorde:
+
+1. Het venster met de meeste regels.
+2. Bij een gelijke stand het venster met de meeste verschillende herkenbare doelen.
+3. Als ook dat gelijk is, het eerst gevonden venster.
+
+De begin- en eindtijd zijn de tijdstippen van de eerste en laatste gebeurtenis in het geselecteerde venster.
+
+Het verschil tussen deze tijdstippen kan korter zijn dan 60 minuten.
+
+De tabel telt medewerkers met een geselecteerd burstvenster. Dit is niet hetzelfde als het aantal afzonderlijke incidenten of alle mogelijke bursts.
 
 ### 11.3 Cliëntclusters
 
-Deze analyse gebruikt cliëntgerichte auditregels met een herkenbaar cliënt-ID en een geldige starttijd. De webui zoekt per cliënt in vensters van standaard 120 minuten. Een venster voldoet aan de drempel bij minimaal 3 herkenbare medewerkers **of** minimaal 2 ingevulde teams.
+Deze analyse gebruikt uitsluitend cliëntgerichte auditregels met een herkenbaar cliënt-ID en een geldige starttijd.
 
-Uit de passende vensters kiest de webui per cliënt het sterkste. Eerst kijkt het naar het aantal medewerkers, daarna naar het aantal teams en tot slot naar het aantal regels. Blijft de stand gelijk, dan blijft het eerst gevonden venster staan. Een venster dat alleen de teamdrempel haalt, blijft zo beschikbaar.
+De webui onderzoekt per cliënt voortschrijdende tijdvensters van standaard 120 minuten.
 
-Voorbeeld bij een medewerkersdrempel van 4: een ochtendvenster met 3 medewerkers uit 1 team voldoet niet. Een middagvenster met 2 medewerkers uit 2 teams voldoet wel aan de teamdrempel van 2 en verschijnt daarom in de tabel.
+Een venster voldoet aan de standaarddrempel wanneer het minimaal 3 herkenbare medewerkers **of** minimaal 2 ingevulde teams bevat.
 
-Dit patroon bewijst niet dat medewerkers buiten hun werkgebied handelden. Het kan bijvoorbeeld samenhangen met acute zorg, een opname, een overdracht of tijdelijke inzet. De webui toont ook hier maar één geselecteerd venster, niet alle clusters in het bestand.
+De webui kiest per cliënt één venster.
+
+Bij meerdere passende vensters geldt deze rangschikking:
+
+1. Het hoogste aantal verschillende medewerkers.
+2. Het hoogste aantal verschillende teams.
+3. Het hoogste aantal regels.
+4. Bij een verdere gelijke stand het eerst gevonden venster.
+
+Een venster dat alleen de teamdrempel haalt, blijft dus een geldig resultaat.
+
+**Rekenvoorbeeld**
+
+Bij een medewerkersdrempel van 4 voldoet een ochtendvenster met 3 medewerkers uit 1 team niet.
+
+Een middagvenster met 2 medewerkers uit 2 teams voldoet wel aan de teamdrempel van 2. Dit venster verschijnt daarom in de tabel.
+
+Een cliëntcluster bewijst niet dat medewerkers buiten hun werkgebied hebben gehandeld.
+
+Het patroon kan bijvoorbeeld samenhangen met acute zorg, een opname, een overdracht of tijdelijke inzet.
+
+De webui toont per cliënt alleen het geselecteerde venster, niet alle mogelijke clusters in het bestand.
 
 ![Schuivend tijdvenster en de selectie van de sterkste burst of het sterkste cliëntcluster](assets/tijdvensters.svg)
 
-Hetzelfde schuivende-vensterprincipe ondersteunt beide analyses. De rangschikking bij een gelijke stand verschilt: een burst kijkt na het aantal regels naar verschillende doelen, terwijl een cliëntcluster achtereenvolgens medewerkers, teams en regels vergelijkt.
+Bursts en cliëntclusters gebruiken hetzelfde principe van voortschrijdende tijdvensters.
+
+De rangschikking verschilt wel. Bij bursts bepaalt na het aantal regels het aantal verschillende doelen de volgorde. Bij cliëntclusters kijkt de webui eerst naar medewerkers, daarna naar teams en vervolgens naar regels.
 
 ### 11.4 Concentratie per medewerker
+
+De webui berekent welk deel van de herkenbare doelen of cliënten van een medewerker binnen de drie meest voorkomende registraties valt.
 
 ```text
 top-3 doelaandeel =
@@ -370,24 +717,46 @@ top-3 cliëntaandeel =
       / alle cliëntgerichte regels van de medewerker met herkenbaar cliënt-ID
 ```
 
-Gemengde doelen gebruiken doeltype plus doel-ID; het cliëntaandeel gebruikt alleen cliënt-ID's. Een lege noemer geeft een lege cel. Pogingen zonder herkenbaar doel tellen niet mee in teller of noemer, maar blijven in het totale escalatievolume staan.
+Bij gemengde doelen gebruikt de webui doeltype en doel-ID als sleutel.
 
-Bij drie of minder herkenbare doelen is het top-3 aandeel vanzelf 100%. Beoordeel daarom altijd het totale aantal regels, unieke doelen en ontbrekende doelen naast het percentage. Concentratie kan een vaste cliëntgroep beschrijven; brede spreiding kan bij een functie passen.
+Het cliëntaandeel gebruikt alleen cliënt-ID's.
+
+Pogingen zonder herkenbaar doel blijven meetellen in het totale escalatievolume, maar niet in de teller of noemer van deze percentages.
+
+Een lege noemer levert een lege cel op.
+
+Bij drie of minder herkenbare doelen is het top-3 aandeel automatisch 100%.
+
+Beoordeel het percentage daarom samen met het totale aantal regels, het aantal unieke doelen en de ontbrekende doelen.
+
+Een hoge concentratie kan passen bij een vaste cliëntgroep. Een brede spreiding kan juist passen bij de functie van een medewerker.
 
 ### 11.5 Redengebruik
 
-Per genormaliseerde reden toont de webui welke medewerker en welk team de meeste regels met die reden hebben. Standaard verschijnt een reden pas vanaf drie auditregels.
+Per genormaliseerde reden toont de webui welke medewerker en welk team de meeste auditregels met die reden hebben.
+
+Standaard verschijnt een reden pas vanaf drie auditregels.
 
 ```text
 topmedewerkeraandeel = 100 × regels van de topmedewerker met reden R / alle regels met reden R
 topteamaandeel       = 100 × regels van het topteam met reden R / alle regels met reden R
 ```
 
-Deze analyse laat zien wie het grootste deel van de regels met een bepaalde reden heeft. Ze laat niet zien welk deel van het totale werk of van alle escalaties van die medewerker uit deze reden bestaat. Een aandeel kan hoog zijn doordat iemand in het algemeen veel escaleert.
+Deze percentages tonen welk deel van alle registraties met een bepaalde reden afkomstig is van de betreffende medewerker of het betreffende team.
 
-Delen meerdere medewerkers of teams de eerste plaats, dan toont de webui degene die het als eerste tegenkomt. Ontbrekende medewerkersleutels en teams kunnen samen als onbekende groep meetellen. Zie die groep niet als één geïdentificeerde persoon of één werkelijk team.
+Ze tonen niet welk deel van het totale werk of alle escalaties van die medewerker uit deze reden bestaat.
+
+Een hoog aandeel kan bijvoorbeeld ontstaan doordat een medewerker in het algemeen veel escalaties registreert.
+
+Wanneer meerdere medewerkers of teams de eerste plaats delen, toont de webui degene die het eerst wordt aangetroffen.
+
+Ontbrekende medewerkersleutels en teams kunnen samen als onbekende groep meetellen.
+
+Beschouw zo'n groep niet als één geïdentificeerde medewerker of één werkelijk team.
 
 ## 12. Doorklikken en exports
+
+De webui koppelt berekende uitkomsten aan de bronregels waarop ze zijn gebaseerd.
 
 | Weergave | Welke details opent de webui? |
 | -- | -- |
@@ -400,59 +769,318 @@ Delen meerdere medewerkers of teams de eerste plaats, dan toont de webui degene 
 | Peerregel | Medewerker plus de gebruikte team- en deskundigheidspeers |
 | Datakwaliteit of auditlogica | De bijbehorende regels volgens de populatie van die controle |
 
-In de details staan Excel-rijnummers, bronvelden, auditcontext en waar nodig verwijzingen naar eerdere regels of duplicaten. Je ziet de bronwaarden zoals de webui ze heeft ingelezen. Witruimte kan dan al zijn verwijderd en numerieke Excel-datums blijven in de bronvelden als getal staan. Bewaar daarom de oorspronkelijke export om de originele celweergave te kunnen controleren.
+### Bronregels controleren
 
-Elk bronregeldetail heeft filters voor de getoonde kolommen Medewerkersteam, Deskundigheid medewerker, Escalatiedoel type en Auditcontext. De keuzelijsten bevatten alleen niet-lege waarden uit de volledige geopende selectie. Een filter kiest de exacte kolomwaarde (Auditcontext inclusief eventuele combinatie van signalen); meerdere filters en het vrije zoekveld werken samen. De teller toont het aantal zichtbare regels ten opzichte van de geopende selectie. Een nieuw detailvenster begint zonder actieve zoekterm of filters. Dit verandert geen analyse of export.
+De detailweergave bevat Excel-rijnummers, bronvelden en auditcontext. Waar nodig toont de webui ook verwijzingen naar eerdere regels of duplicaten.
 
-De scatterplot zet het volume af tegen het aantal herkenbare unieke cliënten. Punten kunnen over elkaar heen vallen. In het medewerkersoverzicht kun je alle personen afzonderlijk bekijken. De balken op het overzicht laten alleen een topselectie zien en hoeven dus niet alle categorieën te bevatten.
+De getoonde bronwaarden zijn de waarden zoals de webui ze heeft ingelezen.
 
-**Aandachtspunten CSV** exporteert alle aandachtspunten uit de analyse, niet alleen de regels die na filteren zichtbaar zijn. **Bronregels CSV** exporteert de volledige geopende detailselectie; zoeken en kolomfilters in het dialoogvenster beperken deze export niet. Begint een waarde met `=`, `+`, `@` of `-`, dan zet de webui er bij de CSV-export een apostrof voor om interpretatie als formule te beperken. De losse plaatshouder `-` en gewone, ook negatieve, getallen blijven ongewijzigd.
+Witruimte aan het begin en einde kan al zijn verwijderd. Numerieke Excel-datums blijven in de bronvelden als getal staan.
 
-Het HTML-rapport bevat de gebruikte instellingen, definities en analysetabellen. Onder de samenvatting staat een inhoudsopgave met regeltellingen die naar elke sectie verwijst. De tabellen staan gegroepeerd in inklapbare secties: tabellen met weinig regels staan open en uitgebreide tabellen zijn dichtgeklapt. De aandachtspunten zijn gesplitst per controleprioriteit. Bij afdrukken opent het rapport alle secties. Voor sommige tabellen geldt een weergavelimiet. Kapt de webui een tabel af, dan vermeldt het rapport hoeveel regels het toont. Het rapport bevat daardoor niet altijd alle onderliggende bronregels.
+Bewaar daarom de oorspronkelijke Excel-export wanneer je de originele celweergave wilt controleren.
 
-Direct boven iedere opgenomen analysetabel staan een vrij zoekveld, keuzefilters voor de aanwezige kolommen Team, Deskundigheid, Doeltype, Signalen/Auditcontext en Thema, een teller en **Filters wissen**. Zoeken is hoofdletterongevoelig en doorzoekt de getoonde kolommen en eventuele prioriteitsuitleg. Keuzefilters vergelijken de volledige kolomwaarde exact; meerdere filters en de zoekterm werken samen. De teller telt gegevensregels, niet de afzonderlijke regels met prioriteitsuitleg. Iedere tabel heeft een eigen selectie. Voor schermlezers vermeldt de teller ook de tabelnaam en is de lege-resultaatmelding gekoppeld aan het zoekveld. Filters wijzigen alleen de weergave, nooit analyse-uitkomsten, samenvattingen, grafieken, brongegevens of CSV-exports.
+### Zoeken en filteren in bronregeldetails
 
-Zoeken en filters doorzoeken uitsluitend de regels die binnen de bestaande rapportlimiet zijn opgenomen; bij een afgekorte tabel wordt dit expliciet vermeld. Het zelfstandige rapport werkt lokaal zonder netwerkverkeer, externe code of browseropslag. Zonder JavaScript verschijnt geen filterbediening en blijven alle opgenomen regels leesbaar. Bij afdrukken opent het rapport alle secties, toont het alle opgenomen gegevensregels met hun prioriteitsuitleg en verbergt het de filterbediening. Na afdrukken keren de schermfilters en de eerdere open/dichtstand van de secties terug.
+Ieder bronregeldetail heeft filters voor:
 
-Het rapport bevat daarnaast dezelfde visuele oriëntatie als het webui-overzicht, telkens binnen de sectie van de bijbehorende tabel: de auditflow als verdelingstabel (bronbestand = systeemmeldingen + duplicaatkopieën + auditpopulatie, met aandachtspunten als selectie binnen de auditpopulatie), unieke regels per controlethema als balken, tijdpatronen als weekdag/uur-matrix in twee blokken van twaalf uur, en de topgrafieken voor medewerkers en cliënten boven hun tabellen met een leeswijzer over de topselectie en gelijke standen. Webui en rapport gebruiken hiervoor hetzelfde analyseresultaat; de medewerkerspreiding en verhoudingsdonuts zijn bewust niet overgenomen.
+- Medewerkersteam.
+- Deskundigheid medewerker.
+- Escalatiedoel type.
+- Auditcontext.
 
-De analyse draait lokaal. De webui verstuurt geen gegevens via het netwerk en slaat de ingelezen data niet op in de browseropslag. Als je de pagina sluit of vernieuwt, verdwijnen de sessiegegevens. Gedownloade rapporten en CSV-bestanden blijven wel bestaan en kunnen persoonsgegevens bevatten. Bewaar en deel ze volgens de interne afspraken.
+De keuzelijsten gebruiken alleen niet-lege waarden uit de volledige geopende selectie.
+
+Een filter vergelijkt de exacte kolomwaarde. Bij Auditcontext geldt dit ook voor eventuele combinaties van signalen.
+
+Meerdere filters en het vrije zoekveld werken samen.
+
+De teller toont hoeveel regels zichtbaar zijn ten opzichte van de volledige geopende selectie.
+
+Een nieuw detailvenster opent zonder actieve zoekterm of filters.
+
+Zoeken en filteren verandert alleen de weergave, niet de analyse of export.
+
+### Grafieken en topselecties
+
+De scatterplot toont het escalatievolume tegenover het aantal herkenbare unieke cliënten.
+
+Punten kunnen elkaar overlappen. In het medewerkersoverzicht kun je alle medewerkers afzonderlijk bekijken.
+
+De balkgrafieken op Overzicht tonen alleen een topselectie. Ze hoeven daarom niet alle categorieën uit de analyse te bevatten.
+
+### CSV-exports
+
+**Aandachtspunten CSV** bevat alle aandachtspunten uit de analyse.
+
+De export wordt niet beperkt tot de regels die na filteren zichtbaar zijn.
+
+**Bronregels CSV** bevat de volledige geopende detailselectie. Zoektermen en kolomfilters in het dialoogvenster beperken deze export niet.
+
+De webui beperkt bij CSV-export de interpretatie van tekst als formule.
+
+Wanneer een waarde begint met `=`, `+`, `@` of `-`, wordt een apostrof toegevoegd.
+
+De afzonderlijke plaatshouder `-` en gewone getallen, inclusief negatieve getallen, blijven ongewijzigd.
+
+### HTML-rapport
+
+Het HTML-rapport bevat de gebruikte instellingen, definities en analysetabellen.
+
+Onder de samenvatting staat een inhoudsopgave met regeltellingen en verwijzingen naar de afzonderlijke secties.
+
+De tabellen zijn ondergebracht in inklapbare secties.
+
+Tabellen met weinig regels staan standaard open. Grotere tabellen zijn ingeklapt.
+
+Aandachtspunten zijn verdeeld over de verschillende controleprioriteiten.
+
+Bij afdrukken opent het rapport alle secties.
+
+Voor sommige tabellen geldt een limiet op het aantal opgenomen regels. Wanneer een tabel is afgekort, vermeldt het rapport hoeveel regels zijn opgenomen.
+
+Het rapport bevat daardoor niet altijd alle onderliggende bronregels.
+
+### Zoeken en filteren in het HTML-rapport
+
+Direct boven iedere opgenomen analysetabel staan:
+
+- Een vrij zoekveld.
+- Keuzefilters voor de aanwezige kolommen Team, Deskundigheid, Doeltype, Signalen/Auditcontext en Thema.
+- Een teller.
+- De optie **Filters wissen**.
+
+Zoeken is niet hoofdlettergevoelig en doorzoekt de weergegeven kolommen en eventuele prioriteitsuitleg.
+
+Keuzefilters vergelijken de volledige kolomwaarde exact. Meerdere filters en de zoekterm werken samen.
+
+De teller toont het aantal zichtbare gegevensregels. Afzonderlijke regels met prioriteitsuitleg tellen niet als extra gegevensregel mee.
+
+Iedere tabel heeft een eigen zoek- en filterselectie.
+
+Voor schermlezers vermeldt de teller ook de tabelnaam. De melding bij een leeg zoekresultaat is gekoppeld aan het zoekveld.
+
+Zoeken en filteren verandert uitsluitend de weergave. De analyse, samenvattingen, grafieken, brongegevens en CSV-exports blijven gelijk.
+
+De zoekfunctie doorzoekt alleen regels die binnen de rapportlimiet zijn opgenomen.
+
+Als een tabel is afgekort, vermeldt het rapport dat expliciet.
+
+### Zelfstandig gebruik en afdrukken
+
+Het HTML-rapport werkt lokaal zonder netwerkverkeer, externe code of browseropslag.
+
+Zonder JavaScript verschijnen geen filterbedieningen. Alle opgenomen regels blijven wel leesbaar.
+
+Bij afdrukken:
+
+- Opent het rapport alle secties.
+- Worden alle opgenomen gegevensregels getoond, inclusief hun prioriteitsuitleg.
+- Worden de filterbedieningen verborgen.
+
+Na het afdrukken herstelt het rapport de eerdere zoek- en filterinstellingen en de open of gesloten toestand van de secties.
+
+### Visuele onderdelen van het HTML-rapport
+
+Het HTML-rapport gebruikt dezelfde analyseresultaten als de webui.
+
+De visuals staan bij de tabellen waarop ze betrekking hebben.
+
+Het rapport bevat:
+
+- De auditflow als verdelingstabel. Hierin geldt: bronbestand = systeemmeldingen + duplicaatkopieën + auditpopulatie. Aandachtspunten vormen een selectie binnen de auditpopulatie.
+- Balken met het aantal unieke regels per controlethema.
+- Tijdpatronen als weekdag/uur-matrix, verdeeld over twee blokken van twaalf uur.
+- Topgrafieken voor medewerkers en cliënten, direct boven de bijbehorende tabellen.
+- Leeswijzers voor de topselecties en gelijke standen.
+
+De medewerkerspreiding en verhoudingsdonuts zijn bewust niet overgenomen in het HTML-rapport.
+
+### Lokale verwerking en privacy
+
+De webui voert de analyse lokaal uit.
+
+Er worden geen analysegegevens via het netwerk verzonden en de ingelezen gegevens worden niet opgeslagen in de browseropslag.
+
+Wanneer je de pagina sluit of vernieuwt, verdwijnen de sessiegegevens.
+
+Gedownloade rapporten en CSV-bestanden blijven op het apparaat staan. Deze kunnen persoonsgegevens bevatten.
+
+Bewaar en deel de bestanden volgens de interne afspraken van je organisatie.
 
 ### 12.1. Visuele uitleg bij de uitkomst (0.10.0)
 
-Webui en HTML-rapport gebruiken dezelfde presentatiehelpers, toegepaste instellingen en aanvullende waarden uit `analyze()`. Er worden geen nieuwe signalen of bevindingen in renderfuncties gemaakt.
+De webui en het HTML-rapport gebruiken dezelfde presentatiehelpers, toegepaste instellingen en aanvullende waarden uit `analyze()`.
 
-- **Controleprioriteit:** de route telt thema’s, geen signalen. Een aanwezig her-escalatiesignaal geeft Hoog; anders geven minimaal drie thema’s Hoog, twee Midden en overige aandachtspunten Basis. Bij een niet-geactiveerde poging telt alleen `ONVOLLEDIG_CLIENTDOEL` niet mee; andere datakwaliteit kan wel meetellen. Daarom kan Basis ook nul meetellende thema’s hebben. De kolom *Waarom deze prioriteit* en het bronregeldetail tonen de onderbouwing. In het rapport staat deze uitleg als volle regel direct onder de bijbehorende Excel-rij, zodat er geen extra smalle tekstkolom nodig is. In het rapport staat één route boven de drie geneste, afzonderlijk inklapbare prioriteitsgroepen.
-- **Her-escalatie:** het detail gebruikt `previousSourceRow`, de echte start- en activatietijden en de toegangstermijn van de analyse. De schematische tijdlijn staat in tijdvolgorde en is niet op schaal. De exacte afstanden vanaf Activatie A en Start A worden afzonderlijk in seconden getoond. De inclusieve eindgrens begint bij activatie; de zeer-snel-drempel vergelijkt beide starts. Het rapport bevat een gegevensvrij voorbeeld op 01-01-2000, exact op de toegepaste eindgrens. Bij een uitgeschakeld her-escalatiesignaal vermeldt dit voorbeeld dat. Geen van deze beelden bewijst daadwerkelijke toegang of dossierinzage.
-- **Bursts en cliëntclusters:** boven de tabel staat een algemeen schema, geen willekeurig gekozen individueel venster. Het detail toont de werkelijke start en het einde van de geselecteerde bronregels. De resultaten bevatten exacte `Verstreken (sec.)`, het maximum `Venster (min.)` en de minimumdrempels. Clusters tonen bovendien de behaalde medewerker- en/of teamdrempel als selectiereden; één van beide is voldoende. De selectie van één sterkste venster verandert niet.
-- **Peers:** de schaal 0–2 bevat neutrale referentiepunten 0,50 / 1,00 / 2,00. Het voorbeeld 13 / 6 = 2,17 is een rekenvoorbeeld, geen gemeten waarde en geen risicoscore. Ontbrekende ratio’s krijgen per ratio de feitelijke oorzaak: ontbrekende/wisselende context, te weinig peers (aantal en minimum), of mediaan nul. De numerieke waarden blijven de basis voor sortering.
-- **Concentratie:** `Top-3 doelregistraties` en `Top-3 cliëntregistraties` bevatten de intern berekende gehele tellers. De balk gebruikt deze tellers met respectievelijk `Escalaties met herkenbaar doel` en `Cliëntescalaties herkenbaar`; de teller wordt nooit uit een afgerond percentage gereconstrueerd. Het overige deel is noemer minus teller. Bij maximaal drie herkenbare doelen ontstaat vanzelf 100%; een lege noemer is niet berekenbaar. Een locatiedoel draagt wel aan doelen, maar niet aan cliënten bij.
+De renderfuncties maken geen nieuwe signalen of bevindingen.
 
-Deze aanvullingen gelden voor webui-tabellen en HTML-rapport. De aandachtspunten-CSV en bronregels-CSV behouden exact hun bestaande kolommen en formulebeveiliging. Uitleg, visual en tabel staan samen in dezelfde rapportsectie; het echte `beforeprint`-event opent ook de geneste groepen en peerdefinities. De expliciete thematabel telt iedere auditregel eenmaal per thema. De tijdmatrix toont ook nullen als tekst. Cliëntgrafiek en rapporttabel delen de sortering op unieke medewerkers, daarna escalatievolume; bestaande rapportlimieten blijven expliciet vermeld.
+**Controleprioriteit**
+
+De prioriteitsberekening telt thema's, niet afzonderlijke signalen.
+
+Een ingeschakeld her-escalatiesignaal geeft prioriteit Hoog. Zonder dit signaal geldt:
+
+- Minimaal drie thema's: Hoog.
+- Twee thema's: Midden.
+- Overige aandachtspunten: Basis.
+
+Bij een niet-geactiveerde poging telt alleen `ONVOLLEDIG_CLIENTDOEL` niet mee voor de prioriteitsberekening. Andere datakwaliteitssignalen kunnen wel meetellen.
+
+Hierdoor kan prioriteit Basis ook voorkomen wanneer er nul meetellende thema's zijn.
+
+De kolom *Waarom deze prioriteit* en het bronregeldetail tonen hoe de prioriteit is bepaald.
+
+In het HTML-rapport staat deze uitleg op een volledige regel direct onder de bijbehorende Excel-rij. Zo is geen extra smalle tekstkolom nodig.
+
+Boven de drie afzonderlijk inklapbare, geneste prioriteitsgroepen staat één uitlegroute.
+
+**Her-escalatie**
+
+Het detail gebruikt `previousSourceRow`, de werkelijke start- en activatietijden en de toegepaste toegangstermijn.
+
+De schematische tijdlijn toont de gebeurtenissen in chronologische volgorde, maar is niet op schaal.
+
+De exacte tijdsafstanden vanaf Activatie A en Start A worden afzonderlijk in seconden getoond.
+
+De inclusieve eindgrens begint bij de activatie. De drempel voor zeer snelle her-escalatie vergelijkt de starttijden van beide regels.
+
+Het HTML-rapport bevat een fictief voorbeeld met datum 01-01-2000, precies op de toegepaste eindgrens.
+
+Als het her-escalatiesignaal uitgeschakeld is, vermeldt het voorbeeld dat.
+
+De tijdlijnen bewijzen geen daadwerkelijke toegang of dossierinzage.
+
+**Bursts en cliëntclusters**
+
+Boven de tabel staat een algemeen schema van de gebruikte tijdvensters. Dit is geen willekeurig gekozen individueel venster.
+
+Het detail toont de werkelijke begin- en eindtijd van de geselecteerde bronregels.
+
+De resultaten bevatten:
+
+- De exacte verstreken tijd in `Verstreken (sec.)`.
+- De maximale vensterduur in `Venster (min.)`.
+- De toegepaste minimumdrempels.
+
+Bij cliëntclusters toont de webui ook of de medewerkerdrempel, teamdrempel of beide zijn gehaald.
+
+Eén van deze drempels is voldoende.
+
+De webui blijft per medewerker of cliënt één sterkste venster selecteren.
+
+**Peers**
+
+De schaal loopt van 0 tot 2 en bevat de neutrale referentiepunten 0,50, 1,00 en 2,00.
+
+Het voorbeeld 13 / 6 = 2,17 is uitsluitend een rekenvoorbeeld. Het is geen gemeten waarde of risicoscore.
+
+Als een ratio ontbreekt, vermeldt de webui de reden.
+
+Dat kan zijn:
+
+- Ontbrekende of wisselende team- of deskundigheidscontext.
+- Te weinig peers, met vermelding van het gevonden aantal en het vereiste minimum.
+- Een groepsmediaan van nul.
+
+De numerieke ratio's blijven de basis voor de sortering.
+
+**Concentratie**
+
+`Top-3 doelregistraties` en `Top-3 cliëntregistraties` bevatten de intern berekende gehele tellers.
+
+De balken gebruiken deze tellers met de bijbehorende noemers:
+
+- `Escalaties met herkenbaar doel`
+- `Cliëntescalaties herkenbaar`
+
+De teller wordt niet terugberekend uit een afgerond percentage.
+
+Het overige deel van de balk is de noemer minus de teller.
+
+Bij maximaal drie herkenbare doelen bedraagt het top-3 aandeel automatisch 100%.
+
+Een lege noemer levert geen berekenbaar percentage op.
+
+Een locatiedoel telt mee bij doelen, maar niet bij cliënten.
+
+**Gedeeld gedrag van webui en rapport**
+
+Deze uitleg geldt voor de webui-tabellen en het HTML-rapport.
+
+De aandachtspunten-CSV en bronregels-CSV behouden hun bestaande kolommen en formulebeveiliging.
+
+Uitleg, visual en tabel staan binnen dezelfde rapportsectie.
+
+Het `beforeprint`-event opent ook de geneste prioriteitsgroepen en peerdefinities.
+
+De thematabel telt iedere auditregel maximaal eenmaal per thema.
+
+De tijdmatrix toont ook nulwaarden als tekst.
+
+De cliëntgrafiek en de bijbehorende rapporttabel gebruiken dezelfde sortering. Eerst op het aantal unieke medewerkers en daarna op escalatievolume.
+
+Bestaande rapportlimieten blijven van toepassing en worden expliciet vermeld.
 
 ## 13. Datakwaliteit en interpretatie
 
-De controles zoeken naar ontbrekende kernvelden, onvolledige cliëntdoelen, ongeldige start- en activatietijden, ongeldige duur, conflicten tussen identifiers, redenvarianten en duplicaten. Een conflict is niet per definitie een fout. Het vraagt wel om uitleg voordat je er een conclusie over een persoon aan verbindt.
+De webui controleert op:
 
-Niet iedere kwaliteitsbevinding levert automatisch een auditsignaal op. Conflicten tussen identifiers en redenvarianten staan bijvoorbeeld in aparte controletabellen. Het aantal kwaliteitsbevindingen is ook niet gelijk aan het aantal unieke probleemregels: één regel kan bij meerdere bevindingen horen.
+- Ontbrekende kernvelden.
+- Onvolledige cliëntdoelen.
+- Ongeldige start- en activatietijden.
+- Ongeldige tijdsduur.
+- Conflicten tussen identifiers.
+- Verschillende schrijfwijzen van redenen.
+- Duplicaten.
 
-In het referentiebestand liggen 66 activaties vóór de start. De webui markeert ze als `ONGELDIGE_ACTIVATIE`. Bij 44 regels was er al een ander signaal, waardoor deze controle 22 nieuwe unieke aandachtspunten oplevert. Onderzoek eerst mogelijke oorzaken, zoals de klokregistratie of de volgorde in de export, voordat je hier een inhoudelijke conclusie aan verbindt.
+Een conflict tussen gegevens is niet automatisch een fout.
 
-De webui stelt met alleen deze export niet vast:
+Onderzoek eerst de oorzaak voordat je er conclusies over een medewerker aan verbindt.
 
-- welke dossiergegevens daadwerkelijk zijn geraadpleegd, gewijzigd of gedeeld;
-- of er een behandel- of werkrelatie was;
-- of de medewerker ingepland was of tijdelijk elders werkte;
-- of de geregistreerde reden voldoende was voor de situatie;
-- of de toegang feitelijk nog actief was of tussentijds was ingetrokken;
-- of een patroon afwijkt na correctie voor inzet, caseload en autorisatie;
-- of de export volledig is of eerdere relevante gebeurtenissen ontbreken.
+Niet iedere kwaliteitsbevinding leidt tot een auditsignaal.
 
-Je kunt een beoordeling beginnen met een controle van de planning, het rooster en de inzetcontext. Bekijk daarna de relevante dossierlogging en vraag zo nodig om extra uitleg. Dit is alleen een mogelijke werkwijze; kies een volgorde die past bij de onderzoeksvraag. Of iemand wel of niet stond ingepland, bewijst op zichzelf geen rechtmatige of onrechtmatige toegang. Controleer ook welke vormen van autorisatie de eigen omgeving werkelijk gebruikt.
+Conflicten tussen identifiers en redenvarianten verschijnen bijvoorbeeld in afzonderlijke controletabellen.
+
+Het aantal kwaliteitsbevindingen is bovendien niet gelijk aan het aantal unieke probleemregels. Eén regel kan meerdere kwaliteitsbevindingen hebben.
+
+**Voorbeeld uit het referentiebestand**
+
+In het referentiebestand liggen 66 activaties vóór de starttijd.
+
+De webui markeert deze regels met `ONGELDIGE_ACTIVATIE`.
+
+Bij 44 van deze regels was al een ander signaal aanwezig. De controle voegt daardoor 22 nieuwe unieke aandachtspunten toe.
+
+Onderzoek eerst mogelijke oorzaken, zoals de klokregistratie of de volgorde van gebeurtenissen in de export, voordat je inhoudelijke conclusies trekt.
+
+### Wat de export niet kan aantonen
+
+Met alleen deze export kan de webui niet vaststellen:
+
+- Welke dossiergegevens daadwerkelijk zijn geraadpleegd, gewijzigd of gedeeld.
+- Of er een behandel- of werkrelatie bestond.
+- Of de medewerker stond ingepland of tijdelijk elders werkte.
+- Of de opgegeven escalatiereden voldoende was voor de situatie.
+- Of de toegang daadwerkelijk nog actief was of tussentijds werd ingetrokken.
+- Of een patroon afwijkend blijft na correctie voor inzet, caseload en autorisatie.
+- Of de export volledig is en alle eerdere relevante gebeurtenissen bevat.
+
+### Uitkomsten nader onderzoeken
+
+Je kunt een beoordeling beginnen met het controleren van de planning, het rooster en de feitelijke inzetcontext.
+
+Bekijk vervolgens de relevante dossierlogging en vraag zo nodig om aanvullende uitleg.
+
+Dit is een mogelijke werkwijze, geen verplichte volgorde. Kies de onderzoeksstappen die passen bij de situatie.
+
+Het feit dat een medewerker wel of niet stond ingepland, bewijst op zichzelf geen rechtmatige of onrechtmatige toegang.
+
+Controleer ook welke autorisatievormen de eigen Nedap Ons-omgeving daadwerkelijk gebruikt.
 
 ## 14. Standaardinstellingen
 
-Onderstaande namen komen overeen met de instellingen in de webui-code. Een export van het HTML-rapport bevat de werkelijk toegepaste waarden.
+De onderstaande namen komen overeen met de instellingen in de webui-code.
+
+Het HTML-rapport bevat de waarden die daadwerkelijk bij de analyse zijn toegepast.
 
 | Instelling | Standaard |
 | -- | -: |
@@ -490,11 +1118,27 @@ Onderstaande namen komen overeen met de instellingen in de webui-code. Een expor
 | `signalClientUniqueEmployees` | Aan |
 | `signalClientUniqueTeams` | Aan |
 
-De webui accepteert gehele getallen. Uren lopen van 0 tot en met 23. De drempel voor activatievertraging mag nul zijn; alle andere numerieke instellingen moeten minimaal 1 zijn. De webui negeert ongeldige invoer. Bekende systeemredenen blijven altijd uitgesloten, ongeacht de 30-minutenschakelaar.
+De webui accepteert alleen gehele getallen.
+
+Uren moeten tussen 0 en 23 liggen.
+
+De drempel voor activatievertraging mag 0 zijn. Alle overige numerieke instellingen moeten minimaal 1 zijn.
+
+Ongeldige invoer wordt genegeerd.
+
+Bekende systeemredenen blijven altijd uitgesloten, ongeacht de instelling van de 30-minutenschakelaar.
 
 ## 15. Controle-uitkomsten voor het referentiebestand
 
-Als referentiebestand is het synthetisch exportbestand `tests/fixtures/synthetic-escalatielog.xlsx` gebruikt: 2.000 rijen, gegenereerd met seed `20260918` (zie `tests/generate_synthetic_escalatielog.py`). Het bestand hoort bij de repository en bevat geen persoonsgegevens, zodat iedere lezer de onderstaande uitkomsten zelf kan controleren. De waargenomen datums lopen van 1 tot en met 31 mei 2026. De onderstaande resultaten zijn met de standaardinstellingen gecontroleerd. Ze gelden alleen als referentie voor dit bestand en zeggen niets over echte exports.
+Voor de controle is het synthetische bestand `tests/fixtures/synthetic-escalatielog.xlsx` gebruikt.
+
+Het bevat 2.000 bronregels en is gegenereerd met seed `20260918`. Het generatorscript staat in `tests/generate_synthetic_escalatielog.py`.
+
+Het bestand maakt deel uit van de repository en bevat geen persoonsgegevens. De uitkomsten zijn daardoor door andere gebruikers te reproduceren.
+
+De geregistreerde datums lopen van 1 tot en met 31 mei 2026.
+
+Onderstaande resultaten zijn gecontroleerd met de standaardinstellingen. Ze gelden uitsluitend voor dit referentiebestand en zeggen niets over echte exports.
 
 | Controle | Uitkomst |
 | -- | -: |
@@ -521,17 +1165,49 @@ Als referentiebestand is het synthetisch exportbestand `tests/fixtures/synthetic
 | Medewerkers met een geselecteerd burstvenster | 0 |
 | Cliënten met een geselecteerd clustervenster | 5 |
 
-De regressietest in `tests/test_report_layout.py` verifieert de kerncijfers (auditpopulatie 1.802, aandachtspunten 1.790, medewerkers 250, cliënten 558) automatisch bij iedere wijziging.
+De regressietest in `tests/test_report_layout.py` controleert automatisch vier kerncijfers bij iedere wijziging:
 
-De synthetische data is opzettelijk dichter bezaaid met signalen dan een gemiddelde export: bijna iedere auditregel heeft minimaal één signaal en her-escalaties ontbreken volledig. Dat maakt het bestand geschikt als technische controletabel, maar de verhoudingen zijn niet representatief voor echte maandexports.
+- Auditpopulatie: 1.802.
+- Aandachtspunten: 1.790.
+- Medewerkers: 250.
+- Cliënten: 558.
 
-Naast dit reproduceerbare referentiebestand is tijdens de ontwikkeling de gecontroleerde mei-export `Escalatielogs 01-05-2026 tot 31-05-2026.xlsx` gebruikt. Deze staat lokaal in `escalatielogs/` (gegitignore, persoonsgegevens), is derhalve niet reproduceerbaar voor anderen en telt hier daarom niet meer als documentatiewaarde.
+### Representativiteit
 
-Voor de controle zijn de kerncijfers onafhankelijk herteld en zijn gerichte randgevallen en browsercontroles uitgevoerd. De geteste randgevallen waren: opnieuw analyseren met een kortere toegangstermijn, een toekomstige activatie naast al beschikbare toegang, een cluster dat alleen de teamdrempel haalt, onmogelijke datums, een negatieve activatievertraging en duplicaten. Ook de doorklikdetails, instellingen, rapport- en CSV-export en de weergave op desktop en mobiel zijn gecontroleerd. Daarmee zijn niet alle mogelijke exportvarianten of autorisatie-inrichtingen bewezen afgedekt.
+Het synthetische bestand bevat bewust veel signalen.
+
+Bijna iedere auditregel heeft minimaal één signaal. Her-escalaties ontbreken volledig.
+
+Dit maakt het bestand geschikt voor technische controles, maar de verhoudingen zijn niet representatief voor echte maandexports.
+
+### Aanvullende controles
+
+Tijdens de ontwikkeling is ook de gecontroleerde mei-export `Escalatielogs 01-05-2026 tot 31-05-2026.xlsx` gebruikt.
+
+Dit bestand staat lokaal in `escalatielogs/` en is uitgesloten van Git-versiebeheer vanwege de persoonsgegevens.
+
+Andere gebruikers kunnen deze controle daarom niet reproduceren. De uitkomsten van dit bestand gelden niet meer als documentatiewaarde.
+
+De kerncijfers zijn onafhankelijk herteld. Daarnaast zijn gerichte randgevallen en browsercontroles uitgevoerd.
+
+De onderzochte randgevallen waren:
+
+- Opnieuw analyseren met een kortere toegangstermijn.
+- Een toekomstige activatie terwijl eerdere toegang al beschikbaar was.
+- Een cliëntcluster dat alleen de teamdrempel haalt.
+- Onmogelijke datums.
+- Negatieve activatievertraging.
+- Duplicaten.
+
+Ook de doorklikdetails, instellingen, rapport- en CSV-exports en de weergave op desktop en mobiel zijn gecontroleerd.
+
+Deze controles bewijzen niet dat alle mogelijke exportvarianten of autorisatie-inrichtingen zijn afgedekt.
 
 ## 16. Niet-geïmplementeerde analyses
 
-De webui berekent geen historische norm of juridische conclusie. Voor de volgende analyses zijn aanvullende gegevens en expliciete definities nodig:
+De webui bepaalt geen historische norm en trekt geen juridische conclusies.
+
+Voor de volgende analyses zijn aanvullende gegevens en duidelijke definities nodig.
 
 | Vervolganalyse | Benodigde aanvulling |
 | -- | -- |
@@ -541,34 +1217,243 @@ De webui berekent geen historische norm of juridische conclusie. Voor de volgend
 | Werklastgecorrigeerde vergelijking | Volledige bezetting, FTE, gewerkte uren, diensten en eventueel caseload |
 | Bewezen dossierinzage na escalatie | Passende dossierlogging en een betrouwbare koppeling op persoon, cliënt en tijd |
 
-Voor trends tussen perioden moeten exportduur, dekking, definities, instellingen en groepsindeling vergelijkbaar zijn. Ruwe maandtotalen tonen zonder die voorwaarden geen gedragsverandering.
+Voor een betrouwbare trendvergelijking moeten exportduur, gegevensdekking, definities, instellingen en groepsindeling vergelijkbaar zijn.
+
+Ruwe maandtotalen zijn zonder deze voorwaarden onvoldoende om een gedragsverandering vast te stellen.
 
 ## 17. Visuele uitleg van activatievertraging en nachtvenster
 
-Sinds 0.12.0 staan onder de prioriteitsuitleg bij Aandachtspunten twee fictieve tijdlijnen: activatie exact op de ingestelde grens en één seconde later. De vergelijking blijft ongerond en strikt `>`; de tabel rondt minuten af op twee decimalen. Bij grens nul vallen start en grens samen. De onderbroken tijdas is schematisch, niet op schaal. Ontbrekende/onleesbare activatie en activatie vóór start horen bij datakwaliteit; `Niet geactiveerd` is een afzonderlijke toestand. Een uitgeschakeld signaal geeft in beide voorbeelden geen signaal; de kop vermeldt dan expliciet dat het signaal uitstaat.
+Sinds versie 0.12.0 toont de webui bij Aandachtspunten twee fictieve tijdlijnen voor activatievertraging.
 
-Boven de uurweergave bij Tijdpatroon staat een gearceerde band op de as 00:00–24:00. De band gebruikt dezelfde `isNight()`-selectie als de analyse: startuur, begin inclusief, einde exclusief; gelijke begin- en einduren geven een leeg venster. Nachtvolumes blijven beschikbaar als `signalNight` uitstaat. Auditregels zonder geldige starttijd ontbreken in de uurweergave en zijn geen dagregels.
+De voorbeelden staan onder de uitleg van de controleprioriteit en tonen:
 
-`analyze()` bewaart beide uitlegmodellen met de toegepaste instellingen in het analyseresultaat. Webui en rapport gebruiken dezelfde renderers en modellen; het wijzigen van invoervelden zonder heranalyse verandert de uitleg niet. De visuals berekenen geen nieuwe bevindingen en veranderen signalen, prioriteiten, reconciliatie of CSV-kolommen niet.
+- Een activatie precies op de ingestelde grens.
+- Een activatie één seconde na de grens.
 
-In het HTML-rapport staan de tijdlijnen binnen Signalen en de nachtband binnen Tijdpatronen, samen met hun relevante tabel. De uitleg is statische HTML en blijft zonder JavaScript leesbaar; `beforeprint` opent de berekening en uitzonderingen. Exacte waarden, vormverschillen, arcering en tekst houden de betekenis zonder kleur controleerbaar. De voorbeelden zijn triage-uitleg, geen bewijs van onrechtmatige toegang of dossierinzage.
+De vergelijking gebruikt ongeronde waarden en blijft strikt `>`.
+
+De tabel rondt de tijd in minuten af op twee decimalen.
+
+Wanneer de ingestelde grens nul is, vallen starttijd en grens samen.
+
+De onderbroken tijdas is schematisch en niet op schaal.
+
+Een ontbrekende of onleesbare activatie en een activatie vóór de starttijd vallen onder datakwaliteit.
+
+`Niet geactiveerd` is een afzonderlijke toestand.
+
+Wanneer het signaal is uitgeschakeld, leveren beide voorbeelden geen signaal op. De kop vermeldt dan dat het signaal uitstaat.
+
+### Nachtvenster
+
+Boven de uurweergave bij Tijdpatroon staat een gearceerde band op de tijdas van 00:00 tot 24:00.
+
+De band gebruikt dezelfde `isNight()`-selectie als de analyse:
+
+- Het startuur bepaalt of een regel binnen het nachtvenster valt.
+- Het beginuur telt mee.
+- Het einduur telt niet mee.
+- Gelijke begin- en einduren geven een leeg nachtvenster.
+
+Nachtvolumes blijven zichtbaar wanneer `signalNight` is uitgeschakeld.
+
+Auditregels zonder geldige starttijd ontbreken in de uurweergave. Ze worden niet als dagregels behandeld.
+
+### Gedeelde berekening en weergave
+
+`analyze()` bewaart beide uitlegmodellen en de toegepaste instellingen in het analyseresultaat.
+
+De webui en het HTML-rapport gebruiken dezelfde modellen en renderers.
+
+Het wijzigen van invoervelden zonder opnieuw te analyseren verandert de uitleg niet.
+
+De visuals berekenen geen nieuwe bevindingen. Ze veranderen ook geen signalen, prioriteiten, reconciliatie of CSV-kolommen.
+
+In het HTML-rapport staan de tijdlijnen bij Signalen en de nachtband bij Tijdpatronen, telkens naast de relevante tabel.
+
+De uitleg bestaat uit statische HTML en blijft zonder JavaScript leesbaar.
+
+Het `beforeprint`-event opent de berekening en uitzonderingen voor het afdrukken.
+
+Exacte waarden, vormen, arcering en tekst maken de uitleg ook zonder kleur controleerbaar.
+
+De voorbeelden ondersteunen de beoordeling van signalen. Ze bewijzen geen onrechtmatige toegang of dossierinzage.
 
 ## 18. Dashboard als PNG
 
-Sinds 0.13.0 exporteert **Dashboard als PNG** alle visuals van Overzicht in één afbeelding. De knop wordt na een succesvolle analyse beschikbaar en wordt bij een nieuwe bestandsselectie uitgeschakeld. De export gebruikt de laatst uitgevoerde analyse, inclusief de daarbij toegepaste instellingen en het analysetijdstip. Nog niet toegepaste wijzigingen in de instellingen tellen niet mee.
+Sinds versie 0.13.0 kan de webui met **Dashboard als PNG** alle visuals van Overzicht als één afbeelding exporteren.
 
-De inventaris omvat de drie controleperspectieven, zes KPI-kaarten, auditflow, controleprioriteit, beide verhoudingsdonuts, controlethema’s, de volledige weekdag/uur-heatmap, medewerkerspreiding, vier topgrafieken en alle aanwezige signaalkaarten. Ook de beoordelingsroute en relevante leeswijzers staan in de afbeelding. Navigatie, uploadvelden, actieknoppen, hoverinformatie en bronregeldialogen worden niet meegenomen. De punten in de medewerkerspreiding behouden dezelfde betekenis en kunnen overlappen; voor individuele bronregels blijft de webui nodig. De bestaande topselecties blijven behouden: de PNG voegt geen niet-getoonde categorieën toe.
+De knop wordt beschikbaar na een succesvolle analyse. Wanneer je een nieuw bestand selecteert, wordt de knop weer uitgeschakeld.
 
-De afbeelding heeft een vaste indeling van 1.200 logische pixels breed en wordt op dubbele resolutie als PNG van 2.400 pixels breed opgeslagen. De hoogte volgt de inhoud. Schermbreedte, scrollpositie, actieve tab en geopende bronregeldetails beïnvloeden de export niet. Lange labels worden afgebroken in plaats van afgeknipt; de heatmap vermeldt alle aantallen, inclusief nul. De export tekent met de ingebouwde Canvas-API, zonder externe code, netwerkverkeer of browseropslag. De CSP blijft ongewijzigd. De gedeelde dashboardgegevens worden tijdens `analyze()` vastgelegd en door webui en PNG gebruikt; de export leest geen waarden uit de gerenderde pagina. Er worden geen nieuwe analysebevindingen berekend en de dashboardweergave blijft gelijk.
+De export gebruikt de laatste uitgevoerde analyse, inclusief de toegepaste instellingen en het analysetijdstip.
 
-Het bestand heet `<exportBaseName>_dashboard.png` en bevat bronbestand, waargenomen datumbereik, analysetijdstip, applicatieversie, toegepaste instellingen en de waarschuwing dat signalen geen bewijs zijn van dossierinzage of onrechtmatige toegang. Het datumbereik gebruikt, net als de overige exportbestandsnamen, geldige starttijden uit alle bronregels. Het bewijst geen volledige exportperiode. De PNG kan persoonsgegevens bevatten en moet volgens interne afspraken worden bewaard en gedeeld.
+Wijzigingen in instellingen die nog niet met een nieuwe analyse zijn toegepast, worden niet meegenomen.
 
-Een export boven 48 miljoen pixels of 16.384 pixels hoogte wordt met een duidelijke foutmelding geweigerd, evenals een mislukte Canvas- of PNG-encodering. Tijdelijke tekenbuffers worden na de export vrijgegeven. Wijzigt de analyse tijdens PNG-encodering, dan wordt de verouderde download tegengehouden en vraagt de melding om opnieuw te exporteren. Een volgende export kan opnieuw worden geprobeerd; de analyse blijft beschikbaar. Na een geslaagde export vervangt een downloadbevestiging een eventuele eerdere exportfout.
+### Inhoud van de dashboardexport
+
+De PNG bevat:
+
+- De drie controleperspectieven.
+- Zes KPI-kaarten.
+- De auditflow.
+- Controleprioriteit.
+- Beide verhoudingsdonuts.
+- Controlethema's.
+- De volledige weekdag/uur-heatmap.
+- Medewerkerspreiding.
+- Vier topgrafieken.
+- Alle aanwezige signaalkaarten.
+- De beoordelingsroute en relevante leeswijzers.
+
+Navigatie, uploadvelden, actieknoppen, hoverinformatie en bronregeldialogen worden niet opgenomen.
+
+Punten in de medewerkerspreiding behouden hun oorspronkelijke betekenis en kunnen elkaar overlappen.
+
+Voor controle van individuele bronregels blijft de webui nodig.
+
+De bestaande topselecties worden behouden. De PNG voegt geen categorieën toe die niet in het dashboard worden getoond.
+
+### Afmetingen en weergave
+
+De afbeelding heeft een vaste indeling van 1.200 logische pixels breed.
+
+De webui slaat de PNG op met dubbele resolutie, waardoor het bestand 2.400 pixels breed is.
+
+De hoogte wordt bepaald door de inhoud.
+
+De export is onafhankelijk van:
+
+- De schermbreedte.
+- De scrollpositie.
+- Het actieve tabblad.
+- Geopende bronregeldetails.
+
+Lange labels worden over meerdere regels verdeeld in plaats van afgeknipt.
+
+De heatmap bevat alle aantallen, inclusief nulwaarden.
+
+### Technische verwerking
+
+De webui tekent de afbeelding met de ingebouwde Canvas-API.
+
+Er worden geen externe bibliotheken, netwerkverkeer of browseropslag gebruikt.
+
+De CSP blijft ongewijzigd.
+
+Tijdens `analyze()` legt de webui de gedeelde dashboardgegevens vast. Zowel de webui als de PNG-export gebruiken dit analyseresultaat.
+
+De export leest geen waarden uit de gerenderde webpagina.
+
+Er worden geen nieuwe analysebevindingen berekend en de dashboardweergave verandert niet.
+
+### Bestandsnaam en metadata
+
+De bestandsnaam volgt dit patroon:
+
+`<exportBaseName>_dashboard.png`
+
+De afbeelding vermeldt:
+
+- Het bronbestand.
+- Het waargenomen datumbereik.
+- Het analysetijdstip.
+- De applicatieversie.
+- De toegepaste instellingen.
+- De waarschuwing dat signalen geen bewijs vormen van dossierinzage of onrechtmatige toegang.
+
+Het datumbereik gebruikt de geldige starttijden van alle bronregels, net als de overige exportbestandsnamen.
+
+Dit bereik bewijst niet dat de volledige exportperiode aanwezig is.
+
+De PNG kan persoonsgegevens bevatten. Bewaar en deel de afbeelding volgens de interne afspraken van je organisatie.
+
+### Grenzen en foutafhandeling
+
+De webui weigert een export wanneer de afbeelding groter zou worden dan 48 miljoen pixels of hoger dan 16.384 pixels.
+
+Ook een mislukte Canvas- of PNG-encodering levert een foutmelding op.
+
+Na de export worden tijdelijke tekenbuffers vrijgegeven.
+
+Als de analyse verandert terwijl de PNG wordt gecodeerd, houdt de webui de verouderde download tegen.
+
+De melding vraagt dan om de export opnieuw uit te voeren.
+
+Een nieuwe exportpoging blijft mogelijk. De bestaande analysegegevens blijven beschikbaar.
+
+Na een geslaagde export vervangt een downloadbevestiging een eventuele eerdere exportfout.
 
 ### Losse visuals als ZIP
 
-**Losse visuals als ZIP** behoudt de volledige dashboardexport en levert daarnaast één PNG per controleperspectief, KPI-kaart, donut, topgrafiek en aanwezig signaal. Auditflow, controlefocus, controlethema’s, tijdheatmap, medewerkerprofiel, beoordelingsroute en toegepaste instellingen krijgen elk één eigen PNG. Zonder signalen bevat de ZIP een afbeelding met de lege signaalweergave.
+Met **Losse visuals als ZIP** kun je de dashboardonderdelen afzonderlijk exporteren.
 
-Elke afbeelding is 1.200 pixels breed; de hoogte volgt alleen de betreffende visual en de context. Losse visuals gebruiken schaal 1 om bestandsgrootte en geheugengebruik van de bundel te beperken; het volledige dashboard gebruikt schaal 2 (2.400 pixels breed) voor meer detail bij inzoomen. Titel, bronbestand, waargenomen datumbereik, analysetijdstip, versie, toegangstermijn, nachtvenster en privacywaarschuwing blijven per afbeelding aanwezig. De afzonderlijke instellingenafbeelding bevat alle toegepaste instellingen. De bestandsnamen volgen `<exportBaseName>_overzicht_<volgnummer>_<visualnaam>.png`; de ZIP heet `<exportBaseName>_overzicht_visuals.zip`. De visualnaam volgt de titel op Overzicht, met onderscheid tussen kerncijfers, verhoudingen en signalen. Afbeeldingen kunnen na uitpakken afzonderlijk worden gebruikt, bijvoorbeeld in TOPdesk; de uiteindelijke weergavegrootte hangt af van het ontvangende systeem.
+De volledige dashboardexport blijft daarnaast beschikbaar.
 
-De browser tekent elke visual rechtstreeks uit hetzelfde analysemodel als de volledige PNG, zonder een grote afbeelding bij te snijden. De ZIP wordt uitsluitend in het geheugen opgebouwd, met standaard ZIP-records, CRC-32 en zonder extra compressie van de al gecomprimeerde PNG’s. Er zijn geen externe bibliotheken, netwerkverkeer of browseropslag nodig. De ZIP is niet versleuteld en kan persoonsgegevens bevatten. Beide exportknoppen zijn tijdens generatie uitgeschakeld; bij gewijzigde analyse of een encoderingsfout wordt geen gedeeltelijke of verouderde ZIP gedownload. Tijdelijke canvassen worden na iedere visual vrijgegeven.
+De ZIP bevat een PNG per:
+
+- Controleperspectief.
+- KPI-kaart.
+- Donut.
+- Topgrafiek.
+- Aanwezig signaal.
+
+Daarnaast krijgen de auditflow, controlefocus, controlethema's, tijdheatmap, medewerkerprofiel, beoordelingsroute en toegepaste instellingen ieder een eigen PNG.
+
+Als er geen signalen zijn, bevat de ZIP een afbeelding van de lege signaalweergave.
+
+**Afmetingen**
+
+Iedere losse afbeelding is 1.200 pixels breed. De hoogte hangt af van de betreffende visual en de bijbehorende context.
+
+Losse visuals gebruiken schaal 1 om bestandsgrootte en geheugengebruik te beperken.
+
+Het volledige dashboard gebruikt schaal 2 en is daardoor 2.400 pixels breed. Dit biedt meer detail bij inzoomen.
+
+**Metadata en bestandsnamen**
+
+Iedere afbeelding bevat:
+
+- De titel.
+- Het bronbestand.
+- Het waargenomen datumbereik.
+- Het analysetijdstip.
+- De applicatieversie.
+- De toegangstermijn.
+- Het nachtvenster.
+- De privacywaarschuwing.
+
+De afzonderlijke instellingenafbeelding bevat alle toegepaste instellingen.
+
+De bestandsnamen volgen:
+
+`<exportBaseName>_overzicht_<volgnummer>_<visualnaam>.png`
+
+De ZIP heet:
+
+`<exportBaseName>_overzicht_visuals.zip`
+
+De visualnaam volgt de titel op Overzicht. Daarbij wordt onderscheid gemaakt tussen kerncijfers, verhoudingen en signalen.
+
+Na het uitpakken kun je iedere afbeelding afzonderlijk gebruiken, bijvoorbeeld in TOPdesk.
+
+De uiteindelijke weergavegrootte hangt af van het systeem waarin je de afbeelding gebruikt.
+
+**Technische verwerking**
+
+De browser tekent iedere visual rechtstreeks vanuit hetzelfde analysemodel als de volledige dashboard-PNG.
+
+De webui snijdt de losse afbeeldingen dus niet uit één grote afbeelding.
+
+De ZIP wordt volledig in het geheugen opgebouwd.
+
+Daarbij gebruikt de webui standaard ZIP-records en CRC-32. De PNG-bestanden krijgen geen aanvullende compressie, omdat PNG zelf al gecomprimeerd is.
+
+Er zijn geen externe bibliotheken, netwerkverkeer of browseropslag nodig.
+
+De ZIP is niet versleuteld en kan persoonsgegevens bevatten.
+
+Tijdens het genereren zijn beide exportknoppen uitgeschakeld.
+
+Als de analyse tussentijds verandert of een coderingsfout optreedt, wordt geen gedeeltelijke of verouderde ZIP gedownload.
+
+Na iedere visual geeft de webui de tijdelijke canvassen vrij.
