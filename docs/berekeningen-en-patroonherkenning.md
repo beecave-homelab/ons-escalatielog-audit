@@ -2,7 +2,7 @@
 title: Berekeningen, tellingen en patroonherkenning
 applies_to: escalatielog-audit-webui.html
 tags: [escalatielogs, audit, functioneel-beheer]
-updated: 2026-10-12
+updated: 2026-10-13
 ---
 
 ## Berekeningen, tellingen en patroonherkenning
@@ -23,7 +23,7 @@ Zoeken, sorteren en filteren verandert alleen de tabelweergave. De auditpopulati
 
 Dit document beschrijft het gedrag van de huidige implementatie. Het bevestigt geen leveranciersspecificaties, wettelijke verplichtingen of volledige naleving van normen. Controleer daarom de inrichting en beschikbare logging van Nedap Ons voordat je de uitkomsten inhoudelijk beoordeelt.
 
-De ingebouwde XLSX-lezer is bedoeld voor een Nedap Ons-export met één werkblad en tekst- of getalcellen. De lezer ondersteunt niet:
+De ingebouwde XLSX-lezer is bedoeld voor een escalatielog-export uit de Autorisatie-module van Nedap Ons, met één werkblad en tekst- of getalcellen. De lezer ondersteunt niet:
 
 - Foutcellen zoals `#N/A`.
 - Fonetische tekst in gedeelde tekenreeksen.
