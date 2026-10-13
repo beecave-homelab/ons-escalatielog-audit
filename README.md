@@ -3,7 +3,7 @@
 ![Version: 0.15.0](https://img.shields.io/badge/version-0.15.0-00A0C8.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 
-Ons Escalatielog Audit is een losse webpagina waarmee je `.xlsx`-exports met escalatielogs uit Nedap Ons controleert. De webui brengt opvallende patronen in beeld en laat per uitkomst de bijbehorende bronregels zien. De webui is bedoeld voor functioneel applicatiebeheerders, CISO's en privacy officers.
+Ons Escalatielog Audit is een zelfstandige webpagina voor het controleren van `.xlsx`-exports met escalatielogs uit Nedap Ons. De webui maakt opvallende patronen zichtbaar en laat je doorklikken naar de bijbehorende Excelregels. Het hulpmiddel is bedoeld voor functioneel applicatiebeheerders, CISO's en privacy officers.
 
 De analyse draait volledig in de browser. Het Excelbestand wordt niet geüpload en de webui maakt geen verbinding met externe diensten.
 
@@ -11,27 +11,29 @@ De analyse draait volledig in de browser. Het Excelbestand wordt niet geüpload 
 
 ![Lokale analyseketen van Excel-export naar overzichten, bronregels en exports](docs/assets/analyseketen.svg)
 
-De browser leest het werkblad, verwijdert bekende systeemregels en exacte duplicaten en vormt zo de auditpopulatie. Daarna berekent de webui aggregaties, signalen, tijdvensters en peervergelijkingen. Elk resultaat blijft gekoppeld aan de bronregels die eraan bijdragen.
+De browser leest het werkblad en filtert bekende systeemregels en exacte duplicaten uit de inhoudelijke tellingen. De overgebleven regels vormen de auditpopulatie.
+
+Op basis hiervan berekent de webui tellingen, signalen, tijdvensters en vergelijkingen met vergelijkbare medewerkers. Je kunt vanuit iedere uitkomst de bijbehorende bronregels bekijken.
 
 > [!IMPORTANT]
-> Een signaal bewijst niet dat iemand onrechtmatig toegang had of een dossier heeft ingezien. Gebruik de uitkomsten alleen als aanleiding voor menselijke controle.
+> Een signaal is geen bewijs van onrechtmatige toegang of dossierinzage. Controleer altijd de achterliggende gegevens voordat je conclusies trekt.
 
 ## Wat doet de webui?
 
-De webui:
+De webui biedt de volgende mogelijkheden:
 
-- Laat bekende systeemmeldingen en exact dubbele regels buiten de inhoudelijke tellingen.
-- Toont overzichten per medewerker, cliënt, locatie, team, deskundigheid, reden en tijdstip.
-- Signaleert onder meer her-escalaties, hoge volumes, een brede spreiding over cliënten, nachtgebruik en problemen met de datakwaliteit.
-- Vergelijkt patronen met die van vergelijkbare medewerkers, legt de gebruikte peer-ratio's direct bij de tabel uit en zoekt naar korte pieken, cliëntclusters en concentraties.
-- Legt controleprioriteit, her-escalaties, geselecteerde tijdvensters, peer-ratio’s en top-3-concentratie uit bij de uitkomst, zowel in de webui als het HTML-rapport. Details tonen gekoppelde tijden; het rapport gebruikt voor her-escalatie een expliciet fictief voorbeeld.
-- Laat met compacte tijdlijnen zien dat late activatie strikt ná de ingestelde grens begint, en toont welke starturen binnen het nachtvenster vallen. Beide visuals volgen de toegepaste instellingen en staan ook in het HTML-rapport.
-- Koppelt cijfers, grafieken en tabellen aan de bijbehorende Excelregels.
-- Exporteert alle visuals van Overzicht ook los als PNG in één ZIP, met herkenbare namen en brongegevens per afbeelding. Handig om één grafiek of kaart in bijvoorbeeld TOPdesk te gebruiken.
-- Exporteert het volledige visuele dashboard als één PNG met een vaste indeling, inclusief onderdelen buiten beeld, volledige labels, periode, analysetijdstip, versie en toegepaste instellingen.
-- Exporteert aandachtspunten, bronregels en een zelfstandig HTML-rapport met dezelfde visuele oriëntatie als het webui-overzicht: auditflow, themabalken, tijdpatronen per weekdag en uur, en topgrafieken bij hun tabellen. Zoek en filter direct boven de rapporttabellen; de teller laat zien hoeveel opgenomen regels zichtbaar zijn. Brede rapporttabellen kun je horizontaal verschuiven. Afdrukken toont alle opgenomen regels, ook bij actieve filters.
+- **Tellingen en overzichten.** Bekijk escalaties per medewerker, cliënt, locatie, team, deskundigheid, reden en tijdstip. Bekende systeemmeldingen en exacte duplicaten tellen niet mee in de inhoudelijke resultaten.
+- **Patroonherkenning.** Onderzoek her-escalaties, hoge volumes, spreiding over cliënten, nachtgebruik en problemen met de datakwaliteit.
+- **Peervergelijkingen.** Vergelijk medewerkers met vergelijkbare collega's. De gebruikte peer-ratio's worden bij de tabel toegelicht. De analyse onderzoekt ook korte pieken, cliëntclusters en concentraties.
+- **Uitleg bij signalen.** Lees hoe de webui controleprioriteit, her-escalaties, geselecteerde tijdvensters, peer-ratio's en top-3-concentratie bepaalt. Deze uitleg staat zowel in de webui als in het HTML-rapport. Details tonen de gekoppelde tijden. Het rapport bevat bij her-escalatie ook een fictief rekenvoorbeeld.
+- **Tijdlijnen.** Bekijk wanneer een activatie als laat telt en welke starturen binnen het nachtvenster vallen. Late activatie begint strikt ná de ingestelde grens. De tijdlijnen gebruiken de actuele analyse-instellingen en staan ook in het HTML-rapport.
+- **Controleerbare brongegevens.** Open vanuit cijfers, grafieken en tabellen de Excelregels waarop de uitkomsten zijn gebaseerd.
+- **Losse visuals.** Exporteer alle visuals uit Overzicht als PNG-bestanden in één ZIP. Iedere afbeelding krijgt een herkenbare naam en bijbehorende brongegevens. Je kunt de afbeeldingen bijvoorbeeld toevoegen aan een TOPdesk-melding.
+- **Dashboard als PNG.** Exporteer het volledige dashboard als één afbeelding met een vaste indeling. Ook onderdelen buiten het zichtbare scherm worden meegenomen, inclusief volledige labels, periode, analysetijdstip, versie en toegepaste instellingen.
+- **Rapportages.** Exporteer aandachtspunten, bronregels en een zelfstandig HTML-rapport. Het rapport bevat de auditflow, themabalken, tijdpatronen per weekdag en uur, en topgrafieken naast de bijbehorende tabellen.
+- **Interactieve rapporttabellen.** Zoek en filter direct boven de tabellen in het HTML-rapport. Een teller toont hoeveel opgenomen regels zichtbaar zijn. Brede tabellen kun je horizontaal verschuiven. Bij afdrukken worden alle opgenomen regels getoond, ook wanneer filters actief zijn.
 
-In [Berekeningen, tellingen en patroonherkenning](docs/berekeningen-en-patroonherkenning.md) lees je hoe de webui telt, groepeert en patronen herkent.
+De gebruikte berekeningen, definities en signaleringsregels staan in [Berekeningen, tellingen en patroonherkenning](docs/berekeningen-en-patroonherkenning.md).
 
 ## Gebruik
 
@@ -39,26 +41,54 @@ Je hoeft niets te installeren en hebt geen webserver nodig.
 
 ### Twee manieren om de webui te gebruiken
 
-- **Showcase online:** [bekijk de webui](https://beecave-homelab.github.io/ons-escalatielog-audit/escalatielog-audit-webui.html). Deze versie laat het open-source project zien en volgt de gecontroleerde wijzigingen op `main`. Door caching kan een vorige versie nog circa tien minuten zichtbaar blijven. Probeer de showcase met het [synthetische voorbeeldbestand](https://github.com/beecave-homelab/ons-escalatielog-audit/raw/refs/heads/main/tests/fixtures/synthetic-escalatielog.xlsx); dit bevat geen echte persoonsgegevens.
-- **Lokale kopie voor analyse:** [download een GitHub Release](https://github.com/beecave-homelab/ons-escalatielog-audit/releases/latest). Kies de losse HTML of de ZIP met uitleg en diagrammen. Pak de ZIP volledig uit en behoud de mapstructuur. Gebruik voor analyses een lokaal vastgestelde versie en controleer de download tegen het meegeleverde `SHA256SUMS.txt`. Op macOS kan dat met `shasum -a 256 -c SHA256SUMS.txt`; op Linux met `sha256sum -c SHA256SUMS.txt`. Download beide genoemde bestanden (HTML en ZIP) voor deze controle.
+**Online showcase**
 
-Beide varianten verwerken de ingelezen export uitsluitend in het geheugen van je browser. Bij het openen van de showcase ontvangt GitHub het paginaverzoek en logt het bezoekers-IP voor beveiliging; de inhoud van je Excelbestand wordt niet verzonden.
+[Bekijk de webui](https://beecave-homelab.github.io/ons-escalatielog-audit/escalatielog-audit-webui.html) direct in je browser.
+
+Deze versie toont het open-source project en volgt de gecontroleerde wijzigingen op `main`. Door caching kan het ongeveer tien minuten duren voordat een nieuwe versie zichtbaar is.
+
+Je kunt de showcase uitproberen met het [synthetische voorbeeldbestand](https://github.com/beecave-homelab/ons-escalatielog-audit/raw/refs/heads/main/tests/fixtures/synthetic-escalatielog.xlsx). Dit bestand bevat geen echte persoonsgegevens.
+
+**Lokale kopie voor analyse**
+
+[Download de nieuwste GitHub Release](https://github.com/beecave-homelab/ons-escalatielog-audit/releases/latest).
+
+Je kunt kiezen uit de losse HTML of een ZIP met de webui, uitleg en diagrammen. Pak de ZIP volledig uit en behoud de mapstructuur.
+
+Gebruik voor analyses een lokaal vastgestelde versie. Controleer de download met het meegeleverde `SHA256SUMS.txt`.
+
+Op macOS:
+
+`shasum -a 256 -c SHA256SUMS.txt`
+
+Op Linux:
+
+`sha256sum -c SHA256SUMS.txt`
+
+Download zowel de HTML als de ZIP om beide bestanden te kunnen controleren.
+
+Beide varianten verwerken de ingelezen Excelgegevens uitsluitend in het geheugen van je browser.
+
+Bij het openen van de online showcase ontvangt GitHub het paginaverzoek en registreert het bezoekers-IP voor beveiligingsdoeleinden. De inhoud van je Excelbestand wordt niet verzonden.
 
 ### Analyse uitvoeren
 
-1. Open `escalatielog-audit-webui.html` in een recente versie van Edge, Chrome, Firefox of Safari (minimaal Edge/Chrome 80, Firefox 113 of Safari 16.4).
-2. Kies een `.xlsx`-export of sleep het bestand naar het uploadvak.
+1. Open `escalatielog-audit-webui.html` in een recente versie van Edge, Chrome, Firefox of Safari. Minimaal vereist zijn Edge/Chrome 80, Firefox 113 of Safari 16.4.
+2. Selecteer een `.xlsx`-export of sleep het bestand naar het uploadvak.
 3. Klik op **Analyse uitvoeren**.
 4. Controleer eerst **Auditlogica** en **Datakwaliteit**.
-5. Bekijk daarna **Overzicht** en **Aandachtspunten**.
-6. Klik op een cijfer, grafiek of tabelregel om de bronregels te openen.
-   Zoek en filter daar op team, deskundigheid, doeltype en auditcontext. **Bronregels CSV** bevat ook bij actieve filters de volledige geopende selectie.
+5. Bekijk vervolgens **Overzicht** en **Aandachtspunten**.
+6. Klik op een cijfer, grafiek of tabelregel om de bijbehorende bronregels te openen. Je kunt deze doorzoeken en filteren op team, deskundigheid, doeltype en auditcontext. **Bronregels CSV** bevat de volledige geopende selectie, ook wanneer filters actief zijn.
 7. Pas zo nodig de instellingen aan en klik op **Analyse opnieuw uitvoeren**.
-8. Exporteer de gewenste aandachtspunten, bronregels, het HTML-rapport, **Dashboard als PNG** of **Losse visuals als ZIP**. Pak de ZIP uit en kies de gewenste afbeelding. De PNG gebruikt de laatste succesvolle analyse; pas gewijzigde instellingen eerst toe met **Analyse opnieuw uitvoeren**.
+8. Exporteer de gewenste aandachtspunten, bronregels of rapportages. Je kunt ook kiezen voor **Dashboard als PNG** of **Losse visuals als ZIP**. Pak de ZIP uit om afzonderlijke afbeeldingen te gebruiken.
+
+De PNG-export gebruikt de laatste succesvolle analyse. Heb je instellingen gewijzigd? Klik dan eerst op **Analyse opnieuw uitvoeren** om die wijzigingen toe te passen.
 
 ## Vereiste invoer
 
-Gebruik het [Excel-rapport van het escalatielog](https://support.nedap-ons.nl/support/solutions/articles/103000265692-ons-autorisatie-uitgevoerde-escalaties-in-het-escalatielog-bekijken#excel-rapport). De webui verwacht daarin deze 14 kolommen:
+Gebruik het [Excel-rapport van het escalatielog](https://support.nedap-ons.nl/support/solutions/articles/103000265692-ons-autorisatie-uitgevoerde-escalaties-in-het-escalatielog-bekijken#excel-rapport) uit Nedap Ons.
+
+De webui verwacht de volgende 14 kolommen:
 
 - `Gebruiker`
 - `Medewerkernummer`
@@ -75,24 +105,41 @@ Gebruik het [Excel-rapport van het escalatielog](https://support.nedap-ons.nl/su
 - `Geactiveerd op`
 - `Bron`
 
-De webui gebruikt het eerste werkblad waarin deze kolommen in een van de eerste tien rijen staan. De webui voegt werkbladen niet samen. Als geen werkblad voldoet, noemt de foutmelding de ontbrekende kolommen, het best passende werkblad en het rijnummer van de mogelijke kopregel, met het aantal herkende vereiste kolommen. De melding vermeldt ook dat alleen de eerste tien rijen zijn gecontroleerd.
+De webui zoekt naar het eerste werkblad waarin alle vereiste kolommen voorkomen. De kolomkoppen moeten in een van de eerste tien rijen staan. Gegevens uit meerdere werkbladen worden niet samengevoegd.
+
+Voldoet geen enkel werkblad, dan toont de webui een foutmelding met:
+
+- De ontbrekende kolommen.
+- Het werkblad dat het beste overeenkomt.
+- Het rijnummer van de mogelijke kopregel.
+- Het aantal herkende vereiste kolommen.
+
+De melding vermeldt ook dat alleen de eerste tien rijen zijn gecontroleerd.
 
 ## Uitkomsten beoordelen
 
-Controleer altijd:
+Controleer bij iedere analyse:
 
-1. Of de export de bedoelde periode bevat.
-2. Welke systeemregels en duplicaten zijn uitgesloten.
-3. Of ontbrekende of ongeldige waarden de uitkomst beïnvloeden.
-4. Of de ingestelde drempels bij je eigen omgeving passen.
+1. Of de export de juiste periode bevat.
+2. Welke systeemregels en duplicaten buiten de inhoudelijke tellingen zijn gehouden.
+3. Of ontbrekende of ongeldige waarden invloed hebben op de resultaten.
+4. Of de ingestelde drempels passen bij je eigen organisatie.
 5. Welke bronregels bij een signaal horen.
-6. Of de planning, het rooster, de autorisatie of de dossierlogging het patroon verklaart.
+6. Of de planning, het rooster, de autorisatie of de dossierlogging het gevonden patroon verklaart.
 
-Niet alle schermen gebruiken dezelfde regels. **Datakwaliteit** kijkt bijvoorbeeld ook naar duplicaten. De inhoudelijke tellingen tellen die niet dubbel mee. Eén regel kan meerdere signalen hebben, maar telt bij **Aandachtspunten** maar één keer. De precieze definities staan in de [technische documentatie](docs/berekeningen-en-patroonherkenning.md).
+De verschillende onderdelen van de webui gebruiken niet altijd dezelfde selecties. **Datakwaliteit** onderzoekt bijvoorbeeld ook duplicaten, terwijl de inhoudelijke tellingen deze regels niet dubbel meetellen.
+
+Eén bronregel kan meerdere signalen opleveren. Bij **Aandachtspunten** telt die regel echter maar één keer mee.
+
+Lees de [technische documentatie](docs/berekeningen-en-patroonherkenning.md) voor de precieze definities en berekeningen.
 
 ## Privacy
 
-De webui verwerkt de export alleen in het geheugen van de browser. Als je de pagina sluit of vernieuwt, worden de ingelezen gegevens gewist. Gedownloade ZIP-, PNG-, CSV- en HTML-bestanden blijven wel op het apparaat staan en kunnen persoonsgegevens bevatten. Bewaar en deel deze bestanden volgens de interne afspraken van je organisatie.
+De webui verwerkt de Excelgegevens uitsluitend in het geheugen van de browser. Wanneer je de pagina sluit of vernieuwt, worden de ingelezen gegevens gewist.
+
+Bestanden die je exporteert, blijven wel op je apparaat staan. ZIP-, PNG-, CSV- en HTML-bestanden kunnen persoonsgegevens bevatten.
+
+Bewaar en deel deze bestanden volgens de interne afspraken van je organisatie.
 
 ## Licentie
 
