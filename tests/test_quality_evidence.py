@@ -440,6 +440,7 @@ def test_quality_evidence_survives_repeated_rendering(tmp_path: Path) -> None:
               const quality = analyzeQuality(rows);
               const mockResult = {
                 quality, manualRows: rows, overview: {blocks:[],notice:''},
+                evidence: evidenceIndex(rows,[]),
                 allRows: rows, systemRows: [], duplicateRows: [], auditRows: rows,
                 attention: [], signalCounts: new Map(),
                 logic: {unexpected30:[],knownNon30:[]}, employees: [], clients: [],
