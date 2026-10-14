@@ -4,6 +4,18 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+## [0.15.1] - 2026-10-14
+
+### Opgelost
+
+- Koppel het bronregelsbewijs bij Datakwaliteit vast in de analyse in plaats van in de weergave. `analyzeQuality` legt per bevinding de exacte bronregels vast als niet-enumerable `__rows` vanuit dezelfde groep die de telling en toelichting bepaalt. `renderEvidenceLinks` leest deze metadata alleen uit en leidt geen bewijs meer af.
+
+- Een Exact-dubbel-drilldown toont nu uitsluitend de regels met identieke `exactRowKey` (alle 14 bronvelden), niet meer regels die toevallig overeenkomen op medewerkernummer, starttijd, reden en doelnaam. Een bijna-duplicaat dat afwijkt in bijvoorbeeld duur of doel-ID verschijnt niet langer in de drilldown.
+
+- Identifierconflicten houden de sleutelruimte gescheiden: een conflict op medewerkernummer brengt alleen regels met dat nummer mee, een conflict op gebruikersnaam alleen regels met die naam. De eerdere OR-voorwaarde (`employeeNumber===key||loginName===key`) is verwijderd.
+
+- Ontbrekend/ongeldig veld, Redenvariant en Identifierconflict dragen nu ook `__rows` bewijs vanaf de analyse, op dezelfde manier als Tijd/duur al deed.
+
 ## [0.15.0] - 2026-10-12
 
 ### Toegevoegd
