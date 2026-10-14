@@ -770,6 +770,8 @@ Beschouw zo'n groep niet als één geïdentificeerde medewerker of één werkeli
 
 De webui koppelt berekende uitkomsten aan de bronregels waarop ze zijn gebaseerd.
 
+De bronregels achter klikbare onderdelen van het dashboard legt `analyze()` één keer vast. De weergave zoekt ze alleen op en berekent ze niet opnieuw. Daardoor tonen kaart, telling en drilldown altijd dezelfde regels.
+
 | Weergave | Welke details opent de webui? |
 | -- | -- |
 | Kerncijfer of auditflowstap | Bronregels die bijdragen aan de getoonde populatie; een uniek-personencijfer opent dus meerdere regels per persoon |
