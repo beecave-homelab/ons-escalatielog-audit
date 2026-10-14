@@ -835,8 +835,9 @@ function analyzeQuality(rows){
   const nameRows=new Map(),loginRows=new Map(),loginEmpRows=new Map(),variantRows=new Map(),missingRows=new Map();
   const bindRows=(issue,rowsArr)=>{Object.defineProperty(issue,'__rows',{value:rowsArr,enumerable:false,configurable:true});return issue};
   rows.forEach(r=>{addSet(names,r.employeeNumber,r.userName);addSet(logins,r.employeeNumber,r.loginName);addSet(loginEmps,r.loginName,r.employeeNumber);addSet(variants,r.reasonNorm,r.reason);
-    if(hasValue(r.employeeNumber)){addSet(nameRows,r.employeeNumber,r);addSet(loginRows,r.employeeNumber,r);}
-    if(hasValue(r.loginName))addSet(loginEmpRows,r.loginName,r);
+    // Evidence accepts exactly the same keys as the existing conflict maps.
+    if(r.employeeNumber){addSet(nameRows,r.employeeNumber,r);addSet(loginRows,r.employeeNumber,r);}
+    if(r.loginName)addSet(loginEmpRows,r.loginName,r);
     addSet(variantRows,r.reasonNorm,r);
     [['Gebruiker',r.userName],['Medewerkernummer',r.employeeNumber],['Medewerkersteam',r.employeeTeam],['Escalatie reden',r.reason],['Gestart op',r.startedRaw]].forEach(([f,v])=>{if(!hasValue(v)){inc(missing,f);addSet(missingRows,f,r);}});
     if(isClient(r)){if(!hasValue(r.targetId)){inc(missing,'Cliëntnummer bij cliëntdoel');addSet(missingRows,'Cliëntnummer bij cliëntdoel',r);}if(!hasValue(r.targetName)){inc(missing,'Cliëntnaam bij cliëntdoel');addSet(missingRows,'Cliëntnaam bij cliëntdoel',r);}}

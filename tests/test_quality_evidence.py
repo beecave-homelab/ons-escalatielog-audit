@@ -469,3 +469,63 @@ def test_quality_evidence_survives_repeated_rendering(tmp_path: Path) -> None:
         assert sorted(after["sourceRows"]) == sorted(before["sourceRows"])
         assert not errors
         browser.close()
+
+
+def test_placeholder_identifier_keys_preserve_complete_conflict_evidence() -> None:
+    """Placeholder keys must not crash or lose legacy conflict evidence."""
+    scenarios = [
+        [{"employeeNumber": "-", "userName": "Alice"}, {"employeeNumber": "-", "userName": "Bob"}],
+        [
+            {"employeeNumber": "-", "loginName": "alice"},
+            {"employeeNumber": "-", "loginName": "bob"},
+        ],
+        [
+            {"loginName": "-", "employeeNumber": "M001"},
+            {"loginName": "-", "employeeNumber": "M002"},
+        ],
+    ]
+    with sync_playwright() as playwright:
+        browser = launch_browser(playwright)
+        assert browser is not None
+        page = browser.new_page(viewport={"width": 1440, "height": 1100})
+        errors: list[str] = []
+        page.on("pageerror", lambda error: errors.append(str(error)))
+        page.goto((ROOT / "escalatielog-audit-webui.html").as_uri())
+        for changes in scenarios:
+            rows = [
+                {**_make_near_duplicate_rows()[0], **change, "sourceRow": index}
+                for index, change in enumerate(changes, 2)
+            ]
+            result = page.evaluate(
+                """(rows) => {
+                state.result = analyze(rows, state.settings);
+                const issues = state.result.quality;
+                const conflicts = issues.filter(i =>
+                    i['Type issue'] === 'Identifierconflict' && i.Sleutel === '-');
+                const references = conflicts.map(i => i.__rows);
+                render();
+                render();
+                return {
+                    missing: issues.some(i => i['Type issue'] === 'Ontbrekend/ongeldig veld'),
+                    conflicts: conflicts.map((i, index) => ({
+                        count: i.Aantal, rows: i.__rows.map(r => r.sourceRow),
+                        sameReference: i.__rows === references[index],
+                        nonEnumerable: !Object.keys(i).includes('__rows'),
+                    })),
+                };
+            }""",
+                rows,
+            )
+            assert result["missing"] == any(
+                change.get("employeeNumber") == "-" for change in changes
+            )
+            assert result["conflicts"]
+            for conflict in result["conflicts"]:
+                assert conflict == {
+                    "count": 2,
+                    "rows": [2, 3],
+                    "sameReference": True,
+                    "nonEnumerable": True,
+                }
+        assert not errors
+        browser.close()
