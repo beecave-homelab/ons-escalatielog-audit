@@ -98,7 +98,7 @@ Voor de medewerkersleutel gebruikt de webui de eerste beschikbare waarde uit:
 2. `Gebruikersnaam`
 3. `Gebruiker`
 
-Een lege waarde of `-` geldt als ontbrekend.
+Een lege waarde of de losse plaatshouder `-` geldt als ontbrekend. Een koppelteken, punt of cijfer binnen een waarde hoort bij die waarde. Gebruikersnamen als `77600-1` en `t.detester` zijn dus gewone identifiers. De webui vergelijkt sleutels letterlijk: `77600-1`, `77600-2` en medewerkernummer `77600` zijn verschillende sleutels.
 
 Als alle drie ontbreken, blijft de regel in de auditpopulatie staan. De regel verschijnt dan niet in het medewerkersoverzicht.
 

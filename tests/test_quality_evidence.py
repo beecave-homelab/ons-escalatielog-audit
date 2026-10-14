@@ -529,3 +529,87 @@ def test_placeholder_identifier_keys_preserve_complete_conflict_evidence() -> No
                 }
         assert not errors
         browser.close()
+
+
+def test_login_names_with_digits_dots_and_hyphens_are_regular_identifiers() -> None:
+    """Login names like 77600-1 or t.detester are ordinary literal keys.
+
+    Only the exact value '-' is a missing placeholder; digits, dots and
+    hyphens inside a value belong to that value. Keys compare literally,
+    so 77600-1, 77600-2 and employeeNumber 77600 stay separate, and toCsv
+    does not treat such login names as formulas.
+    """
+    changes = [
+        {"employeeNumber": "77600", "loginName": "77600-1", "userName": "T. de Tester"},
+        {"employeeNumber": "77602", "loginName": "77600-1", "userName": "Piet Jansen"},
+        {"employeeNumber": "77601", "loginName": "77600-2", "userName": "Anna Bakker"},
+        {"employeeNumber": "M010", "loginName": "t.detester", "userName": "Tess Tester"},
+        {"employeeNumber": "M010", "loginName": "t.de-tester", "userName": "Tess Tester"},
+        {"employeeNumber": "-", "loginName": "77600-3", "userName": "Kees Klaassen"},
+    ]
+    with sync_playwright() as playwright:
+        browser = launch_browser(playwright)
+        assert browser is not None
+        page = browser.new_page(viewport={"width": 1440, "height": 1100})
+        errors: list[str] = []
+        page.on("pageerror", lambda error: errors.append(str(error)))
+        page.goto((ROOT / "escalatielog-audit-webui.html").as_uri())
+
+        rows = [
+            {**_make_near_duplicate_rows()[0], **change, "sourceRow": index}
+            for index, change in enumerate(changes, 2)
+        ]
+        result = page.evaluate(
+            """(rows) => {
+            state.result = analyze(rows, state.settings);
+            const issues = state.result.quality;
+            render();
+            return {
+                conflicts: issues
+                    .filter(i => i['Type issue'] === 'Identifierconflict')
+                    .map(i => ({
+                        sleutel: i.Sleutel, details: i.Details, aantal: i.Aantal,
+                        rows: i.__rows.map(r => r.sourceRow).sort((a, b) => a - b),
+                    })),
+                missing: issues
+                    .filter(i => i['Type issue'] === 'Ontbrekend/ongeldig veld')
+                    .map(i => ({
+                        sleutel: i.Sleutel, aantal: i.Aantal,
+                        rows: i.__rows.map(r => r.sourceRow).sort((a, b) => a - b),
+                    })),
+                employeeKeys: [...state.result.manualRows]
+                    .sort((a, b) => a.sourceRow - b.sourceRow)
+                    .map(employeeKey),
+                csv: toCsv([
+                    {Gebruikersnaam: '77600-1'},
+                    {Gebruikersnaam: 't.detester'},
+                    {Gebruikersnaam: 't.de-tester'},
+                ]),
+            };
+        }""",
+            rows,
+        )
+
+        assert sorted(result["conflicts"], key=lambda c: c["sleutel"]) == [
+            {"sleutel": "77600-1", "details": "77600 | 77602", "aantal": 2, "rows": [2, 3]},
+            {
+                "sleutel": "M010",
+                "details": "t.detester | t.de-tester",
+                "aantal": 2,
+                "rows": [5, 6],
+            },
+        ]
+        assert result["missing"] == [{"sleutel": "Medewerkernummer", "aantal": 1, "rows": [7]}]
+        assert result["employeeKeys"] == [
+            "77600",
+            "77602",
+            "77601",
+            "M010",
+            "M010",
+            "77600-3",
+        ]
+        assert result["csv"] == (
+            '\ufeff"Gebruikersnaam"\r\n"77600-1"\r\n"t.detester"\r\n"t.de-tester"'
+        )
+        assert not errors
+        browser.close()
