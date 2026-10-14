@@ -2,7 +2,7 @@
 title: Berekeningen, tellingen en patroonherkenning
 applies_to: escalatielog-audit-webui.html
 tags: [escalatielogs, audit, functioneel-beheer]
-updated: 2026-10-13
+updated: 2026-10-14
 ---
 
 ## Berekeningen, tellingen en patroonherkenning
@@ -226,6 +226,18 @@ De onderdelen gebruiken verschillende verzamelingen:
 - **Auditlogica** onderzoekt alle bronregels op tijdsduur, reden, doeltype en bronwaarde.
 
 De aantallen uit deze onderdelen hebben dus niet altijd dezelfde basis. Je kunt ze niet zonder meer vergelijken of bij elkaar optellen.
+
+### 4.4 Bewijs bij Datakwaliteit
+
+Per Datakwaliteit-bevinding legt de analyse de bijbehorende bronregels vast als niet-enumerable `__rows` op het moment dat de bevinding ontstaat. De weergave leest deze metadata alleen uit en leidt geen bewijs meer af.
+
+- **Exact dubbel**: alle regels met dezelfde `exactRowKey` (alle 14 ingelezen bronvelden), inclusief het eerste exemplaar en alle kopieën. Een regel die afwijkt in één veld, zoals `Tijdsduur (min.)` of `Escalatiedoel identificatienummer`, valt buiten deze groep.
+- **Ontbrekend/ongeldig veld**: de regels waarvoor het betreffende veld ontbreekt of ongeldig is.
+- **Identifierconflict**: de regels die bij de betreffende sleutel horen. Een conflict op medewerkernummer brengt alleen regels met dat nummer mee; een conflict op gebruikersnaam alleen regels met die naam. De sleutelruimtes blijven gescheiden.
+- **Redenvariant**: de regels met dezelfde genormaliseerde reden.
+- **Tijd/duur**: de regels die aan het bijbehorende predicaat voldoen.
+
+Het aantal bronregels in de drilldown is hierdoor consistent met `Aantal` en de toelichting van de bevinding. Bij *Exact dubbel*, *Ontbrekend/ongeldig veld* en *Tijd/duur* telt `Aantal` bronregels. Bij *Identifierconflict* telt het verschillende niet-lege namen, gebruikersnamen of medewerkernummers, afhankelijk van het conflict. Bij *Redenvariant* telt het verschillende niet-lege schrijfwijzen. Voor die laatste twee typen kan de drilldown dus meer bronregels bevatten dan `Aantal`, omdat meerdere regels dezelfde waarde kunnen hebben.
 
 ## 5. Kerncijfers, tellers en noemers
 
@@ -1041,6 +1053,8 @@ Niet iedere kwaliteitsbevinding leidt tot een auditsignaal.
 Conflicten tussen identifiers en redenvarianten verschijnen bijvoorbeeld in afzonderlijke controletabellen.
 
 Het aantal kwaliteitsbevindingen is bovendien niet gelijk aan het aantal unieke probleemregels. Eén regel kan meerdere kwaliteitsbevindingen hebben.
+
+Per bevinding legt de analyse de bijbehorende bronregels vast vanuit dezelfde groep die de telling bepaalt (zie §4.4). De drilldown toont uitsluitend deze regels. Voor *Exact dubbel* zijn dat alle regels met identieke `exactRowKey`; een bijna-duplicaat dat afwijkt in een veld valt erbuiten. Voor *Identifierconflict* blijven de sleutelruimtes gescheiden: een conflict op medewerkernummer brengt alleen regels met dat nummer mee.
 
 **Voorbeeld uit het referentiebestand**
 
