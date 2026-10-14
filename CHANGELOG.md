@@ -4,6 +4,12 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+## [0.15.3] - 2026-10-14
+
+### Opgelost
+
+- Het dashboard bouwt het bronregelbewijs voor klikbare onderdelen niet meer bij iedere weergave opnieuw op. `analyze()` legt de bronregels per medewerker, team, reden, cliënt, tijdvak, signaal, thema en prioriteit één keer vast; de weergave zoekt ze alleen op. Drilldowns tonen dezelfde bronregels als voorheen, maar grote exports worden merkbaar sneller weergegeven.
+
 ## [0.15.2] - 2026-10-14
 
 ### Opgelost

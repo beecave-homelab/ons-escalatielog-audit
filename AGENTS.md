@@ -83,6 +83,8 @@ For the manual reference check, open the HTML in Chromium/Chrome (needs `Decompr
 
 For synthetic edge cases, call `analyze()`/`analyzeQuality()` directly in the page context with hand-built row objects.
 
+For performance changes, run `uv run python scripts/measure_render_performance.py [--html PATH] [--runs N]` before and after the change and record both outputs in the PR. It builds a deterministic synthetic set of 50,000 rows, 3,000 employees and 20,000 clients in the page and prints JSON with the per-run and median durations of `analyze()`, `render()` and each `render*` sub-step. Use at least 3 runs, measure the baseline from a copy of the base HTML (`--html`), and keep other browsers and test runs idle while measuring.
+
 ## Productiedocumentatie
 
 Op `main` bevat `docs/` uitsluitend `berekeningen-en-patroonherkenning.md` en de
