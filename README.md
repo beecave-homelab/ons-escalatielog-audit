@@ -1,6 +1,6 @@
 # Ons Escalatielog Audit
 
-![Version: 0.15.1](https://img.shields.io/badge/version-0.15.1-00A0C8.svg)
+![Version: 0.15.2](https://img.shields.io/badge/version-0.15.2-00A0C8.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 
 Ons Escalatielog Audit is een zelfstandige webpagina voor het controleren van `.xlsx`-exports met escalatielogs uit Nedap Ons. De webui maakt opvallende patronen zichtbaar en laat je doorklikken naar de bijbehorende Excelregels. Het hulpmiddel is bedoeld voor functioneel applicatiebeheerders, CISO's en privacy officers.
@@ -82,7 +82,7 @@ Bij het openen van de online showcase ontvangt GitHub het paginaverzoek en regis
 7. Pas zo nodig de instellingen aan en klik op **Analyse opnieuw uitvoeren**.
 8. Exporteer de gewenste aandachtspunten, bronregels of rapportages. Je kunt ook kiezen voor **Dashboard als PNG** of **Losse visuals als ZIP**. Pak de ZIP uit om afzonderlijke afbeeldingen te gebruiken.
 
-De PNG-export gebruikt de laatste succesvolle analyse. Heb je instellingen gewijzigd? Klik dan eerst op **Analyse opnieuw uitvoeren** om die wijzigingen toe te passen.
+De PNG-export en het HTML-rapport gebruiken de laatste succesvolle analyse. Heb je instellingen gewijzigd? Klik dan eerst op **Analyse opnieuw uitvoeren** om die wijzigingen toe te passen. Mislukt die heranalyse, dan blijven de vorige analyse en instellingen actief.
 
 ## Vereiste invoer
 

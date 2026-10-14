@@ -838,6 +838,8 @@ De afzonderlijke plaatshouder `-` en gewone getallen, inclusief negatieve getall
 
 Het HTML-rapport bevat de gebruikte instellingen, definities en analysetabellen.
 
+Het rapport haalt de instellingen uit het analyseresultaat. Instellingen die je na de laatste analyse wijzigt maar nog niet toepast met **Analyse opnieuw uitvoeren**, staan niet in het rapport.
+
 Onder de samenvatting staat een inhoudsopgave met regeltellingen en verwijzingen naar de afzonderlijke secties.
 
 De tabellen zijn ondergebracht in inklapbare secties.
@@ -1139,6 +1141,8 @@ Uren moeten tussen 0 en 23 liggen.
 De drempel voor activatievertraging mag 0 zijn. Alle overige numerieke instellingen moeten minimaal 1 zijn.
 
 Ongeldige invoer wordt genegeerd.
+
+Nieuwe instellingen worden pas toegepast wanneer **Analyse opnieuw uitvoeren** volledig slaagt. Mislukt de analyse of de weergave, dan blijven het getoonde resultaat, de toegepaste instellingen en het analysetijdstip ongewijzigd. De statusregel toont dan een foutmelding.
 
 Bekende systeemredenen blijven altijd uitgesloten, ongeacht de instelling van de 30-minutenschakelaar.
 

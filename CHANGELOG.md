@@ -4,6 +4,16 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+## [0.15.2] - 2026-10-14
+
+### Opgelost
+
+- **Analyse opnieuw uitvoeren** werkt de analyse nu in één keer bij. Nieuwe instellingen, het analysetijdstip en het resultaat worden pas vastgelegd als analyse en weergave slagen. Mislukt de heranalyse, dan blijven de vorige cijfers, instellingen en het analysetijdstip actief en toont de statusregel een foutmelding.
+
+- `analyze()` wijzigt de applicatiestatus en de ingelezen bronregels niet meer. Een mislukte heranalyse kan daardoor de signalen van het getoonde resultaat niet aantasten.
+
+- Het HTML-rapport neemt de toegepaste instellingen over uit het analyseresultaat, net als de PNG-export. Instellingen die nog niet met een heranalyse zijn toegepast, komen niet meer in het rapport terecht.
+
 ## [0.15.1] - 2026-10-14
 
 ### Opgelost
