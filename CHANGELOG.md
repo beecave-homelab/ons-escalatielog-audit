@@ -4,6 +4,15 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+### Onderhoud
+
+- Blokkeer privacygevoelige bestanden in de hele Git-boom en niet alleen in `escalatielogs/` en `exports/`: ook `*.xlsx` buiten `tests/fixtures/` en exports die beginnen met `escalatie_log_controle_`. Paden worden hoofdletterongevoelig vergeleken. Het setupscript zet de Git-hooks in `.githooks/` aan.
+- Pin alle GitHub Actions op een vaste commit, beperk de rechten van iedere workflow en bewaar geen inloggegevens na de checkout. Dependabot stelt updates van acties voor, met een wachttijd van zeven dagen.
+- Gebruik één gedeelde lijst met controles (`scripts/run-checks.sh`) in CI en in `scripts/install-dependencies.sh --check`, en zet de uv-versie vast.
+- Laat de SVG-tekstcontrole transforms en een viewBox met verschoven oorsprong meenemen.
+- Lees en schrijf bestanden in de release- en versiescripts als UTF-8, weiger `--revision` bij `release_tools.py prepare` en controleer ook links met een titel en referentielinks.
+- Leg uit waarom de versiecontrole faalt bij een push zonder vorige commit, en verwijder de versie uit de subkoppen van deze changelog.
+
 ## [0.15.3] - 2026-10-14
 
 ### Opgelost
