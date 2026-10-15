@@ -69,6 +69,75 @@ def test_missing_package_links(target):
         )
 
 
+@pytest.mark.parametrize(
+    "link",
+    [
+        '[x](docs/berekeningen-en-patroonherkenning.md "titel")',
+        "[x](docs/berekeningen-en-patroonherkenning.md 'titel')",
+        "[x](<docs/berekeningen-en-patroonherkenning.md>)",
+        "[x][ref]\n\n[ref]: docs/berekeningen-en-patroonherkenning.md",
+        '[x][ref]\n\n[ref]: docs/berekeningen-en-patroonherkenning.md "titel"',
+    ],
+)
+def test_package_links_with_titles_and_references(link):
+    release_tools.check_links(
+        {
+            "README.md": link.encode(),
+            "docs/berekeningen-en-patroonherkenning.md": b"",
+        }
+    )
+    with pytest.raises(ValueError):
+        release_tools.check_links(
+            {
+                "README.md": link.replace(
+                    "docs/berekeningen-en-patroonherkenning.md", "docs/ontbreekt.md"
+                ).encode(),
+                "docs/berekeningen-en-patroonherkenning.md": b"",
+            }
+        )
+
+
+def test_footnote_definition_is_ignored():
+    release_tools.check_links(
+        {
+            "README.md": b"[^1] voetnoot\n\n[^1]: tekst zonder bestand",
+            "docs/berekeningen-en-patroonherkenning.md": b"",
+        }
+    )
+
+
+def test_reference_definition_to_missing_file_fails():
+    with pytest.raises(ValueError, match="Ontbrekende"):
+        release_tools.check_links(
+            {
+                "README.md": b"[x][ref]\n\n[ref]: docs/ontbreekt.md",
+                "docs/berekeningen-en-patroonherkenning.md": b"",
+            }
+        )
+
+
+def test_prepare_rejects_explicit_revision(monkeypatch, tmp_path):
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "release_tools.py",
+            "prepare",
+            "--version",
+            "1.2.3",
+            "--output",
+            str(tmp_path / "out"),
+            "--repository",
+            "a/b",
+            "--revision",
+            "HEAD",
+        ],
+    )
+    with pytest.raises(SystemExit) as excinfo:
+        release_tools.main()
+    assert excinfo.value.code == 2
+
+
 class FakeGitHub:
     def __init__(self):
         self.tag = None

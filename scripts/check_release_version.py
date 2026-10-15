@@ -57,7 +57,11 @@ def main():
         "--release", action="store_true", help="Blokkeer ongepubliceerde wijzigingen"
     )
     args = parser.parse_args()
-    check_version(lambda name: Path(name).read_text(), args.version, release=args.release)
+    check_version(
+        lambda name: Path(name).read_text(encoding="utf-8"),
+        args.version,
+        release=args.release,
+    )
     print("Versies en gedateerde changelogsectie komen overeen.")
 
 

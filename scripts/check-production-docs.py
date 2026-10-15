@@ -25,7 +25,8 @@ def main():
     root = Path(subprocess.check_output(["git", "rev-parse", "--show-toplevel"], text=True).strip())
     if args.revision:
         entries = subprocess.check_output(
-            ["git", "ls-tree", "-rz", args.revision, "--", "docs"], cwd=root
+            ["git", "ls-tree", "-rz", "--end-of-options", args.revision, "--", "docs"],
+            cwd=root,
         )
         paths = set()
         invalid = set()

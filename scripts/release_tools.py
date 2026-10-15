@@ -31,23 +31,39 @@ def git(*args: str) -> bytes:
     return subprocess.check_output(["git", *args])
 
 
+INLINE_LINK = re.compile(r"\]\(\s*(?:<([^>]+)>|([^\s)]+))(?:\s+[\"'][^)]*[\"']\s*)?\)")
+REFERENCE = re.compile(
+    r"^ {0,3}\[([^\]]+)\]:\s*(?:<([^>]+)>|(\S+))(?:\s+[\"'][^\"']*[\"'])?",
+    re.MULTILINE,
+)
+
+
+def check_link_target(name: str, target: str, files: dict[str, bytes]) -> None:
+    url = urlsplit(target)
+    if url.scheme or url.netloc or not url.path:
+        return
+    parts = list(PurePosixPath(name).parent.parts)
+    for part in PurePosixPath(unquote(url.path)).parts:
+        if part == "..":
+            if not parts:
+                raise ValueError(f"Verwijzing buiten het pakket: {target}")
+            parts.pop()
+        elif part != ".":
+            parts.append(part)
+    resolved = "/".join(parts)
+    if resolved not in files:
+        raise ValueError(f"Ontbrekende lokale verwijzing in {name}: {target}")
+
+
 def check_links(files: dict[str, bytes]) -> None:
     for name in ("README.md", "docs/berekeningen-en-patroonherkenning.md"):
-        for target in re.findall(r"\]\(([^)]+)\)", files[name].decode()):
-            url = urlsplit(target)
-            if url.scheme or url.netloc or not url.path:
+        text = files[name].decode()
+        for match in INLINE_LINK.finditer(text):
+            check_link_target(name, match[1] or match[2], files)
+        for match in REFERENCE.finditer(text):
+            if match[1].startswith("^"):
                 continue
-            parts = list(PurePosixPath(name).parent.parts)
-            for part in PurePosixPath(unquote(url.path)).parts:
-                if part == "..":
-                    if not parts:
-                        raise ValueError(f"Verwijzing buiten het pakket: {target}")
-                    parts.pop()
-                elif part != ".":
-                    parts.append(part)
-            resolved = "/".join(parts)
-            if resolved not in files:
-                raise ValueError(f"Ontbrekende lokale verwijzing in {name}: {target}")
+            check_link_target(name, match[2] or match[3], files)
 
 
 def package(revision: str, version: str, output: Path) -> str:
@@ -73,9 +89,9 @@ def package(revision: str, version: str, output: Path) -> str:
         f"{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.name}\n"
         for path in (output / APP, archive)
     )
-    (output / "SHA256SUMS.txt").write_text(sums)
-    (output / "release-notes.md").write_text(notes + "\n")
-    (output / "commit.txt").write_text(sha + "\n")
+    (output / "SHA256SUMS.txt").write_text(sums, encoding="utf-8")
+    (output / "release-notes.md").write_text(notes + "\n", encoding="utf-8")
+    (output / "commit.txt").write_text(sha + "\n", encoding="utf-8")
     return sha
 
 
@@ -200,20 +216,22 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("command", choices=("check", "package", "prepare"))
     parser.add_argument("--version")
-    parser.add_argument("--revision", default="HEAD")
+    parser.add_argument("--revision")
     parser.add_argument("--output", type=Path)
     parser.add_argument("--repository")
     args = parser.parse_args()
     if args.command == "check":
-        check_version(lambda name: Path(name).read_text(), args.version)
+        check_version(lambda name: Path(name).read_text(encoding="utf-8"), args.version)
         print("Versies en gedateerde changelogsectie komen overeen.")
     elif args.command == "package":
         if not args.version or not args.output:
             parser.error("package vereist --version en --output")
-        print(package(args.revision, args.version, args.output))
+        print(package(args.revision or "HEAD", args.version, args.output))
     else:
         if not args.version or not args.output or not args.repository:
             parser.error("prepare vereist --version, --output en --repository")
+        if args.revision is not None:
+            parser.error("prepare bouwt altijd uit HEAD; --revision is niet toegestaan")
         # Bouw opnieuw uit dezelfde Git-commit; vertrouw geen externe artefacten.
         sha = git("rev-parse", "HEAD").decode().strip()
         package(sha, args.version, args.output)
@@ -231,7 +249,7 @@ def main():
                 args.version,
                 sha,
                 assets,
-                (args.output / "release-notes.md").read_text(),
+                (args.output / "release-notes.md").read_text(encoding="utf-8"),
             )
         )
 

@@ -76,6 +76,13 @@ def test_missing_product_document_is_rejected(repo):
         assert "Ontbrekende productiedocumentatie" in result.stdout
 
 
+def test_dash_revision_cannot_become_an_option(repo):
+    result = check(repo, "--revision=--name-only")
+    assert result.returncode != 0
+    assert "Not a valid object name --name-only" in result.stderr
+    assert "alleen de zeven toegestane" not in result.stdout
+
+
 def test_symlink_cannot_replace_product_document(repo):
     file = repo / "docs" / PRODUCT_FILES[0]
     file.unlink()
