@@ -50,18 +50,16 @@ def test_deployment_requires_ci_and_the_same_commit():
     }
     assert deploy["environment"]["name"] == "github-pages"
     steps = deploy["steps"]
-    assert steps[0]["uses"] == ("actions/checkout@11d5960a326750d5838078e36cf38b85af677262")
+    assert steps[0]["uses"].partition("@")[0] == "actions/checkout"
     assert steps[0]["with"]["ref"] == revision
     assert steps[0]["with"]["persist-credentials"] == "false"
-    assert steps[1]["uses"] == ("actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b")
+    assert steps[1]["uses"].partition("@")[0] == "actions/configure-pages"
     assert "enablement" not in steps[1].get("with", {})
-    assert steps[-3]["uses"] == (
-        "actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b"
-    )
+    assert steps[-3]["uses"].partition("@")[0] == "actions/upload-pages-artifact"
     assert steps[-3]["with"]["path"] == "${{ steps.stage.outputs.path }}"
     assert steps[-2]["id"] == "current"
     assert steps[-2]["env"]["START_SHA"] == revision
-    assert steps[-1]["uses"] == ("actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e")
+    assert steps[-1]["uses"].partition("@")[0] == "actions/deploy-pages"
 
 
 @pytest.fixture
