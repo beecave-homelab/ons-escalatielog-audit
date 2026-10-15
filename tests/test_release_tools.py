@@ -73,6 +73,8 @@ def test_missing_package_links(target):
     "link",
     [
         '[x](docs/berekeningen-en-patroonherkenning.md "titel")',
+        '[x](docs/berekeningen-en-patroonherkenning.md "fig (1)")',
+        "[x](docs/berekeningen-en-patroonherkenning.md (titel))",
         "[x](docs/berekeningen-en-patroonherkenning.md 'titel')",
         "[x](<docs/berekeningen-en-patroonherkenning.md>)",
         "[x][ref]\n\n[ref]: docs/berekeningen-en-patroonherkenning.md",

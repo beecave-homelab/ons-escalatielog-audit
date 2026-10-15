@@ -31,7 +31,9 @@ def git(*args: str) -> bytes:
     return subprocess.check_output(["git", *args])
 
 
-INLINE_LINK = re.compile(r"\]\(\s*(?:<([^>]+)>|([^\s)]+))(?:\s+[\"'][^)]*[\"']\s*)?\)")
+INLINE_LINK = re.compile(
+    r"\]\(\s*(?:<([^>]+)>|([^\s)]+))(?:\s+(?:\"[^\"]*\"|'[^']*'|\([^()]*\)))?\s*\)"
+)
 REFERENCE = re.compile(
     r"^ {0,3}\[([^\]]+)\]:\s*(?:<([^>]+)>|(\S+))(?:\s+[\"'][^\"']*[\"'])?",
     re.MULTILINE,
