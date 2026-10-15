@@ -25,7 +25,7 @@ Dit document beschrijft het gedrag van de huidige implementatie. Het bevestigt g
 
 De ingebouwde XLSX-lezer is bedoeld voor een escalatielog-export uit de Autorisatie-module van Nedap Ons, met één werkblad en tekst- of getalcellen. De lezer ondersteunt geen ZIP64-bestanden.
 
-Foutcellen zoals `#N/A` worden als lege waarde ingelezen en onder **Datakwaliteit** als *Foutcel in bron* gemeld. Fonetische hulptekst in gedeelde tekenreeksen wordt genegeerd. Elementen met een namespaceprefix en cellen of rijen zonder `r`-attribuut worden wel gelezen.
+Foutcellen zoals `#N/A` worden als lege waarde ingelezen. In regels die niet als systeemmelding zijn herkend, meldt **Datakwaliteit** ze als *Foutcel in bron*. Fonetische hulptekst in gedeelde tekenreeksen wordt genegeerd. Elementen met een namespaceprefix en cellen of rijen zonder `r`-attribuut worden wel gelezen.
 
 De browser moet `DecompressionStream` ondersteunen. De minimale browserversies zijn Edge/Chrome 80, Firefox 113 en Safari 16.4.
 
@@ -90,7 +90,7 @@ De vereiste kolommen en de selectie van het eerste volledig passende werkblad ve
 
 ### Foutcellen en duurwaarden
 
-Een Excel-foutcel zoals `#N/A` wordt als lege waarde ingelezen. De webui registreert per rij welke vereiste kolommen een foutcel bevatten en meldt die onder **Datakwaliteit** als *Foutcel in bron*, met de kolomnaam als sleutel. Een rij die alleen uit foutcellen bestaat wordt net als een volledig lege rij overgeslagen.
+Een Excel-foutcel zoals `#N/A` wordt als lege waarde ingelezen. De webui registreert per rij welke vereiste kolommen een foutcel bevatten en meldt die onder **Datakwaliteit** als *Foutcel in bron*, met de kolomnaam als sleutel. Datakwaliteit onderzoekt `manualRows` (paragraaf 4.3). Een foutcel in een regel die het systeemfilter heeft herkend, verschijnt daarom niet als *Foutcel in bron*. Een rij die alleen uit foutcellen bestaat wordt net als een volledig lege rij overgeslagen.
 
 Een lege of niet-numerieke `Tijdsduur (min.)` vormt in **Auditlogica** onder *Duurverdeling* samen één categorie `(leeg of ongeldig)`, die achteraan de verdeling staat. Dezelfde regels tellen onder **Datakwaliteit** mee als *Ongeldige duur*.
 

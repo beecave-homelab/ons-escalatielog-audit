@@ -116,7 +116,7 @@ Voldoet geen enkel werkblad, dan toont de webui een foutmelding met:
 
 De melding vermeldt ook dat alleen de eerste tien rijen zijn gecontroleerd.
 
-Foutcellen in de export, zoals `#N/A`, leest de webui in als lege waarden. Ze verschijnen onder **Datakwaliteit** als *Foutcel in bron*, zodat je de export kunt controleren.
+Foutcellen in de export, zoals `#N/A`, leest de webui in als lege waarden. Staat een foutcel in een regel die geen systeemmelding is, dan verschijnt die onder **Datakwaliteit** als *Foutcel in bron*, zodat je de export kunt controleren. Foutcellen in systeemmeldingen worden daar niet gemeld.
 
 ## Uitkomsten beoordelen
 
