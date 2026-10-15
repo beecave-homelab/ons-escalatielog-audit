@@ -7,17 +7,24 @@ on:
       - "scripts/check-svg-text-bounds.sh"
       - ".github/workflows/svg-text-bounds.yml"
 
+permissions:
+  contents: read
+
 jobs:
   svg-text-bounds:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: "3.11"
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7.6.0
+        with:
+          version: "0.12.23"
+      - run: uv sync --locked
       - name: Installeer Playwright + Chromium
-        run: |
-          pip install playwright==1.52.0
-          playwright install chromium --with-deps
+        run: uv run playwright install chromium --with-deps --only-shell
       - name: Controleer tekst binnen viewBox
-        run: bash scripts/check-svg-text-bounds.sh
+        run: uv run bash scripts/check-svg-text-bounds.sh
