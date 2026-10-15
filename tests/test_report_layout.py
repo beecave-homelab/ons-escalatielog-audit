@@ -1,4 +1,5 @@
 import os
+import re
 import shutil
 import sys
 from pathlib import Path
@@ -500,15 +501,27 @@ def test_exported_report_tables_stay_aligned(tmp_path: Path) -> None:
             "24",
         ]
 
+        app_version = page.evaluate("APP_VERSION")
+        overview_details = page.locator("#view-overview details.section-card").first
+        assert overview_details.locator("summary").text_content() == ("Definities en beperkingen")
+        overview_text = overview_details.text_content()
+        assert not re.search(r"Versie \d+\.\d+\.\d+", overview_text)
+        assert app_version not in overview_text
+        assert "Wijzigingen per versie staan in de changelog van de release." in overview_text
+
         with page.expect_download() as download_info:
             page.locator("#reportBtn").click()
         download_info.value.save_as(report)
         page.goto(report.as_uri(), wait_until="load")
 
-        release_notes = page.locator("details.section-card").first.text_content()
-        assert "Versie 0.11.1 lijnde de onderdelen van het HTML-rapport uit." in release_notes
-        assert "Versie 0.11.2 verduidelijkt afgekeurde imports" in release_notes
-        assert "Versie 0.11.2 lijnt" not in release_notes
+        release_notes = page.locator("details.section-card").first
+        assert release_notes.locator("summary").text_content() == ("Definities en beperkingen")
+        release_text = release_notes.text_content()
+        assert not re.search(r"Versie \d+\.\d+\.\d+", release_text)
+        assert app_version not in release_text
+        assert "Wijzigingen per versie staan in de changelog van de release." in release_text
+        footer = page.locator(".page > p.muted").last.text_content()
+        assert app_version in footer
 
         report_guidance = page.locator(".peer-ratio-guidance")
         assert report_guidance.count() == 1

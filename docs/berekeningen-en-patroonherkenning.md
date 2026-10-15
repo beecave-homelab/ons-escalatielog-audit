@@ -2,7 +2,7 @@
 title: Berekeningen, tellingen en patroonherkenning
 applies_to: escalatielog-audit-webui.html
 tags: [escalatielogs, audit, functioneel-beheer]
-updated: 2026-10-14
+updated: 2026-10-15
 ---
 
 ## Berekeningen, tellingen en patroonherkenning
@@ -23,11 +23,9 @@ Zoeken, sorteren en filteren verandert alleen de tabelweergave. De auditpopulati
 
 Dit document beschrijft het gedrag van de huidige implementatie. Het bevestigt geen leveranciersspecificaties, wettelijke verplichtingen of volledige naleving van normen. Controleer daarom de inrichting en beschikbare logging van Nedap Ons voordat je de uitkomsten inhoudelijk beoordeelt.
 
-De ingebouwde XLSX-lezer is bedoeld voor een escalatielog-export uit de Autorisatie-module van Nedap Ons, met één werkblad en tekst- of getalcellen. De lezer ondersteunt niet:
+De ingebouwde XLSX-lezer is bedoeld voor een escalatielog-export uit de Autorisatie-module van Nedap Ons, met één werkblad en tekst- of getalcellen. De lezer ondersteunt geen ZIP64-bestanden.
 
-- Foutcellen zoals `#N/A`.
-- Fonetische tekst in gedeelde tekenreeksen.
-- ZIP64-bestanden.
+Foutcellen zoals `#N/A` worden als lege waarde ingelezen. In regels die niet als systeemmelding zijn herkend, meldt **Datakwaliteit** ze als *Foutcel in bron*. Fonetische hulptekst in gedeelde tekenreeksen wordt genegeerd. Elementen met een namespaceprefix en cellen of rijen zonder `r`-attribuut worden wel gelezen.
 
 De browser moet `DecompressionStream` ondersteunen. De minimale browserversies zijn Edge/Chrome 80, Firefox 113 en Safari 16.4.
 
@@ -89,6 +87,12 @@ Als geen gecontroleerde rij een vereiste kolomnaam bevat, meldt de webui dat exp
 Een bestand zonder leesbare werkbladen geeft de afzonderlijke foutmelding `Geen leesbaar werkblad gevonden.`
 
 De vereiste kolommen en de selectie van het eerste volledig passende werkblad veranderen door deze diagnose niet.
+
+### Foutcellen en duurwaarden
+
+Een Excel-foutcel zoals `#N/A` wordt als lege waarde ingelezen. De webui registreert per rij welke vereiste kolommen een foutcel bevatten en meldt die onder **Datakwaliteit** als *Foutcel in bron*, met de kolomnaam als sleutel. Datakwaliteit onderzoekt `manualRows` (paragraaf 4.3). Een foutcel in een regel die het systeemfilter heeft herkend, verschijnt daarom niet als *Foutcel in bron*. Een rij die alleen uit foutcellen bestaat wordt net als een volledig lege rij overgeslagen.
+
+Een lege of niet-numerieke `Tijdsduur (min.)` vormt in **Auditlogica** onder *Duurverdeling* samen één categorie `(leeg of ongeldig)`, die achteraan de verdeling staat. Dezelfde regels tellen onder **Datakwaliteit** mee als *Ongeldige duur*.
 
 ### 3.1 Sleutels en normalisatie
 
@@ -197,6 +201,8 @@ In het referentiebestand herkent de webui 156 systeemregels:
 
 Al deze regels hebben een duur van 30 minuten.
 
+Een systeemcategorie zonder geldige duur toont in de tabel een lege `Tijdsduur (min.)`. De drilldown van iedere systeemcategorie opent precies de meegetelde bronregels; de analyse legt die regels vast als `__rows` op de categorie.
+
 Daarnaast bevat de auditpopulatie 337 handmatige regels met een duur van precies 30 minuten.
 
 Het aanvullende duurfilter sluit in dit bestand dus extra regels uit. Door de instelling aan en uit te zetten, kun je het verschil controleren.
@@ -236,8 +242,9 @@ Per Datakwaliteit-bevinding legt de analyse de bijbehorende bronregels vast als 
 - **Identifierconflict**: de regels die bij de betreffende sleutel horen. Een conflict op medewerkernummer brengt alleen regels met dat nummer mee; een conflict op gebruikersnaam alleen regels met die naam. De sleutelruimtes blijven gescheiden.
 - **Redenvariant**: de regels met dezelfde genormaliseerde reden.
 - **Tijd/duur**: de regels die aan het bijbehorende predicaat voldoen.
+- **Foutcel in bron**: de regels waarin de betreffende kolom een Excel-foutwaarde bevatte die als lege waarde is ingelezen.
 
-Het aantal bronregels in de drilldown is hierdoor consistent met `Aantal` en de toelichting van de bevinding. Bij *Exact dubbel*, *Ontbrekend/ongeldig veld* en *Tijd/duur* telt `Aantal` bronregels. Bij *Identifierconflict* telt het verschillende niet-lege namen, gebruikersnamen of medewerkernummers, afhankelijk van het conflict. Bij *Redenvariant* telt het verschillende niet-lege schrijfwijzen. Voor die laatste twee typen kan de drilldown dus meer bronregels bevatten dan `Aantal`, omdat meerdere regels dezelfde waarde kunnen hebben.
+Het aantal bronregels in de drilldown is hierdoor consistent met `Aantal` en de toelichting van de bevinding. Bij *Exact dubbel*, *Ontbrekend/ongeldig veld*, *Tijd/duur* en *Foutcel in bron* telt `Aantal` bronregels. Bij *Identifierconflict* telt het verschillende niet-lege namen, gebruikersnamen of medewerkernummers, afhankelijk van het conflict. Bij *Redenvariant* telt het verschillende niet-lege schrijfwijzen. Voor die laatste twee typen kan de drilldown dus meer bronregels bevatten dan `Aantal`, omdat meerdere regels dezelfde waarde kunnen hebben.
 
 ## 5. Kerncijfers, tellers en noemers
 
