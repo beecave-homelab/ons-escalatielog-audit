@@ -1,5 +1,6 @@
 """Controleer de productiegrens in lokale bestanden en resulterende Git-bomen."""
 
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -74,6 +75,20 @@ def test_missing_product_document_is_rejected(repo):
         result = check(repo, *args)
         assert result.returncode == 1
         assert "Ontbrekende productiedocumentatie" in result.stdout
+
+
+def test_gitignored_files_are_skipped_in_working_tree(repo):
+    (repo / ".gitignore").write_text(".DS_Store\n")
+    (repo / "docs" / "assets" / ".DS_Store").write_text("Finder-metadata")
+    result = check(repo)
+    assert result.returncode == 0, result.stdout
+
+
+def test_missing_docs_directory_reports_all_documents(repo):
+    shutil.rmtree(repo / "docs")
+    result = check(repo)
+    assert result.returncode == 1
+    assert result.stdout.count("Ontbrekende productiedocumentatie") == len(PRODUCT_FILES)
 
 
 def test_dash_revision_cannot_become_an_option(repo):

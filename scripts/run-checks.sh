@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Script Description: Run the shared list of development checks.
 # Author: beecave-homelab
-# Version: 0.1.0
+# Version: 0.1.1
 # License: MIT
 # Creation Date: 15/10/2026
 # Last Modified: 15/10/2026
@@ -58,7 +58,7 @@ main() {
   step "Controleer privacygevoelige paden" \
     scripts/check-sensitive-paths.sh --index
   step "Controleer productiedocumentatie" \
-    uv run python scripts/check-production-docs.py --revision HEAD
+    uv run python scripts/check-production-docs.py
   step "Controleer Markdown-opmaak" \
     uv run mdformat --check README.md CHANGELOG.md AGENTS.md docs
   step "Controleer HTML-opmaak" \

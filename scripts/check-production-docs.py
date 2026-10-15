@@ -43,6 +43,17 @@ def main():
             for p in (root / "docs").rglob("*")
             if not p.is_dir() or p.is_symlink()
         }
+        if paths:
+            ignored = subprocess.run(
+                ["git", "check-ignore", "--stdin", "-z"],
+                input="\0".join(sorted(paths)) + "\0",
+                cwd=root,
+                capture_output=True,
+                text=True,
+            )
+            if ignored.returncode not in (0, 1):
+                raise RuntimeError("git check-ignore is mislukt.")
+            paths -= {name for name in ignored.stdout.split("\0") if name}
         invalid = {name for name in paths if (root / name).is_symlink()}
     for name in sorted(paths - ALLOWED):
         print(f"Niet toegestaan in productiedocumentatie: {name}")
