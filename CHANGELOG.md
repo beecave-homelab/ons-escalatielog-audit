@@ -4,6 +4,12 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+## [0.16.0] - 2026-10-16
+
+### Toegevoegd
+
+- Analyse-instellingen zijn vóór de eerste analyse bereikbaar via Instellingen in het uploadvak, ook zonder bestand. De eerste analyse gebruikt de ingevulde waarden. Bestandsselectie bewaart de invoer en na de analyse blijven dezelfde instellingen bereikbaar (#84).
+
 ### Onderhoud
 
 - Werk de GitHub Actions bij naar actions/checkout 7.0.1, actions/setup-python 7.0.0, astral-sh/setup-uv 10.2.0, actions/configure-pages 6.0.0, actions/upload-pages-artifact 5.0.0 en actions/deploy-pages 5.0.1. Deze versies draaien op Node.js 24. De test van de Pages-workflow controleert alleen nog de naam van elke actie en niet de exacte commit. De verplichte pinning op een volledige commit blijft gecontroleerd in `test_workflow_hardening.py`.
