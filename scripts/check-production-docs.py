@@ -25,7 +25,8 @@ def main():
     root = Path(subprocess.check_output(["git", "rev-parse", "--show-toplevel"], text=True).strip())
     if args.revision:
         entries = subprocess.check_output(
-            ["git", "ls-tree", "-rz", args.revision, "--", "docs"], cwd=root
+            ["git", "ls-tree", "-rz", "--end-of-options", args.revision, "--", "docs"],
+            cwd=root,
         )
         paths = set()
         invalid = set()
@@ -42,6 +43,17 @@ def main():
             for p in (root / "docs").rglob("*")
             if not p.is_dir() or p.is_symlink()
         }
+        if paths:
+            ignored = subprocess.run(
+                ["git", "check-ignore", "--stdin", "-z"],
+                input="\0".join(sorted(paths)) + "\0",
+                cwd=root,
+                capture_output=True,
+                text=True,
+            )
+            if ignored.returncode not in (0, 1):
+                raise RuntimeError("git check-ignore is mislukt.")
+            paths -= {name for name in ignored.stdout.split("\0") if name}
         invalid = {name for name in paths if (root / name).is_symlink()}
     for name in sorted(paths - ALLOWED):
         print(f"Niet toegestaan in productiedocumentatie: {name}")

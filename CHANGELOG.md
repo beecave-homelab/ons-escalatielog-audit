@@ -4,6 +4,15 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+### Onderhoud
+
+- Blokkeer privacygevoelige bestanden in de hele Git-boom en niet alleen in `escalatielogs/` en `exports/`: ook `*.xlsx` buiten `tests/fixtures/` en exports die beginnen met `escalatie_log_controle_`. Paden worden hoofdletterongevoelig vergeleken. Het setupscript zet de Git-hooks in `.githooks/` aan.
+- Pin alle GitHub Actions op een vaste commit, beperk de rechten van iedere workflow en bewaar geen inloggegevens na de checkout. Dependabot stelt updates van acties voor, met een wachttijd van zeven dagen.
+- Gebruik één gedeelde lijst met controles (`scripts/run-checks.sh`) in CI en in `scripts/install-dependencies.sh --check`, en zet de uv-versie vast.
+- Laat de SVG-tekstcontrole transforms en een viewBox met verschoven oorsprong meenemen.
+- Lees en schrijf bestanden in de release- en versiescripts als UTF-8, weiger `--revision` bij `release_tools.py prepare` en controleer ook links met een titel en referentielinks.
+- Leg uit waarom de versiecontrole faalt bij een push zonder vorige commit, en verwijder de versie uit de subkoppen van deze changelog.
+
 ## [0.15.3] - 2026-10-14
 
 ### Opgelost
@@ -72,7 +81,7 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [0.13.0] - 2026-10-09
 
-### Toegevoegd in v0.13.0
+### Toegevoegd
 
 - Exporteer alle dashboardvisuals na analyse als één lokale PNG met vaste indeling en dubbele resolutie, inclusief volledige labels, heatmapwaarden, leeswijzers en toegepaste instellingen.
 - Vermeld bronbestand, waargenomen datumbereik, analysetijdstip, applicatieversie en de triagewaarschuwing in de afbeelding. De PNG kan persoonsgegevens bevatten; bewaar en deel volgens interne afspraken.
@@ -81,7 +90,7 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [0.12.0] - 2026-10-08
 
-### Toegevoegd in v0.12.0
+### Toegevoegd
 
 - Toon bij Aandachtspunten twee fictieve activatietijdlijnen: exact op de ingestelde grens en één seconde later, met de toestand van het signaal en een aangepaste kop wanneer het signaal uitstaat.
 - Toon boven het uurpatroon een gearceerde 24-uursband voor het toegepaste nachtvenster, inclusief lege vensters en uitgeschakelde signalen.
@@ -89,7 +98,7 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [0.11.2] - 2026-10-06
 
-### Opgelost in v0.11.2
+### Opgelost
 
 - Benoem bij een afgekeurde XLSX-export de ontbrekende kolommen, het best passende werkblad en het Excel-rijnummer van de mogelijke kopregel.
 - Vermeld het aantal herkende vereiste kolommen in de best passende rij.
@@ -99,24 +108,24 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [0.11.1] - 2026-09-22
 
-### Opgelost in v0.11.1
+### Opgelost
 
 - Lijn toelichtingen, grafieken en tabellen binnen het HTML-rapport gelijk uit en voorkom een dubbele inspringing van de tijdmatrix.
 - Geef bij brede rapporttabellen aan dat de overige kolommen horizontaal bereikbaar zijn.
 
 ## [0.11.0] - 2026-09-21
 
-### Toegevoegd in v0.11.0
+### Toegevoegd
 
 - Filter bronregels in het detailvenster op team, deskundigheid, doeltype en auditcontext, samen met het zoekveld en een zichtbare regelteller.
 
-### Gewijzigd in v0.11.0
+### Gewijzigd
 
 - Verduidelijk dat Bronregels CSV ook bij actieve detailfilters de volledige geopende selectie exporteert.
 
 ## [0.10.0] - 2026-09-21
 
-### Toegevoegd in v0.10.0
+### Toegevoegd
 
 - Toon de prioriteitsroute en de meetellende thema’s bij aandachtspunten; groepeer de drie prioriteitstabellen onder één uitlegblok in het rapport.
 - Toon de gekoppelde eerdere activatie en her-escalatie als tijdlijn in het bronregeldetail; geef in het rapport een expliciet fictief voorbeeld met de toegepaste toegangstermijn.
@@ -124,21 +133,21 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 - Voeg een neutrale ratioschaal en de concrete oorzaak van ontbrekende peer-ratio’s toe.
 - Toon top-3-concentratie als balk met exacte teller/noemer, resterende registraties en uitleg bij 100% of een lege noemer.
 
-### Gewijzigd in v0.10.0
+### Gewijzigd
 
 - Maak nulwaarden in de rapporttijdmatrix expliciet, voeg de thematabel toe en deel de cliëntselectie tussen overzicht en rapport. De cliënttabel volgt dezelfde sortering als de grafiek.
 - Behoud de bestaande signalen, reconciliatie en beide CSV-schema’s; de analyseresultaten krijgen aanvullende uitlegvelden en exacte tellers.
 
 ## [0.9.0] - 2026-09-20
 
-### Toegevoegd in v0.9.0
+### Toegevoegd
 
 - Voeg de auditflow als verdelingstabel toe aan het HTML-rapport: bronbestand = systeemmeldingen + duplicaatkopieën + auditpopulatie, met aandachtspunten als selectie binnen de auditpopulatie.
 - Toon unieke regels per controlethema als balken in het rapport, met de uitleg dat één regel met meerdere thema's in elk thema meetelt.
 - Voeg een tijdpatronen-sectie toe met een weekdag/uur-matrix in twee blokken van twaalf uur, inclusief het aantal auditregels zonder geldige starttijd en de somcontrole tegen de auditpopulatie.
 - Plaats de topgrafieken voor medewerkers en cliënten in het rapport bij hun tabellen, met een leeswijzer over de topselectie en de sortering bij gelijke standen.
 
-### Gewijzigd in v0.9.0
+### Gewijzigd
 
 - Bereken de weekdag/uur-telling en de thematellingen in het analyseresultaat, zodat webui en rapport dezelfde waarden gebruiken in plaats van ze afzonderlijk in de renderlaag te bepalen.
 - Verwijder de losse topgrafieken uit de rapportsamenvatting; de grafieken staan voortaan binnen de bijbehorende inklapbare secties.
@@ -146,30 +155,30 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [0.8.0] - 2026-09-19
 
-### Toegevoegd in v0.8.0
+### Toegevoegd
 
 - Leg in de webui en binnen de inklapbare peeranalyse van het HTML-rapport uit hoe de vier ratio's worden berekend en geïnterpreteerd.
 - Toon een rekenvoorbeeld en maak zichtbaar wat ratio's van 0,50, 1,00 en 2,00 betekenen.
 - Voeg een installatiescript toe voor reproduceerbare Codex Cloud-omgevingen met uv, de vastgezette ontwikkelafhankelijkheden en Chromium.
 
-### Gewijzigd in v0.8.0
+### Gewijzigd
 
 - Benoem het doorklikvenster van de peeranalyse als bronregels achter de vergelijking, zodat duidelijk is dat het geen nadere ratio-uitleg bevat.
 - Presenteer de beperkingen van de peervergelijking nadrukkelijk als context en niet als risico- of werklastcorrectie.
 - Laat de Playwright-regressietest naast Chrome en Edge ook een systeembrede of reeds door Playwright geïnstalleerde Chromium gebruiken.
 
-### Opgelost in v0.8.0
+### Opgelost
 
 - Accepteer een gevonden browser pas nadat de executable met `--version` succesvol is uitgevoerd, zodat een Ubuntu snap-placeholder de installatie niet voortijdig stopt.
 
 ## [0.7.0] - 2026-09-19
 
-### Toegevoegd in v0.7.0
+### Toegevoegd
 
 - Voeg aan het HTML-rapport een inhoudsopgave met regeltellingen en directe links naar elke sectie toe.
 - Voeg een vaste teruglink naar de inhoudsopgave toe.
 
-### Gewijzigd in v0.7.0
+### Gewijzigd
 
 - Groepeer de rapporttabellen in inklapbare secties; tabellen met weinig regels staan open en uitgebreide tabellen zijn dichtgeklapt.
 - Splits de aandachtspunten in het rapport per controleprioriteit en orden de secties van bevindingen naar referentiemateriaal.
@@ -177,7 +186,7 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [0.6.1] - 2026-09-18
 
-### Toegevoegd in v0.6.1
+### Toegevoegd
 
 - Voeg reproduceerbare ontwikkeltooling toe met uv, mdformat, djLint, Ruff, pytest en pytest-cov.
 - Voeg pyproject-regels toe voor consistente HTML-opmaak zonder de ingebedde CSS en JavaScript te herschrijven.
@@ -186,7 +195,7 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 - Stel minimaal 85% branch-aware dekking verplicht voor de Python-testcode en meet Playwright-greenlets mee.
 - Leg de ontwikkelafhankelijkheden vast in `uv.lock` zonder runtime-afhankelijkheden aan de webui toe te voegen.
 
-### Opgelost in v0.6.1
+### Opgelost
 
 - Voorkom dat brede tabellen het geëxporteerde HTML-rapport buiten de paginabreedte trekken.
 - Houd brede tabellen op het scherm binnen een eigen horizontaal schuifgebied.
@@ -194,7 +203,7 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [0.6.0] - 2026-09-18
 
-### Toegevoegd in v0.6.0
+### Toegevoegd
 
 - Maak KPI's, grafieken, signalen en kwaliteitscontroles aanklikbaar, zodat gebruikers de onderliggende bronregels kunnen bekijken.
 - Toon bij her-escalaties ook de eerdere activatie waarop het signaal is gebaseerd.
@@ -202,7 +211,7 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 - Beschrijf in de webui de gebruikte definities, aannames en beperkingen van de analyses.
 - Maak zichtbaar dat peervergelijkingen niet corrigeren voor FTE, diensten, caseload of andere verschillen in werklast.
 
-### Gewijzigd in v0.6.0
+### Gewijzigd
 
 - Vergelijk medewerkers alleen met andere medewerkers binnen een stabiele team- en functiecontext.
 - Sluit de onderzochte medewerker uit van de mediaan waarmee de eigen waarde wordt vergeleken.
@@ -214,7 +223,7 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 - Verduidelijk dat dossierinzage alleen kan worden vastgesteld met aanvullende logging.
 - Stem de teksten en toelichtingen af op gebruik door FAB, CISO en Privacy Officer.
 
-### Opgelost in v0.6.0
+### Opgelost
 
 - Voorkom dat resultaten van eerdere analyses blijven meetellen wanneer hetzelfde bestand opnieuw wordt geanalyseerd.
 - Bereken her-escalaties opnieuw op basis van een eerdere geldige activatie die op het nieuwe startmoment al heeft plaatsgevonden.
@@ -225,7 +234,7 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [0.5.0] - 2026-09-17
 
-### Toegevoegd in v0.5.0
+### Toegevoegd
 
 - Voeg peervergelijkingen toe waarmee medewerkers kunnen worden vergeleken met collega's binnen hetzelfde team, dezelfde deskundigheid en dezelfde team-deskundigheidscombinatie.
 - Voeg burst-detectie toe om veel handmatige escalaties van één medewerker binnen een kort tijdvenster zichtbaar te maken.
@@ -236,7 +245,7 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 - Voeg een overzicht `Auditlogica` toe voor controle van duurverdelingen, systeemfilters, doeltypen en bronwaarden.
 - Toon expliciet de aanbevolen vervolgroute voor audits: eerst planning en rooster, daarna dossierlogging en vervolgens teamcontext of toelichting.
 
-### Gewijzigd in v0.5.0
+### Gewijzigd
 
 - Gebruik de escalatielog nadrukkelijk als selectielaag voor nader onderzoek en niet als zelfstandig bewijs van onrechtmatige dossierinzage.
 - Breid de analyse uit van losse tellingen naar verbanden tussen medewerker, cliënt, team, deskundigheid, reden en tijd.
@@ -245,7 +254,7 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [0.4.0] - 2026-09-17
 
-### Toegevoegd in v0.4.0
+### Toegevoegd
 
 - Maak analyse-uitkomsten doorklikbaar naar de onderliggende regels uit het oorspronkelijke Excel-bestand.
 - Toon in de detailweergave het oorspronkelijke Excel-rijnummer en alle 14 bronvelden.
@@ -253,14 +262,14 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 - Voeg de mogelijkheid toe om de bronregels van een geselecteerde analyse afzonderlijk als CSV te downloaden.
 - Voeg bronregel-drilldown toe voor medewerkers, cliënten, teams, escalatieredenen, aandachtspunten en systeemmeldingen.
 
-### Gewijzigd in v0.4.0
+### Gewijzigd
 
 - Maak duidelijk zichtbaar welke bronregels bijdragen aan een geaggregeerde analyse-uitkomst.
 - Behoud systeemmeldingen in een aparte drilldown zonder ze mee te nemen in de inhoudelijke auditpopulatie.
 
 ## [0.3.0] - 2026-09-17
 
-### Toegevoegd in v0.3.0
+### Toegevoegd
 
 - Voeg een visuele auditcockpit toe met kern-KPI's, auditflow en controlefocus.
 - Visualiseer de verhouding tussen bronbestand, systeemmeldingen, auditpopulatie en aandachtspunten.
@@ -272,28 +281,28 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 - Voeg controleprioriteiten `Hoog`, `Midden` en `Basis` toe voor het ordenen van aandachtspunten.
 - Breid het geëxporteerde HTML-rapport uit met KPI's, controleprioriteiten en visuele overzichten.
 
-### Gewijzigd in v0.3.0
+### Gewijzigd
 
 - Presenteer auditsignalen als hulpmiddel voor snelle triage zonder detailgegevens uit de controletabellen te verwijderen.
 - Maak expliciet dat controleprioriteit alleen de werkvolgorde ondersteunt en geen oordeel over rechtmatigheid vormt.
 
 ## [0.2.0] - 2026-09-16
 
-### Toegevoegd in v0.2.0
+### Toegevoegd
 
 - Neem de uitvoerdatum en het uitvoertijdstip automatisch op in de namen van geëxporteerde bestanden.
 - Leid de analyseperiode automatisch af uit de ingelezen escalatielog.
 - Neem de analyseperiode ook op in de naam van CSV- en HTML-exports.
 - Toon de gebruikte analyseperiode in het geëxporteerde HTML-rapport.
 
-### Gewijzigd in v0.2.0
+### Gewijzigd
 
 - Gebruik herleidbare bestandsnamen voor interne verspreiding van auditresultaten.
 - Geef CSV- en HTML-exports een herkenbaar onderscheid in de bestandsnaam.
 
 ## [0.1.0] - 2026-09-16
 
-### Toegevoegd in v0.1.0
+### Toegevoegd
 
 - Introduceer een zelfstandige webui voor het lokaal analyseren van escalatielogs uit `.xlsx`-bestanden.
 - Verwerk het Excel-bestand volledig lokaal in de browser zonder backend, externe API of opslag in browseropslag.
@@ -311,7 +320,7 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 - Voeg export van aandachtspunten naar CSV toe.
 - Voeg export van een zelfstandig HTML-auditrapport toe.
 
-### Gewijzigd in v0.1.0
+### Gewijzigd
 
 - Gebruik alleen handmatige escalaties voor inhoudelijke auditcontroles en aggregaties.
 - Presenteer auditsignalen als selectiecriteria voor menselijke beoordeling en niet als vaststelling van onrechtmatige inzage.

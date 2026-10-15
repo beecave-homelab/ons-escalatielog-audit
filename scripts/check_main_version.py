@@ -43,6 +43,12 @@ def git(*args: str) -> bytes:
 
 def check_refs(base: str, head: str = "HEAD") -> bool:
     """Vergelijk volledige Git-bomen; inclusief verwijderde en hernoemde app."""
+    if re.fullmatch(r"0+", base):
+        raise ValueError(
+            "De basis is de null-SHA: een push die main aanmaakt of herstelt heeft "
+            "geen vorige commit. De versiecontrole faalt daarom bewust; vergelijk "
+            "handmatig met de laatst uitgebrachte versie."
+        )
     base_sha = (
         git("rev-parse", "--verify", "--end-of-options", f"{base}^{{commit}}").decode().strip()
     )

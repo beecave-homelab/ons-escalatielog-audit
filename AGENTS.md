@@ -58,15 +58,16 @@ Always HTML-escape with `esc()` before inserting data into the DOM or the report
 
 - Iedere wijziging aan `escalatielog-audit-webui.html` naar `main` bevat in dezelfde PR een hogere SemVer en een nieuwe of bijgewerkte gedateerde changelogsectie voor die versie. Nieuwe functionaliteit verhoogt minor; bugfixes verhogen patch. Beoordeel breaking changes bewust volgens SemVer, met aandacht voor de pre-1.0-status. CI controleert dat de versie stijgt, maar bepaalt niet het wijzigingstype.
 - Houd `APP_VERSION`, `project.version`, de README-badge en de projectversie in `uv.lock` gelijk. Bij productwijzigingen naar `main` is *Nog niet uitgebracht* leeg. Op `dev` mogen wijzigingen daar worden verzameld.
-- Wijzigingen uitsluitend aan documentatie, tests, scripts of CI vereisen geen productbump. De single-file HTML is de volledige runtime; ook HTML-opmaakwijzigingen tellen conservatief als productwijziging. Analyse en visuele veranderingen blijven onder de bestaande documentatie- en bewijsregels vallen.
+- Wijzigingen uitsluitend aan documentatie, tests, scripts of CI vereisen geen productbump. Leg ze wel vast onder *Nog niet uitgebracht* → `### Onderhoud` in `CHANGELOG.md`, zodat ze niet uit beeld raken. De eerstvolgende productwijziging naar `main` verplaatst die regels naar de sectie van de nieuwe versie; de versiecontrole en `check_release_version.py --release` weigeren een release zolang *Nog niet uitgebracht* gevuld is. De single-file HTML is de volledige runtime; ook HTML-opmaakwijzigingen tellen conservatief als productwijziging. Analyse en visuele veranderingen blijven onder de bestaande documentatie- en bewijsregels vallen.
 - Controleer de gecommitteerde wijziging lokaal met `uv run python scripts/check_main_version.py --base origin/main --head HEAD` na het ophalen van de actuele doelbranch. De controle vergelijkt Git-commits, niet ongecommitteerde bestanden.
+- Een push die `main` aanmaakt of herstelt heeft de null-SHA als basis; de versiecontrole faalt dan bewust met de uitleg dat handmatig met de laatst uitgebrachte versie moet worden vergeleken.
 - De bestaande verplichte CI-status **Versiecontrole** controleert de doelbranch-SHA voor PR's naar `main`, de merge queue en pushes op `main`, zonder padfilter. Ontbrekende refs zijn een fout. Publiceren blijft een afzonderlijke handmatige stap via de bestaande releaseworkflow; een merge publiceert geen release automatisch.
 
 ## Verifying changes
 
-Run `scripts/install-dependencies.sh --check` to prepare and validate a fresh Linux Codex Cloud environment. The script installs uv when needed, synchronizes the lockfile and prefers a distribution-provided Chromium so setup does not depend on the Playwright browser download.
+Run `scripts/install-dependencies.sh --check` to prepare and validate a fresh Linux Codex Cloud environment. The script installs the pinned uv version when needed, synchronizes the lockfile, activates the Git hooks in `.githooks/` (`git config core.hooksPath .githooks`) and prefers a distribution-provided Chromium so setup does not depend on the Playwright browser download.
 
-Run the development checks with `uv sync --locked`, `uv run mdformat --check README.md CHANGELOG.md AGENTS.md docs`, `uv run djlint . --check`, `uv run ruff check .`, `uv run ruff format --check .`, `uv run pytest` and `uv run pytest --cov=tests --cov-report=term-missing:skip-covered`. Coverage follows Playwright greenlets and must remain at or above 85%. The pytest suite verifies the committed standard synthetic export, builds a temporary layout-focused XLSX file and checks exported report tables in a locally installed Chrome, Edge or Chromium browser; it must not use files from `escalatielogs/`.
+Run the development checks with `uv sync --locked` followed by `scripts/run-checks.sh`: that is the single list CI and `--check` share (version, privacy paths, production docs, mdformat, djLint, Ruff, SVG text bounds and pytest). Coverage follows Playwright greenlets and must remain at or above 85%. The pytest suite verifies the committed standard synthetic export, builds a temporary layout-focused XLSX file and checks exported report tables in a locally installed Chrome, Edge or Chromium browser; it must not use files from `escalatielogs/`.
 
 For the full analysis regression, re-run the synthetic reference file `tests/fixtures/synthetic-escalatielog.xlsx` with default settings and compare to docs §15. Key figures:
 
@@ -108,7 +109,7 @@ actuele gebruikersdocumentatie en daadwerkelijk gebruikte diagrammen.
 - Keep the single-file architecture; do not split into modules or introduce a bundler.
 - Format HTML markup with `uv run djlint . --reformat`. The configured formatter leaves embedded CSS and JavaScript compact; keep their one-line functions, `const` maps and minimal comments, and don't reformat unrelated lines.
 - Commit messages follow `type emoji: Dutch imperative summary`, e.g. `docs 📝: Voeg uitleg over de analyseketen toe aan de README`, `chore 📦: …`.
-- Never commit anything from `escalatielogs/` or `exports/`; both contain real personal data.
+- Never commit anything from `escalatielogs/` or `exports/`; both contain real personal data. `scripts/check-sensitive-paths.sh` blocks (case-insensitive) everything under those directories except `.gitkeep`, every `*.xlsx` outside `tests/fixtures/` and every file whose name starts with `escalatie_log_controle_`. The `.githooks/` pre-commit and pre-push hooks run the same check; `scripts/install-dependencies.sh` activates them with `git config core.hooksPath .githooks`.
 - Do not create commits or PRs unless explicitly asked.
 
 ## Issues and pull requests

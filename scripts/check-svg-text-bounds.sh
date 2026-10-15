@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Controleer dat alle tekst in docs/assets/*.svg binnen de viewBox valt.
 # Voorkomt herhaling van issue #10: labels die midden in een woord afgekapt worden.
+# Tekst wordt in root-coördinaten gemeten, zodat transforms op <g> meetellen.
 #
 # Gebruik: scripts/check-svg-text-bounds.sh [pad-naar-svg...]  (default: docs/assets/*.svg)
 set -euo pipefail
@@ -8,10 +9,12 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 python - "$@" <<'PY'
+import os
+import shutil
 import sys
 from pathlib import Path
 
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import Error, sync_playwright
 
 patterns = sys.argv[1:] or ["docs/assets/*.svg"]
 files = []
@@ -26,23 +29,66 @@ if not files:
     print("Geen SVG-bestanden gevonden.", file=sys.stderr)
     sys.exit(2)
 
+
+def launch_browser(pw):
+    if executable := os.environ.get("PLAYWRIGHT_CHROMIUM_EXECUTABLE"):
+        return pw.chromium.launch(executable_path=executable, headless=True)
+    failures = []
+    for channel in ("chrome", "msedge"):
+        try:
+            return pw.chromium.launch(channel=channel, headless=True)
+        except Error as error:
+            failures.append(f"{channel}: {error.message.splitlines()[0]}")
+    for executable in (shutil.which("chromium"), shutil.which("chromium-browser")):
+        if not executable:
+            continue
+        try:
+            return pw.chromium.launch(executable_path=executable, headless=True)
+        except Error as error:
+            failures.append(f"{executable}: {error.message.splitlines()[0]}")
+    try:
+        return pw.chromium.launch(headless=True)
+    except Error as error:
+        failures.append(f"playwright-chromium: {error.message.splitlines()[0]}")
+    print(
+        "Geen bruikbare Chrome-, Edge- of Chromium-installatie gevonden. "
+        + "; ".join(failures),
+        file=sys.stderr,
+    )
+    sys.exit(2)
+
+
 failures = []
 with sync_playwright() as pw:
-    browser = pw.chromium.launch(headless=True)
+    browser = launch_browser(pw)
     for path in files:
         page = browser.new_page()
         page.goto(path.resolve().as_uri())
         problems = page.evaluate(
             """() => {
               const svg = document.querySelector("svg");
-              if (!svg) return [{t: "<geen svg-root>", right: 0}];
+              if (!svg) return [{t: "<geen svg-root>"}];
               const vb = svg.viewBox.baseVal;
+              if (!vb.width || !vb.height) return [{t: "geen viewBox"}];
               const bad = [];
               for (const t of svg.querySelectorAll("text")) {
+                const m = svg.getScreenCTM().inverse().multiply(t.getScreenCTM());
                 const bb = t.getBBox();
-                if (bb.x + bb.width > vb.width || bb.x < 0
-                    || bb.y + bb.height > vb.height || bb.y < 0) {
-                  bad.push({t: t.textContent.trim(), right: Math.round(bb.x + bb.width), bottom: Math.round(bb.y + bb.height), vbw: vb.width, vbh: vb.height});
+                const xs = [], ys = [];
+                for (const [x, y] of [[bb.x, bb.y], [bb.x + bb.width, bb.y],
+                                     [bb.x, bb.y + bb.height],
+                                     [bb.x + bb.width, bb.y + bb.height]]) {
+                  const p = new DOMPoint(x, y).matrixTransform(m);
+                  xs.push(p.x);
+                  ys.push(p.y);
+                }
+                const minx = Math.min(...xs), maxx = Math.max(...xs);
+                const miny = Math.min(...ys), maxy = Math.max(...ys);
+                if (minx < vb.x - 0.01 || maxx > vb.x + vb.width + 0.01
+                    || miny < vb.y - 0.01 || maxy > vb.y + vb.height + 0.01) {
+                  bad.push({t: t.textContent.trim(),
+                            minx, maxx, miny, maxy,
+                            vbx: vb.x, vby: vb.y, vbw: vb.width, vbh: vb.height});
                 }
               }
               return bad;
@@ -57,7 +103,16 @@ with sync_playwright() as pw:
 if failures:
     for path, problems in failures:
         for p in problems:
-            print(f"[FAIL] {path}: tekst buiten viewBox: {p['t']!r} (rechterrand {p['right']}, onderrand {p['bottom']}, viewBox {p.get('vbw')}x{p.get('vbh')})")
+            if "minx" not in p:
+                print(f"[FAIL] {path}: {p['t']}")
+            else:
+                print(
+                    f"[FAIL] {path}: tekst buiten viewBox: {p['t']!r} "
+                    f"(tekst x=[{p['minx']:.2f}..{p['maxx']:.2f}] "
+                    f"y=[{p['miny']:.2f}..{p['maxy']:.2f}]; "
+                    f"viewBox x=[{p['vbx']}..{p['vbx'] + p['vbw']}] "
+                    f"y=[{p['vby']}..{p['vby'] + p['vbh']}])"
+                )
     sys.exit(1)
 
 print(f"[svg-tekstcontrole] {len(files)} SVG-bestanden gecontroleerd: alle tekst binnen de viewBox.")

@@ -8,6 +8,12 @@ exports/*
 !exports/.gitkeep
 to-do/
 
+# Exports en rapporten met persoonsgegevens mogen nooit worden gevolgd;
+# synthetische fixtures horen uitsluitend onder tests/fixtures/.
+*.xlsx
+!tests/fixtures/*.xlsx
+escalatie_log_controle_*
+
 # Overig project-lokaal.
 .DS_Store
 project-overview.md
@@ -24,4 +30,3 @@ __pycache__/
 .coverage
 coverage.xml
 htmlcov/
-docs/assets/issue-12-drilldown-filters.png
