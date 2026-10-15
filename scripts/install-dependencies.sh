@@ -3,14 +3,15 @@ set -euo pipefail
 
 # Script Description: Prepare a Codex Cloud environment for this repository.
 # Author: beecave-homelab
-# Version: 0.1.0
+# Version: 0.2.0
 # License: MIT
 # Creation Date: 20/09/2026
-# Last Modified: 20/09/2026
+# Last Modified: 15/10/2026
 # Usage: scripts/install-dependencies.sh [OPTIONS]
 
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+readonly UV_VERSION="0.12.23"
 
 skip_browser=false
 run_checks=false
@@ -29,8 +30,9 @@ show_help() {
 Gebruik: ${0} [OPTIES]
 
 Richt een Linux Codex Cloud-omgeving in voor deze repository. Het script
-installeert uv wanneer dat ontbreekt, synchroniseert uv.lock en zorgt dat de
-Playwright-tests een Chromium-browser kunnen starten.
+installeert uv ${UV_VERSION} wanneer dat ontbreekt, synchroniseert uv.lock,
+activeert de Git-hooks in .githooks/ en zorgt dat de Playwright-tests een
+Chromium-browser kunnen starten.
 
 Opties:
   --check          Voer na installatie alle repositorycontroles uit.
@@ -74,8 +76,8 @@ install_uv() {
   fi
 
   command_exists curl || error_exit "curl ontbreekt; installeer curl en probeer opnieuw."
-  log "Installeer uv via het officiële installatiescript."
-  curl -LsSf https://astral.sh/uv/install.sh | sh
+  log "Installeer uv ${UV_VERSION} via het officiële installatiescript."
+  curl -LsSf "https://astral.sh/uv/${UV_VERSION}/install.sh" | sh
 
   export PATH="${HOME}/.local/bin:${HOME}/.cargo/bin:${PATH}"
   command_exists uv || error_exit "uv is geïnstalleerd, maar niet vindbaar via PATH."
@@ -142,14 +144,17 @@ sync_dependencies() {
   uv sync --locked
 }
 
+configure_git_hooks() {
+  if git rev-parse --is-inside-work-tree >/dev/null 2>&1 \
+    && [[ "$(git config --get core.hooksPath || true)" != ".githooks" ]]; then
+    git config core.hooksPath .githooks
+    log "Git-hooks geactiveerd: core.hooksPath=.githooks"
+  fi
+}
+
 run_repository_checks() {
   log "Voer documentatie-, lint- en regressiecontroles uit."
-  scripts/check-sensitive-paths.sh --index
-  uv run mdformat --check README.md CHANGELOG.md AGENTS.md docs
-  uv run djlint . --check
-  uv run ruff check .
-  uv run ruff format --check .
-  uv run pytest --cov=tests --cov-report=term-missing:skip-covered
+  scripts/run-checks.sh
 }
 
 parse_arguments() {
@@ -181,6 +186,7 @@ main() {
   cd "${REPO_ROOT}"
   install_uv
   sync_dependencies
+  configure_git_hooks
 
   if [[ "${skip_browser}" == false ]]; then
     install_browser
