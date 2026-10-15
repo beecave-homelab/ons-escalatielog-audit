@@ -132,11 +132,16 @@ def test_git_doc_only_and_missing_refs(repository) -> None:
     head["README.md"] += "\nGebruikersuitleg."
     commit(head)
     assert not policy.check_refs(base)
-    for ref in ("ontbreekt", "0" * 40):
-        with pytest.raises(subprocess.CalledProcessError):
-            policy.check_refs(ref)
+    with pytest.raises(subprocess.CalledProcessError):
+        policy.check_refs("ontbreekt")
     with pytest.raises(subprocess.CalledProcessError):
         policy.check_refs(base, "ontbreekt")
+
+
+def test_null_sha_base_fails_deliberately() -> None:
+    """Een push die main aanmaakt of herstelt heeft geen vorige commit."""
+    with pytest.raises(ValueError, match="null-SHA"):
+        policy.check_refs("0" * 40)
 
 
 @pytest.mark.parametrize("rename", [True, False])
