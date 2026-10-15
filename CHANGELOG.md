@@ -4,6 +4,15 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+## [0.15.4] - 2026-10-15
+
+### Opgelost
+
+- Het HTML-rapport en het overzicht schrijven niet langer wijzigingen uit oudere versies toe aan de huidige versie. De versiegeschiedenis staat alleen nog in de changelog van de release (#52).
+- De XLSX-lezer leest werkbladen met een namespaceprefix, cellen en rijen zonder r-attribuut en gedeelde tekst met fonetische hulptekst correct in. Foutcellen zoals #N/A worden als lege waarde ingelezen en verschijnen onder Datakwaliteit als Foutcel in bron, in plaats van als de tekst NaN (#53).
+- Een lege of niet-numerieke tijdsduur verschijnt in Auditlogica als (leeg of ongeldig) in plaats van null minuten, achteraan de duurverdeling. De drilldowns van Duurverdeling en Systeemmeldingen openen precies de meegetelde bronregels (#54).
+- Het signaalfilter bij Aandachtspunten vergelijkt hele signaalnamen, de uitleg bij ZEER_SNELLE_HERESCALATIE volgt de definitie uit de documentatie, hetzelfde bestand kan opnieuw worden gekozen, de leeswijzer in het rapport gebruikt geen Engels leenwoord meer en de drilldown ruimt zijn ResizeObserver op (#62).
+
 ### Onderhoud
 
 - Blokkeer privacygevoelige bestanden in de hele Git-boom en niet alleen in `escalatielogs/` en `exports/`: ook `*.xlsx` buiten `tests/fixtures/` en exports die beginnen met `escalatie_log_controle_`. Paden worden hoofdletterongevoelig vergeleken. Het setupscript zet de Git-hooks in `.githooks/` aan.

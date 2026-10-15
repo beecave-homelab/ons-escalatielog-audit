@@ -1,6 +1,6 @@
 # Ons Escalatielog Audit
 
-![Version: 0.15.3](https://img.shields.io/badge/version-0.15.3-00A0C8.svg)
+![Version: 0.15.4](https://img.shields.io/badge/version-0.15.4-00A0C8.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 
 Ons Escalatielog Audit is een zelfstandige webpagina voor het controleren van `.xlsx`-exports met escalatielogs uit Nedap Ons. De webui maakt opvallende patronen zichtbaar en laat je doorklikken naar de bijbehorende Excelregels. Het hulpmiddel is bedoeld voor functioneel applicatiebeheerders, CISO's en privacy officers.
@@ -115,6 +115,8 @@ Voldoet geen enkel werkblad, dan toont de webui een foutmelding met:
 - Het aantal herkende vereiste kolommen.
 
 De melding vermeldt ook dat alleen de eerste tien rijen zijn gecontroleerd.
+
+Foutcellen in de export, zoals `#N/A`, leest de webui in als lege waarden. Ze verschijnen onder **Datakwaliteit** als *Foutcel in bron*, zodat je de export kunt controleren.
 
 ## Uitkomsten beoordelen
 
