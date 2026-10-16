@@ -1508,7 +1508,7 @@ Alleen de al berekende, kwalificerende vensters uit §11 worden gebruikt: per me
 
 ### Sjabloon en tekstvoorbeeld
 
-Het sjabloon geldt eenmaal per geselecteerd item, met een lege regel ertussen. Het mag maximaal 4.000 tekens bevatten. Alleen onderstaande placeholders zijn toegestaan; onbekende of onvolledige placeholders blokkeren het voorbeeld en de kopieerknop. Tekst wordt letterlijk verwerkt, zonder HTML-uitvoering, JavaScript of geneste vervanging. Een bronwaarde die zelf op een placeholder lijkt, wordt niet opnieuw ingevuld.
+Het standaardsjabloon vormt per item een alinea met lopende zinnen over het onderwerp, de soort bevinding, de selectiereden, het tijdstip of tijdvenster en de bijbehorende Excel-rijen. Ook de selectieredenen zijn volledige zinnen; de aantallen en drempels blijven gelijk. Het sjabloon geldt eenmaal per geselecteerd item, met een lege regel ertussen. Het mag maximaal 4.000 tekens bevatten. Alleen onderstaande placeholders zijn toegestaan; onbekende of onvolledige placeholders blokkeren het voorbeeld en de kopieerknop. Tekst wordt letterlijk verwerkt, zonder HTML-uitvoering, JavaScript of geneste vervanging. Een bronwaarde die zelf op een placeholder lijkt, wordt niet opnieuw ingevuld.
 
 | Placeholder | Inhoud |
 | -- | -- |

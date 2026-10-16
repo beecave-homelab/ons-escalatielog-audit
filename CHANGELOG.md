@@ -8,7 +8,7 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ### Toegevoegd
 
-- Overzicht toont een instelbare gemengde Top-X van auditregels, bursts en cliëntclusters, met selectiereden en bronregels. Een bewerkbaar sjabloon met toegestane placeholders maakt lokaal een controleerbare, kopieerbare samenvatting. Het HTML-rapport, de dashboard-PNG en een losse PNG bevatten dezelfde selectie; vrije sjabloontekst wordt niet meegeëxporteerd (#85).
+- Overzicht toont een instelbare gemengde Top-X van auditregels, bursts en cliëntclusters, met selectiereden en bronregels. Een bewerkbaar sjabloon met toegestane placeholders maakt lokaal een controleerbare, kopieerbare samenvatting, standaard in lopende zinnen. Het HTML-rapport, de dashboard-PNG en een losse PNG bevatten dezelfde selectie; vrije sjabloontekst wordt niet meegeëxporteerd (#85).
 
 ## [0.16.0] - 2026-10-16
 
