@@ -4,6 +4,16 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+## [0.18.0] - 2026-10-16
+
+### Toegevoegd
+
+- Tabellen en drilldowns tonen standaard maximaal 500 rijen met een knop *Meer tonen* per volgende portie. De teller `x van y` blijft het volledige gefilterde aantal tonen; zoeken, filteren, sorteren en CSV-export werken op de volledige set (#55).
+
+### Opgelost
+
+- Zoeken in tabellen en drilldowns is gedebounceerd (150 ms) en gebruikt voorberekende, genormaliseerde zoektekst per regel, zodat een toetsaanslag niet langer de hele tabel herbouwt. Bij 50.000 bronregels daalt de tijd per toetsaanslag van honderden milliseconden naar enkele milliseconden (#55).
+
 ## [0.17.0] - 2026-10-16
 
 ### Toegevoegd

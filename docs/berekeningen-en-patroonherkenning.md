@@ -815,7 +815,11 @@ Een filter vergelijkt de exacte kolomwaarde. Bij Auditcontext geldt dit ook voor
 
 Meerdere filters en het vrije zoekveld werken samen.
 
+Zoeken is gedebounceerd: de tabel wordt pas herbouwd nadat het typen circa 150 ms heeft stilgestaan. De zoektekst per regel is vooraf genormaliseerd en berekend, zodat een toetsaanslag niet elke cel opnieuw normaliseert.
+
 De teller toont hoeveel regels zichtbaar zijn ten opzichte van de volledige geopende selectie.
+
+Van een grote selectie toont de webui standaard maximaal 500 regels. De knop **Meer tonen** laadt de volgende 500. De teller, het zoeken, het filteren, het sorteren en de CSV-export blijven de volledige selectie gebruiken; alleen de weergave is begrensd.
 
 Een nieuw detailvenster opent zonder actieve zoekterm of filters.
 
