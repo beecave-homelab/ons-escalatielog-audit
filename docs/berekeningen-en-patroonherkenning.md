@@ -1486,3 +1486,53 @@ Tijdens het genereren zijn beide exportknoppen uitgeschakeld.
 Als de analyse tussentijds verandert of een coderingsfout optreedt, wordt geen gedeeltelijke of verouderde ZIP gedownload.
 
 Na iedere visual geeft de webui de tijdelijke canvassen vrij.
+
+## 19. Gemengde Top-X en kopieerbare samenvatting
+
+**Opvallendheden om te onderzoeken** toont standaard vijf bevindingen. Het aantal is op Overzicht instelbaar van 1 tot en met 50, uitsluitend gehele getallen. **Selectie toepassen** verandert alleen deze selectie, niet de analyse, signalen, prioriteiten of CSV-bestanden. De selectie gebruikt de laatste geslaagde analyse en volgt geen nog niet toegepaste drempelwijzigingen.
+
+### Selectie en rangschikking
+
+De lijst neemt beurtelings een auditregel met ingeschakelde signalen, een kwalificerend burstvenster en een kwalificerend cliëntcluster. Een lege of uitgeputte soort wordt overgeslagen. Na het ingestelde aantal stopt de selectie. Dit is een afwisseling van controlevragen, geen onderlinge score voor ernst of risico. Bij een Top-1 wordt dus één auditregel getoond als die beschikbaar is.
+
+Binnen iedere soort geldt:
+
+- Auditregels: controleprioriteit Hoog, Midden, Basis; daarna aantal signalen aflopend, starttijd oplopend (ontbrekende tijd achteraan) en Excel-rij oplopend. De prioriteitsdefinitie uit §10 blijft ongewijzigd.
+- Bursts: aantal escalaties aflopend, daarna unieke doelen aflopend.
+- Cliëntclusters: unieke medewerkers, unieke teams en aantal escalaties, telkens aflopend.
+- Bij verder gelijke patronen: begin van het geselecteerde venster oplopend en laagste Excel-rij oplopend.
+
+Alleen de al berekende, kwalificerende vensters uit §11 worden gebruikt: per medewerker één burst en per cliënt één cluster. Peer-ratio's, concentratie en overige aggregaties worden niet in deze Top-X opgenomen. Een patroon kan ook regels zonder individueel signaal bevatten. Het patroon krijgt geen regelprioriteit of gecombineerde signaallijst.
+
+`analyze()` bouwt maximaal vijftig gemengde kandidaten met hun selectiereden en exacte bronregels. De weergave selecteert hieruit de eerste X. **Bronregels** opent de volledige set die bij het item hoort. Dezelfde bronregel kan voorkomen als afzonderlijke auditregel en in een of meer patronen. De aantallen zijn daarom niet optelbaar en de Top-X is geen aantal unieke incidenten.
+
+### Sjabloon en tekstvoorbeeld
+
+Het sjabloon geldt eenmaal per geselecteerd item, met een lege regel ertussen. Het mag maximaal 4.000 tekens bevatten. Alleen onderstaande placeholders zijn toegestaan; onbekende of onvolledige placeholders blokkeren het voorbeeld en de kopieerknop. Tekst wordt letterlijk verwerkt, zonder HTML-uitvoering, JavaScript of geneste vervanging. Een bronwaarde die zelf op een placeholder lijkt, wordt niet opnieuw ingevuld.
+
+| Placeholder | Inhoud |
+| -- | -- |
+| `{positie}` | Plaats in de getoonde selectie, vanaf 1 |
+| `{type}` | Auditregel, Burst of Cliëntcluster |
+| `{onderwerp}` | Medewerker en doel bij een auditregel; medewerker bij burst; cliënt bij cluster |
+| `{selectiereden}` | Controleprioriteit en signalenaantal met thema-uitleg, of vensteraantallen en gehaalde patroondrempels |
+| `{periode}` | Starttijd van de auditregel, of begin en einde van het geselecteerde venster |
+| `{prioriteit}` | Alleen de bestaande controleprioriteit van een auditregel |
+| `{signalen}` | Alleen de ingeschakelde signalen op de geselecteerde auditregel |
+| `{medewerker}` | Medewerker bij auditregel of burst |
+| `{client}` | Cliënt bij een cliëntgerichte auditregel of cliëntcluster |
+| `{team}` | Waargenomen team van een auditregel of de bestaande teamweergave van de burst |
+| `{aantal_bronregels}` | Aantal bijbehorende bronregels; geen aantal unieke incidenten |
+| `{bronrijen}` | Maximaal de eerste twintig Excel-rijnummers oplopend; bij meer regels met vermelding van het totaal |
+
+Een ontbrekende waarde wordt **Niet beschikbaar**. Een veld dat niet past bij de soort bevinding wordt **Niet van toepassing**. De teamwaarde van een burst is een waargenomen waarde uit de bestaande aggregatie, geen bevestiging van een stabiele teamindeling.
+
+Na een sjabloonwijziging wist de webui het oude voorbeeld en schakelt kopiëren uit. **Voorbeeld bijwerken** valideert het sjabloon en vult uitsluitend gegevens van de huidige selectie in. De gebruiker kan de tekst controleren voordat die op **Samenvatting kopiëren** klikt. Een vaste afsluitende waarschuwing vermeldt dat de selectie menselijke controle vraagt, geen dossierinzage of onrechtmatige toegang bewijst en persoonsgegevens kan bevatten.
+
+Kopiëren gebeurt uitsluitend na die expliciete actie. De webui leest het klembord niet. Wanneer automatisch kopiëren ontbreekt of wordt geweigerd, selecteert de webui de tekst en vraagt om Ctrl+C of Cmd+C; er verschijnt geen onterechte succesmelding. Bij een analyse- of selectiewijziging tijdens kopiëren vermeldt de terugkoppeling dat de vorige selectie is gekopieerd.
+
+### Privacy en exports
+
+De webui bewaart sjabloon, aantal en tekst alleen in het geheugen van het huidige tabblad. Na expliciet kopiëren staat de tekst ook op het systeemklembord. De functie voegt geen netwerkverkeer, serververwerking of browseropslag toe. Een nieuw bestand levert pas na analyse een nieuw voorbeeld; de vorige verborgen tekst wordt niet gekopieerd. Verversen wist het sjabloon en herstelt het standaardaantal.
+
+HTML-rapport, dashboard-PNG en de losse PNG **Opvallendheden om te onderzoeken** gebruiken dezelfde selectie, volgorde en selectieredenen als de webui. Het HTML-rapport vermeldt maximaal twintig Excel-rijnummers per item; de volledige bronregels blijven beschikbaar via de webui. Vrije sjabloontekst en het kopieervoorbeeld worden niet automatisch aan deze exports toegevoegd. Wijzigt de Top-X tijdens het genereren van PNG of ZIP, dan houdt de webui de verouderde download tegen en vraagt om opnieuw exporteren. De bestaande groottegrenzen voor PNG blijven gelden, ook bij een grote Top-X of lange labels. CSV-kolommen en bestaande populaties blijven gelijk.

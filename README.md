@@ -1,6 +1,6 @@
 # Ons Escalatielog Audit
 
-![Version: 0.16.0](https://img.shields.io/badge/version-0.16.0-00A0C8.svg)
+![Version: 0.17.0](https://img.shields.io/badge/version-0.17.0-00A0C8.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 
 Ons Escalatielog Audit is een zelfstandige webpagina voor het controleren van `.xlsx`-exports met escalatielogs uit Nedap Ons. De webui maakt opvallende patronen zichtbaar en laat je doorklikken naar de bijbehorende Excelregels. Het hulpmiddel is bedoeld voor functioneel applicatiebeheerders, CISO's en privacy officers.
@@ -77,7 +77,7 @@ Bij het openen van de online showcase ontvangt GitHub het paginaverzoek en regis
 2. Selecteer een `.xlsx`-export of sleep het bestand naar het uploadvak.
 3. Open zo nodig **Instellingen** en pas de drempels of signalen aan. Dit kan ook al vóór het kiezen van een bestand. Klik daarna op **Analyse uitvoeren**.
 4. Controleer eerst **Auditlogica** en **Datakwaliteit**.
-5. Bekijk vervolgens **Overzicht** en **Aandachtspunten**.
+5. Bekijk vervolgens **Overzicht** en **Aandachtspunten**. De gemengde selectie **Opvallendheden om te onderzoeken** toont auditregels, bursts en cliëntclusters met hun selectiereden. Kies hoeveel je wilt zien (1–50) en klik op **Selectie toepassen**. Onder **Samenvatting maken en kopiëren** kun je een sjabloon met toegestane placeholders aanpassen, het tekstvoorbeeld controleren en de samenvatting kopiëren. Deze tekst kan persoonsgegevens bevatten.
 6. Klik op een cijfer, grafiek of tabelregel om de bijbehorende bronregels te openen. Je kunt deze doorzoeken en filteren op team, deskundigheid, doeltype en auditcontext. **Bronregels CSV** bevat de volledige geopende selectie, ook wanneer filters actief zijn.
 7. Pas zo nodig de instellingen aan en klik op **Analyse opnieuw uitvoeren**.
 8. Exporteer de gewenste aandachtspunten, bronregels of rapportages. Je kunt ook kiezen voor **Dashboard als PNG** of **Losse visuals als ZIP**. Pak de ZIP uit om afzonderlijke afbeeldingen te gebruiken.

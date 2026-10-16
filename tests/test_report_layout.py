@@ -590,8 +590,8 @@ def test_exported_report_tables_stay_aligned(tmp_path: Path) -> None:
         assert all(value for key, value in result.items() if key != "heatmapScrollable")
     assert webui_results[1]["heatmapScrollable"]
     assert toc_result == {
-        "linkCount": 21,
-        "uniqueTargetCount": 21,
+        "linkCount": 22,
+        "uniqueTargetCount": 22,
         "allTargetsExist": True,
     }
     assert toc_hash == "#s-peer"
