@@ -90,6 +90,10 @@ button,input,select{font:inherit}button{cursor:pointer}.app{max-width:1480px;mar
             <div class="drop-actions">
               <button class="btn ghost" id="chooseBtn">Bestand kiezen</button>
               <button class="btn primary" id="analyzeBtn" disabled>Analyse uitvoeren</button>
+              <button class="btn ghost"
+                      id="settingsBtn"
+                      aria-controls="view-settings"
+                      aria-expanded="false">Instellingen</button>
               <input id="fileInput"
                      type="file"
                      accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -446,20 +450,20 @@ button,input,select{font:inherit}button{cursor:pointer}.app{max-width:1480px;mar
             <div id="qualityTable"></div>
           </div>
         </section>
-        <section class="view" id="view-settings">
-          <div class="card section-card">
-            <div class="section-head">
-              <div>
-                <h2>Auditinstellingen</h2>
-                <p>Pas drempels aan en voer de analyse opnieuw uit. Dit zijn selectieregels, geen normatieve grenswaarden.</p>
-              </div>
-              <button class="btn primary" id="rerunBtn">Analyse opnieuw uitvoeren</button>
-            </div>
-            <div class="notice warn" style="margin-bottom:14px"><strong>Systeemfilter:</strong> bekende Ketenverkeer-/systeemredenen worden altijd uitgesloten. Uitsluiten op alleen 30 minuten staat standaard uit. Een onbekende reden blijft in de auditpopulatie en vraagt controle, ook bij een duur van 30 minuten.</div>
-            <div class="settings-grid" id="settingsGrid"></div>
-          </div>
-        </section>
       </main>
+      <section class="view" id="view-settings">
+        <div class="card section-card">
+          <div class="section-head">
+            <div>
+              <h2 id="settingsTitle" tabindex="-1">Auditinstellingen</h2>
+              <p>Pas drempels aan vóór de analyse. Klik daarna op Analyse uitvoeren, of na een eerdere analyse op Analyse opnieuw uitvoeren. Dit zijn selectieregels, geen normatieve grenswaarden.</p>
+            </div>
+            <button class="btn primary" id="rerunBtn" disabled>Analyse uitvoeren</button>
+          </div>
+          <div class="notice warn" style="margin-bottom:14px"><strong>Systeemfilter:</strong> bekende Ketenverkeer-/systeemredenen worden altijd uitgesloten. Uitsluiten op alleen 30 minuten staat standaard uit. Een onbekende reden blijft in de auditpopulatie en vraagt controle, ook bij een duur van 30 minuten.</div>
+          <div class="settings-grid" id="settingsGrid"></div>
+        </div>
+      </section>
       <div class="footer-note">Escalatielog Audit Cockpit <span class="app-version"></span> · Geen netwerkverkeer · Geen opslag in browseropslag · Sluiten of verversen wist de ingelezen data.</div>
     </div>
     <div id="drillOverlay" class="drill-overlay" aria-hidden="true">
@@ -512,7 +516,7 @@ button,input,select{font:inherit}button{cursor:pointer}.app{max-width:1480px;mar
     </div>
     <script>
 'use strict';
-const APP_VERSION='0.15.4';const EXPLANATION_CSS=document.getElementById('explanationStyles').textContent;
+const APP_VERSION='0.16.0';const EXPLANATION_CSS=document.getElementById('explanationStyles').textContent;
 
 const REQUIRED_HEADERS = [
   'Gebruiker','Medewerkernummer','Medewerkersteam','Deskundigheid medewerker','Gebruikersnaam',
@@ -1015,7 +1019,9 @@ const SETTINGS_SCHEMA=[
  ['signalClientUniqueTeams','Signaal: veel teams per cliënt','Cliënt boven ingestelde teamdrempel.','switch'],
  ['signalDataQuality','Datakwaliteit als aandachtspunt','Ontbrekende kernvelden / onvolledig cliëntdoel.','switch']
 ];
+function updateSettingsAction(){const analyzed=!!state.result;$('#rerunBtn').textContent=analyzed?'Analyse opnieuw uitvoeren':'Analyse uitvoeren';$('#rerunBtn').disabled=!state.file;}
 function renderSettings(){
+  updateSettingsAction();
   $('#settingsGrid').innerHTML=SETTINGS_SCHEMA.map(([k,l,d,t])=>`<div class="setting"><div class="switch-row"><div><label for="set-${k}">${esc(l)}</label><p>${esc(d)}</p></div>${t==='switch'?`<input class="switch" id="set-${k}" type="checkbox" ${state.settings[k]?'checked':''}>`:''}</div>${t==='number'?`<input id="set-${k}" type="number" value="${state.settings[k]}">`:''}</div>`).join('');
 }
 function readSettings(){const next={...state.settings};for(const [k,,,t] of SETTINGS_SCHEMA){const el=$(`#set-${k}`);if(!el)continue;if(t==='switch'){next[k]=el.checked;continue;}const v=Number(el.value),hour=k==='nightStartHour'||k==='nightEndHour';if(el.value.trim()===''||!Number.isFinite(v)||!Number.isInteger(v)||v<(hour||k==='activationDelayThresholdMinutes'?0:1)||(hour&&v>23))throw new Error('Ongeldige instelling: '+k);next[k]=v;}return next;}
@@ -1203,22 +1209,23 @@ ${EXPLANATION_CSS}
 }
 
 async function loadFile(file){
-  if(!file)return; closeDrilldown();state.result=null;$('#pngBtn').disabled=true;$('#visualsZipBtn').disabled=true;state.rawRows=[];$('#workspace').classList.remove('show');state.file=file;state.fileName=file.name;state.analysisRunAt=null;$('#fileName').textContent=file.name;$('#fileSize').textContent=formatBytes(file.size);$('#analyzeBtn').disabled=false;setStatus('Bestand geselecteerd. Klik op “Analyse uitvoeren”.','ok');
+  if(!file)return; closeDrilldown();state.result=null;$('#pngBtn').disabled=true;$('#visualsZipBtn').disabled=true;state.rawRows=[];$('#workspace').classList.remove('show');state.file=file;state.fileName=file.name;state.analysisRunAt=null;$('#fileName').textContent=file.name;$('#fileSize').textContent=formatBytes(file.size);updateSettingsAction();$('#analyzeBtn').disabled=false;setStatus('Bestand geselecteerd. Klik op “Analyse uitvoeren”.','ok');
 }
 async function runAnalysis(){
-  if(!state.file)return;setLoading(true,'Escalatielog lezen…','Het XLSX-bestand wordt lokaal uitgepakt en gevalideerd.');
-  try{await new Promise(r=>setTimeout(r,30));const parsed=await readXlsx(state.file);setLoading(true,'Analyse uitvoeren…',`Werkblad “${parsed.sheet}” is gevonden.`);const rows=normalizeRows(parsed.matrix,parsed.headerRow),result=analyze(rows,state.settings);state.rawRows=rows;state.sheetName=parsed.sheet;state.analysisRunAt=new Date();state.result=result;render();setStatus(`${fmt(rows.length)} logregels ingelezen. ${fmt(state.result.systemRows.length)} systeemmeldingen en ${fmt(state.result.duplicateRows.length)} exacte duplicaten uitgesloten; ${fmt(state.result.auditRows.length)} unieke handmatige regels in de auditpopulatie.`,'ok');}
-  catch(e){state.result=null;$('#pngBtn').disabled=true;$('#visualsZipBtn').disabled=true;state.rawRows=[];state.analysisRunAt=null;$('#workspace').classList.remove('show');console.error(e);setStatus(e.message||String(e),'error');alert('Analyse mislukt: '+(e.message||e));}
+  if(!state.file)return;let next;try{next=readSettings()}catch(e){setStatus(e.message,'error');return;}const previousSettings=state.settings;setLoading(true,'Escalatielog lezen…','Het XLSX-bestand wordt lokaal uitgepakt en gevalideerd.');
+  try{await new Promise(r=>setTimeout(r,30));const parsed=await readXlsx(state.file);setLoading(true,'Analyse uitvoeren…',`Werkblad “${parsed.sheet}” is gevonden.`);const rows=normalizeRows(parsed.matrix,parsed.headerRow),result=analyze(rows,next);state.settings=next;state.rawRows=rows;state.sheetName=parsed.sheet;state.analysisRunAt=new Date();state.result=result;render();$('.tab[data-view="overview"]').click();setStatus(`${fmt(rows.length)} logregels ingelezen. ${fmt(state.result.systemRows.length)} systeemmeldingen en ${fmt(state.result.duplicateRows.length)} exacte duplicaten uitgesloten; ${fmt(state.result.auditRows.length)} unieke handmatige regels in de auditpopulatie.`,'ok');}
+  catch(e){state.settings=previousSettings;state.result=null;updateSettingsAction();$('#pngBtn').disabled=true;$('#visualsZipBtn').disabled=true;state.rawRows=[];state.analysisRunAt=null;$('#workspace').classList.remove('show');console.error(e);setStatus(e.message||String(e),'error');alert('Analyse mislukt: '+(e.message||e));}
   finally{setLoading(false)}
 }
 
 $('#chooseBtn').addEventListener('click',()=>$('#fileInput').click());$('#fileInput').addEventListener('change',e=>{loadFile(e.target.files[0]);e.target.value=''});$('#analyzeBtn').addEventListener('click',runAnalysis);
+$('#settingsBtn').addEventListener('click',()=>{$('.tab[data-view="settings"]').click();$('#settingsTitle').focus();});
 const dz=$('#dropzone');['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('drag')}));['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('drag')}));dz.addEventListener('drop',e=>{const f=[...e.dataTransfer.files].find(x=>x.name.toLowerCase().endsWith('.xlsx'));if(f)loadFile(f);else setStatus('Gebruik een .xlsx-bestand.','error')});
-$('#tabs').addEventListener('click',e=>{const b=e.target.closest('.tab');if(!b)return;$$('.tab').forEach(x=>x.classList.toggle('active',x===b));$$('.view').forEach(v=>v.classList.toggle('active',v.id===`view-${b.dataset.view}`))});
+$('#tabs').addEventListener('click',e=>{const b=e.target.closest('.tab');if(!b)return;$$('.tab').forEach(x=>x.classList.toggle('active',x===b));$$('.view').forEach(v=>v.classList.toggle('active',v.id===`view-${b.dataset.view}`));$('#settingsBtn').setAttribute('aria-expanded',String(b.dataset.view==='settings'))});
 document.addEventListener('click',e=>{const q=e.target.closest('[data-jump]');if(!q)return;const view=q.dataset.jump;const tab=$(`.tab[data-view="${view}"]`);if(tab)tab.click();});
 $('#deepTabs')?.addEventListener('click',e=>{const b=e.target.closest('.subtab');if(!b)return;$$('#deepTabs .subtab').forEach(x=>x.classList.toggle('active',x===b));$$('#view-deepdive .analysis-pane').forEach(p=>p.classList.toggle('active',p.id===`deep-${b.dataset.pane}`));});
 $('#drillCloseBtn').addEventListener('click',closeDrilldown);$('#drillCsvBtn').addEventListener('click',exportDrilldownCsv);$('#drillOverlay').addEventListener('click',e=>{if(e.target===$('#drillOverlay'))closeDrilldown()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#drillOverlay').classList.contains('show'))closeDrilldown()});
-$('#pngBtn').addEventListener('click',exportDashboardPng);$('#visualsZipBtn').addEventListener('click',exportOverviewVisualsZip);$('#csvBtn').addEventListener('click',exportAttentionCsv);$('#reportBtn').addEventListener('click',exportReport);$('#rerunBtn').addEventListener('click',()=>{if(!state.rawRows.length)return;let next;try{next=readSettings()}catch(e){setStatus(e.message,'error');return;}setLoading(true,'Analyse opnieuw uitvoeren…','De auditregels worden opnieuw toegepast.');setTimeout(()=>{const prev={settings:state.settings,analysisRunAt:state.analysisRunAt,result:state.result};let committed=false;try{const result=analyze(state.rawRows,next);Object.assign(state,{settings:next,analysisRunAt:new Date(),result});committed=true;render();setStatus(`Analyse opnieuw uitgevoerd: ${fmt(state.result.auditRows.length)} handmatige auditregels.`,'ok')}catch(e){if(committed){Object.assign(state,prev);try{render()}catch(err){console.error(err)}}console.error(e);setStatus(`Analyse opnieuw uitvoeren mislukt: ${e.message||e}. De vorige analyse en instellingen blijven actief.`,'error')}finally{setLoading(false)}},20)});
+$('#pngBtn').addEventListener('click',exportDashboardPng);$('#visualsZipBtn').addEventListener('click',exportOverviewVisualsZip);$('#csvBtn').addEventListener('click',exportAttentionCsv);$('#reportBtn').addEventListener('click',exportReport);$('#rerunBtn').addEventListener('click',()=>{if(!state.result){runAnalysis();return;}if(!state.rawRows.length)return;let next;try{next=readSettings()}catch(e){setStatus(e.message,'error');return;}setLoading(true,'Analyse opnieuw uitvoeren…','De auditregels worden opnieuw toegepast.');setTimeout(()=>{const prev={settings:state.settings,analysisRunAt:state.analysisRunAt,result:state.result};let committed=false;try{const result=analyze(state.rawRows,next);Object.assign(state,{settings:next,analysisRunAt:new Date(),result});committed=true;render();setStatus(`Analyse opnieuw uitgevoerd: ${fmt(state.result.auditRows.length)} handmatige auditregels.`,'ok')}catch(e){if(committed){Object.assign(state,prev);try{render()}catch(err){console.error(err)}}console.error(e);setStatus(`Analyse opnieuw uitvoeren mislukt: ${e.message||e}. De vorige analyse en instellingen blijven actief.`,'error')}finally{setLoading(false)}},20)});
 // Exact evidence bindings for overview, quality and audit logic.
 function bindDetail(el,title,rows,subtitle=''){
  if(!el)return;el.classList.add('clickable');el.tabIndex=0;el.setAttribute('role','button');el.setAttribute('aria-label',`${title}: ${rows.length} bronregels openen`);

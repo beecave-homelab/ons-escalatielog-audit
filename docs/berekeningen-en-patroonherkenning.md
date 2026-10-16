@@ -2,7 +2,7 @@
 title: Berekeningen, tellingen en patroonherkenning
 applies_to: escalatielog-audit-webui.html
 tags: [escalatielogs, audit, functioneel-beheer]
-updated: 2026-10-15
+updated: 2026-10-16
 ---
 
 ## Berekeningen, tellingen en patroonherkenning
@@ -1151,7 +1151,9 @@ De drempel voor activatievertraging mag 0 zijn. Alle overige numerieke instellin
 
 Ongeldige invoer wordt genegeerd.
 
-Nieuwe instellingen worden pas toegepast wanneer **Analyse opnieuw uitvoeren** volledig slaagt. Mislukt de analyse of de weergave, dan blijven het getoonde resultaat, de toegepaste instellingen en het analysetijdstip ongewijzigd. De statusregel toont dan een foutmelding.
+Via **Instellingen** in het uploadvak zijn alle drempels en signalen al vóór de eerste analyse bereikbaar, ook zonder bestand. Het kiezen van een bestand bewaart de ingevulde waarden. **Analyse uitvoeren** valideert en gebruikt deze waarden voor de eerste analyse; ongeldige invoer start geen analyse. Na de analyse zijn dezelfde instellingen ook via het tabblad Instellingen bereikbaar.
+
+Na een succesvolle analyse pas je wijzigingen toe met **Analyse opnieuw uitvoeren**. Nieuwe instellingen worden pas vastgelegd wanneer de heranalyse volledig slaagt. Mislukt de analyse of de weergave, dan blijven het getoonde resultaat, de toegepaste instellingen en het analysetijdstip ongewijzigd. De statusregel toont dan een foutmelding.
 
 Bekende systeemredenen blijven altijd uitgesloten, ongeacht de instelling van de 30-minutenschakelaar.
 
