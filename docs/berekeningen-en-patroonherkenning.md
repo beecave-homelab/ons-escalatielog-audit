@@ -1157,6 +1157,32 @@ Na een succesvolle analyse pas je wijzigingen toe met **Analyse opnieuw uitvoere
 
 Bekende systeemredenen blijven altijd uitgesloten, ongeacht de instelling van de 30-minutenschakelaar.
 
+### Instellingen bewaren en inladen
+
+In het tabblad **Instellingen** kun je auditinstellingen exporteren naar en importeren vanuit een lokaal JSON-bestand. Beide acties werken ook vóór de eerste analyse.
+
+**Exporteren** leest de huidige formulierwaarden, valideert ze met dezelfde regels als `readSettings()`, en downloadt een UTF-8 JSON-bestand met de naam `escalatielog-audit-instellingen.json`. Het bestand bevat:
+
+- `format`: de vaste formaatnaam `escalatielog-audit-instellingen`.
+- `schemaVersion`: een onafhankelijke versie voor het bestandsformaat (huidig: `1`), los van `APP_VERSION`.
+- `settings`: alle drempels en signaalschakelaars uit `SETTINGS_SCHEMA`.
+
+Bij ongeldige formulierwaarden verschijnt een foutmelding en wordt geen bestand aangemaakt.
+
+**Importeren** leest een `.json`-bestand uitsluitend in de browser en controleert achtereenvolgens:
+
+1. Geldige JSON met een object op het hoogste niveau.
+2. De verwachte `format`-naam.
+3. Een ondersteunde `schemaVersion`.
+4. Aanwezigheid van alle verwachte sleutels uit `SETTINGS_SCHEMA`.
+5. Afwezigheid van onbekende sleutels.
+6. Juiste typen: booleaanse waarden voor schakelaars, gehele getallen voor drempels.
+7. Waarden binnen het toegestane bereik: uren 0 tot 23, activatievertraging vanaf 0, overige drempels vanaf 1.
+
+Een ongeldig, onvolledig of niet-ondersteund bestand wordt volledig afgewezen met een melding. Bestaande formulierwaarden en analyseresultaten blijven ongemoeid. Bij een geldige import vult het formulier zich met de ingelezen waarden. De ingelezen waarden zijn pas toegepast na **Analyse uitvoeren** of **Analyse opnieuw uitvoeren**. Tot die tijd blijven exports de toegepaste instellingen van de laatste analyse tonen.
+
+Het instellingenbestand bevat uitsluitend configuratie uit `SETTINGS_SCHEMA`. Geen Excelgegevens, bestandsnamen, analyse-uitkomsten, bronregels of persoonsgegevens. De functionaliteit gebruikt geen `localStorage`, `sessionStorage`, netwerkverzoeken, externe bibliotheken of servercomponenten.
+
 ## 15. Controle-uitkomsten voor het referentiebestand
 
 Voor de controle is het synthetische bestand `tests/fixtures/synthetic-escalatielog.xlsx` gebruikt.
