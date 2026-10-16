@@ -62,7 +62,8 @@ def test_png_complete_offline_and_viewport_independent(page, tmp_path):
           let canvas;try{canvas=drawDashboardPng(model)}
           finally{CanvasRenderingContext2D.prototype.fillText=original}
           return {model,lines,width:canvas.width/2,height:canvas.height/2,
-            ids:[...document.querySelectorAll('#view-overview [id]')].map(x=>x.id),
+            ids:[...document.querySelectorAll(
+              '#view-overview [id]:not(#topFindings [id])')].map(x=>x.id),
             pixel:[...canvas.getContext('2d').getImageData(0,0,1,1).data]};
         }"""
     )
@@ -249,7 +250,7 @@ def test_overview_visuals_zip_individual_and_offline(page, tmp_path):
             lines,width:c.width,height:c.height};c.width=0;c.height=0;return drawing;
         })}"""
     )
-    assert len(drawings) == page.evaluate("22 + dashboardPngModel().signals.length")
+    assert len(drawings) == page.evaluate("23 + dashboardPngModel().signals.length")
     for drawing in drawings:
         text = " ".join(line["value"] for line in drawing["lines"])
         assert drawing["title"] in text
@@ -314,7 +315,7 @@ def test_visuals_zip_errors_stale_analysis_and_empty(page):
     expect(page.locator("#status")).to_contain_text("De analyse is intussen gewijzigd")
     with page.expect_download():
         page.evaluate("exportOverviewVisualsZip()")
-    expect(page.locator("#status")).to_contain_text("23 losse visuals als ZIP gedownload")
+    expect(page.locator("#status")).to_contain_text("24 losse visuals als ZIP gedownload")
     page.locator("#fileInput").set_input_files(
         {
             "name": "nieuwe-visuals.xlsx",
