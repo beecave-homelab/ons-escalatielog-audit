@@ -4,7 +4,7 @@ import random
 from datetime import datetime, timedelta
 from pathlib import Path
 from xml.sax.saxutils import escape
-from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
+from zipfile import ZIP_DEFLATED, ZIP_STORED, ZipFile, ZipInfo
 
 HEADERS = [
     "Gebruiker",
@@ -158,11 +158,95 @@ def mixed_rows(row_count: int, rng: random.Random) -> list[list[str]]:
     return rows
 
 
+def signal_rows() -> list[list[str]]:
+    """Negen vaste bronregels met controleerbare herhaling en vensters."""
+    rows = []
+    # Eén medewerker: vijf pogingen in 30 minuten, waarvan drie op hetzelfde doel.
+    # Twee andere teams bezoeken dat doel binnen hetzelfde clustervenster.
+    for employee, target, minute in (
+        (1, 1, 0),
+        (1, 1, 4),
+        (1, 1, 10),
+        (1, 2, 20),
+        (1, 3, 30),
+        (2, 1, 35),
+        (3, 1, 40),
+    ):
+        started = datetime(2026, 5, 4, 9, minute)
+        rows.append(
+            [
+                f"Signaalmedewerker {employee}",
+                f"SIG-M-{employee}",
+                f"Signaalteam {employee}",
+                "Synthetische deskundigheid",
+                f"signaalgebruiker{employee}",
+                "Synthetische controle",
+                "15",
+                "Cliënt",
+                f"Signaalcliënt {target}",
+                f"SIG-C-{target}",
+                "Synthetische locatie",
+                format_date(started),
+                format_date(started),
+                "Synthetisch signaalprofiel",
+            ]
+        )
+    system = rows[0].copy()
+    system[5] = SYSTEM_REASONS[0]
+    rows.extend([system, rows[0].copy()])
+    return rows
+
+
+def variant_worksheet(
+    rows: list[list[str]], shared_strings: bool, numeric_dates: bool
+) -> tuple[str, list[str]]:
+    """Schrijf gedeelde teksten en echte numerieke duur- en datumcellen."""
+    strings: list[str] = []
+    indices: dict[str, int] = {}
+    xml_rows = []
+    for row_index, row in enumerate(rows, 1):
+        cells = []
+        for column_index, value in enumerate(row, 1):
+            ref = f"{column_name(column_index)}{row_index}"
+            number = None
+            if row_index > 1 and numeric_dates:
+                if column_index in (12, 13) and value != "Niet geactiveerd":
+                    date = datetime.strptime(value, "%d-%m-%Y, %H:%M:%S")
+                    number = (date - datetime(1899, 12, 30)).total_seconds() / 86400
+                elif column_index == 7:
+                    number = float(value)
+            if number is not None:
+                cells.append(f'<c r="{ref}"><v>{number:.15g}</v></c>')
+            elif shared_strings:
+                if value not in indices:
+                    indices[value] = len(strings)
+                    strings.append(value)
+                cells.append(f'<c r="{ref}" t="s"><v>{indices[value]}</v></c>')
+            else:
+                cells.append(f'<c r="{ref}" t="inlineStr"><is><t>{escape(value)}</t></is></c>')
+        xml_rows.append(f'<row r="{row_index}">{"".join(cells)}</row>')
+    sheet = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+        f"<sheetData>{''.join(xml_rows)}</sheetData></worksheet>"
+    )
+    return sheet, strings
+
+
 def synthetic_rows(row_count: int, seed: int, profile: str = "mixed") -> list[list[str]]:
     if row_count < 1:
         raise ValueError("Het aantal regels moet minimaal 1 zijn.")
     rng = random.Random(seed)
-    data = layout_rows(row_count, rng) if profile == "layout" else mixed_rows(row_count, rng)
+    if profile == "signals":
+        if row_count != 9:
+            raise ValueError("Het signaalprofiel vereist precies 9 regels (--rows 9).")
+        data = signal_rows()
+    elif profile == "layout":
+        data = layout_rows(row_count, rng)
+    elif profile == "mixed":
+        data = mixed_rows(row_count, rng)
+    else:
+        raise ValueError(f"Onbekend profiel: {profile}")
     return [HEADERS, *data]
 
 
@@ -197,12 +281,46 @@ def workbook_files(rows: list[list[str]]) -> dict[str, str]:
     }
 
 
-def create_workbook(path: Path, row_count: int, seed: int, profile: str = "mixed") -> str:
+def create_workbook(
+    path: Path,
+    row_count: int,
+    seed: int,
+    profile: str = "mixed",
+    *,
+    shared_strings: bool = False,
+    numeric_dates: bool = False,
+    stored: bool = False,
+) -> str:
+    rows = synthetic_rows(row_count, seed, profile)
+    files = workbook_files(rows)
+    if shared_strings or numeric_dates:
+        files["xl/worksheets/sheet1.xml"], strings = variant_worksheet(
+            rows, shared_strings, numeric_dates
+        )
+        if shared_strings:
+            files["xl/sharedStrings.xml"] = (
+                '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" '
+                f'uniqueCount="{len(strings)}">'
+                + "".join(f"<si><t>{escape(value)}</t></si>" for value in strings)
+                + "</sst>"
+            )
+            files["[Content_Types].xml"] = files["[Content_Types].xml"].replace(
+                "</Types>",
+                '<Override PartName="/xl/sharedStrings.xml" '
+                'ContentType="application/vnd.openxmlformats-officedocument.'
+                'spreadsheetml.sharedStrings+xml"/></Types>',
+            )
+            files["xl/_rels/workbook.xml.rels"] = files["xl/_rels/workbook.xml.rels"].replace(
+                "</Relationships>",
+                '<Relationship Id="rId2" '
+                'Type="http://schemas.openxmlformats.org/officeDocument/2006/'
+                'relationships/sharedStrings" Target="sharedStrings.xml"/></Relationships>',
+            )
     path.parent.mkdir(parents=True, exist_ok=True)
     with ZipFile(path, "w") as workbook:
-        for name, content in workbook_files(synthetic_rows(row_count, seed, profile)).items():
+        for name, content in files.items():
             info = ZipInfo(name, date_time=ZIP_TIMESTAMP)
-            info.compress_type = ZIP_DEFLATED
+            info.compress_type = ZIP_STORED if stored else ZIP_DEFLATED
             info.external_attr = 0o600 << 16
             workbook.writestr(info, content.encode())
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -215,14 +333,25 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--rows", type=int, default=2000)
     parser.add_argument("--seed", type=int, default=20260918)
-    parser.add_argument("--profile", choices=("mixed", "layout"), default="mixed")
+    parser.add_argument("--profile", choices=("mixed", "layout", "signals"), default="mixed")
+    parser.add_argument("--shared-strings", action="store_true")
+    parser.add_argument("--numeric-dates", action="store_true")
+    parser.add_argument("--stored", action="store_true", help="ZIP zonder compressie")
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
     try:
-        digest = create_workbook(args.output, args.rows, args.seed, args.profile)
+        digest = create_workbook(
+            args.output,
+            args.rows,
+            args.seed,
+            args.profile,
+            shared_strings=args.shared_strings,
+            numeric_dates=args.numeric_dates,
+            stored=args.stored,
+        )
     except ValueError as error:
         raise SystemExit(str(error)) from error
     print(f"Bestand: {args.output.resolve()}")
