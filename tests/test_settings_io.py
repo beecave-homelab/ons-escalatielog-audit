@@ -148,16 +148,19 @@ def test_export_blocked_by_invalid_input(tmp_path: Path) -> None:
         page.goto((ROOT / "escalatielog-audit-webui.html").as_uri())
         open_settings(page)
         page.locator("#set-activeAccessMinutes").fill("0")
-        page.locator("#exportSettingsBtn").click()
-        expect(page.locator("#status")).to_have_class("status error")
-        expect(page.locator("#status")).to_contain_text("Exporteren mislukt")
-        # Verify no download was triggered
+        # De luisteraar moet actief zijn vóór de klik, anders vangt hij de
+        # download van diezelfde klik nooit (zie de ronde-trip-tests hierboven).
         try:
-            with page.expect_download(timeout=500):
-                pass
-            raise AssertionError("Export should not have produced a download")
+            with page.expect_download(timeout=2_000) as download_info:
+                page.locator("#exportSettingsBtn").click()
+            raise AssertionError(
+                "Export should not have produced a download, got "
+                f"{download_info.value.suggested_filename!r}"
+            )
         except PlaywrightTimeout:
             pass
+        expect(page.locator("#status")).to_have_class("status error")
+        expect(page.locator("#status")).to_contain_text("Exporteren mislukt")
         browser.close()
 
 
