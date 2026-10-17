@@ -4,6 +4,12 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+## [0.19.1] - 2026-10-18
+
+### Onderhoud
+
+- Leg de medewerkerssleutel eenmalig vast bij aggregatie en gebruik die in peeranalyse en bronselecties van tabellen, grafieken en medewerkerspreiding. De koppeling blijft daardoor onafhankelijk van zichtbare identificatievelden. Regressietests bewaken ook dat de analyse geen globale toestand of bronregels verandert en alle nachtberekeningen de doorgegeven instellingen gebruiken (#63).
+
 ## [0.19.0] - 2026-10-17
 
 ### Toegevoegd
