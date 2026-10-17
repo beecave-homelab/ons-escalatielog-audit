@@ -2,7 +2,7 @@
 title: Berekeningen, tellingen en patroonherkenning
 applies_to: escalatielog-audit-webui.html
 tags: [escalatielogs, audit, functioneel-beheer]
-updated: 2026-10-17
+updated: 2026-10-18
 ---
 
 ## Berekeningen, tellingen en patroonherkenning
@@ -40,7 +40,7 @@ Bij iedere telling is van belang welke regels meetellen. De webui gebruikt hierv
 - **Signaalfrequenties** tellen het aantal regels per signaal. Eén regel met drie signalen telt bij alle drie de signalen mee.
 - **Aandachtspunten** tellen unieke auditregels met minimaal één ingeschakeld signaal. Iedere regel telt hier eenmaal, ongeacht het aantal signalen.
 
-De tabellen voor medewerkers, cliënten, locaties, teams, deskundigheden en redenen tonen gegroepeerde resultaten.
+De tabellen voor medewerkers, cliënten, locaties, teams, deskundigheden en redenen tonen gegroepeerde resultaten. De analyse gebruikt uitsluitend de doorgegeven bronregels en instellingen, inclusief het nachtvenster en de auditregels voor peeranalyse. Zij wijzigt de globale applicatietoestand en de ingelezen bronregels niet. De aanroeper past de nieuwe analyse en instellingen toe.
 
 Klik je op een tabelregel, dan opent de webui alle auditregels die aan de betreffende groep bijdragen. De selectie beperkt zich niet tot de waarde in één afzonderlijke kolom.
 
@@ -101,6 +101,8 @@ Voor de medewerkersleutel gebruikt de webui de eerste beschikbare waarde uit:
 1. `Medewerkernummer`
 2. `Gebruikersnaam`
 3. `Gebruiker`
+
+De aggregaties voor medewerkers, peeranalyse, bursts en concentratie bewaren de gekozen medewerkerssleutel als interne, niet-zichtbare metadata. Peerselecties en bronselecties voor medewerkers gebruiken deze vastgelegde sleutel; zij leiden hem niet opnieuw af uit zichtbare tabelvelden. Deze metadata wordt niet opgenomen als kolom in CSV- of HTML-exports.
 
 Een lege waarde of de losse plaatshouder `-` geldt als ontbrekend. Een koppelteken, punt of cijfer binnen een waarde hoort bij die waarde. Gebruikersnamen als `77600-1` en `t.detester` zijn dus gewone identifiers. De webui vergelijkt sleutels letterlijk: `77600-1`, `77600-2` en medewerkernummer `77600` zijn verschillende sleutels.
 
