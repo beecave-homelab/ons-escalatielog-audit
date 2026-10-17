@@ -2,7 +2,7 @@
 title: Berekeningen, tellingen en patroonherkenning
 applies_to: escalatielog-audit-webui.html
 tags: [escalatielogs, audit, functioneel-beheer]
-updated: 2026-10-16
+updated: 2026-10-17
 ---
 
 ## Berekeningen, tellingen en patroonherkenning
@@ -815,7 +815,7 @@ Een filter vergelijkt de exacte kolomwaarde. Bij Auditcontext geldt dit ook voor
 
 Meerdere filters en het vrije zoekveld werken samen.
 
-Zoeken is gedebounceerd: de tabel wordt pas herbouwd nadat het typen circa 150 ms heeft stilgestaan. De zoektekst per regel is vooraf genormaliseerd en berekend, zodat een toetsaanslag niet elke cel opnieuw normaliseert.
+Zoeken is gedebounceerd: de tabel wordt pas herbouwd nadat het typen circa 150 ms heeft stilgestaan. De zoektekst per regel is vooraf genormaliseerd en berekend, zodat een toetsaanslag niet elke cel opnieuw normaliseert. Interne velden die met `__` beginnen, zoals koppelingen naar bronregels, maken geen deel uit van de doorzoekbare tekst.
 
 De teller toont hoeveel regels zichtbaar zijn ten opzichte van de volledige geopende selectie.
 
