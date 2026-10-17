@@ -4,6 +4,12 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+## [0.19.0] - 2026-10-17
+
+### Toegevoegd
+
+- In het tabblad **Instellingen** kun je auditinstellingen exporteren naar en importeren vanuit een lokaal JSON-bestand. Exporteren leest de huidige formulierwaarden, valideert ze en downloadt een UTF-8 JSON-bestand met een formaatnaam, een onafhankelijke `schemaVersion: 1` en een `settings`-object. Importeren controleert de JSON-structuur, de formaatnaam, de ondersteunde versie, verwachte en onbekende sleutels, typen en bereiken, en vult bij een geldig bestand het formulier in. Een ongeldig bestand wordt volledig afgewezen met een melding; bestaande formulierwaarden, analyseresultaten en exports blijven ongemoeid. De functionaliteit werkt zonder geselecteerd Excelbestand, na bestandsselectie en na een analyse. Het bestand bevat uitsluitend configuratie uit `SETTINGS_SCHEMA` en gebruikt geen browseropslag of netwerkverkeer (#87).
+
 ## [0.18.0] - 2026-10-16
 
 ### Toegevoegd

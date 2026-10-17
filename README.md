@@ -1,6 +1,6 @@
 # Ons Escalatielog Audit
 
-![Version: 0.18.0](https://img.shields.io/badge/version-0.18.0-00A0C8.svg)
+![Version: 0.19.0](https://img.shields.io/badge/version-0.19.0-00A0C8.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 
 Ons Escalatielog Audit is een zelfstandige webpagina voor het controleren van `.xlsx`-exports met escalatielogs uit Nedap Ons. De webui maakt opvallende patronen zichtbaar en laat je doorklikken naar de bijbehorende Excelregels. Het hulpmiddel is bedoeld voor functioneel applicatiebeheerders, CISO's en privacy officers.
@@ -83,6 +83,16 @@ Bij het openen van de online showcase ontvangt GitHub het paginaverzoek en regis
 8. Exporteer de gewenste aandachtspunten, bronregels of rapportages. Je kunt ook kiezen voor **Dashboard als PNG** of **Losse visuals als ZIP**. Pak de ZIP uit om afzonderlijke afbeeldingen te gebruiken.
 
 De PNG-export en het HTML-rapport gebruiken de laatste succesvolle analyse. Heb je instellingen gewijzigd? Klik dan eerst op **Analyse opnieuw uitvoeren** om die wijzigingen toe te passen. Mislukt die heranalyse, dan blijven de vorige analyse en instellingen actief.
+
+### Instellingen bewaren en inladen
+
+In het tabblad **Instellingen** kun je je auditinstellingen als een lokaal JSON-bestand bewaren en bij een volgende controle weer inladen.
+
+- **Instellingen exporteren** leest de huidige formulierwaarden, valideert ze en downloadt een bestand `escalatielog-audit-instellingen.json`. Bevat ook waarden die afwijken van de standaardinstellingen. Bij ongeldige invoer verschijnt een foutmelding en wordt geen bestand aangemaakt.
+- **Instellingen importeren** leest een `.json`-bestand in de browser. Het bestand wordt gecontroleerd op structuur, formaatnaam, formaatversie, verwachte sleutels, typen en bereiken. Een ongeldig bestand wordt volledig afgewezen; bestaande formulierwaarden en analyseresultaten blijven ongemoeid.
+- Na een geslaagde import vul je het instellingenformulier in. De ingelezen waarden zijn pas toegepast na **Analyse uitvoeren** of **Analyse opnieuw uitvoeren**. Tot die tijd blijven exports de toegepaste instellingen van de laatste analyse tonen.
+
+Het bestand bevat uitsluitend configuratie uit `SETTINGS_SCHEMA`: drempels en signaalschakelaars. Geen Excelgegevens, analyseresultaten, bronregels of persoonsgegevens. Het JSON-bestand heeft een onafhankelijke `schemaVersion` (huidig: `1`) die los staat van de app-versie. De functionaliteit gebruikt geen browseropslag of netwerkverkeer.
 
 ## Vereiste invoer
 
