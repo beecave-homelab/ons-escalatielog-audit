@@ -1239,6 +1239,33 @@ Bijna iedere auditregel heeft minimaal één signaal. Her-escalaties ontbreken v
 
 Dit maakt het bestand geschikt voor technische controles, maar de verhoudingen zijn niet representatief voor echte maandexports.
 
+### Tweede referentieprofiel: her-escalaties en vensters
+
+Het profiel `signals` van dezelfde generator bevat negen vaste bronregels. Het vult de standaardfixture aan; de bovenstaande §15-cijfers blijven ongewijzigd. Genereer het lokaal met:
+
+```bash
+uv run python tests/generate_synthetic_escalatielog.py --output /tmp/signalen.xlsx --rows 9 --profile signals
+```
+
+Op maandag 4 mei 2026 doet medewerker 1 om 09:00, 09:04 en 09:10 een direct geactiveerde poging op cliënt 1, en om 09:20 en 09:30 op respectievelijk cliënt 2 en 3. Medewerkers 2 en 3 doen om 09:35 en 09:40 een poging op cliënt 1. Iedere medewerker heeft een eigen team. Alle handmatige pogingen duren 15 minuten. Daarna volgen één bekende systeemregel en één exacte kopie van de eerste handmatige regel.
+
+De verwachte uitkomsten bij de standaardinstellingen zijn vooraf uit deze tijdstippen en bronregels afgeleid:
+
+| Controle | Uitkomst |
+| -- | -: |
+| Bronregels / systeemregels / duplicaten / auditregels | 9 / 1 / 1 / 7 |
+| Medewerkers / cliënten | 3 / 3 |
+| Her-escalaties tijdens actieve toegang | 2 |
+| Daarvan zeer snel | 1 |
+| Regels met `VEEL_TEAMS_CLIENT` | 5 |
+| Overige afzonderlijke signalen | 0 |
+| Unieke aandachtspunten | 5 |
+| Bursts / cliëntclusters | 1 / 1 |
+
+De her-escalaties op Excel-rijen 3 en 4 steunen op respectievelijk rijen 2 en 3: de tussenpozen zijn vier en zes minuten. Alleen de eerste haalt de grens van vijf minuten voor zeer snelle herhaling. Het burstvenster bevat rijen 2–6; het cliëntcluster bevat rijen 2, 3, 4, 7 en 8 met drie medewerkers en drie teams. Systeemrij 9 en duplicaatkopie 10 vallen buiten deze vensters.
+
+`tests/test_core_logic.py` controleert deze aantallen, alle afzonderlijke signaaltellingen inclusief nullen en de gekoppelde bronrijen. Dezelfde referentie wordt ingelezen in acht combinaties van tekst- en ZIP-opslag. De generatoropties `--shared-strings`, `--numeric-dates` en `--stored` kiezen respectievelijk gedeelde teksten, numerieke Excel-datums plus numerieke duurcellen, en ZIP-opslag zonder compressie. Zonder opties blijven de bestaande generatoruitvoer en standaardfixture byte voor byte gelijk. Het vaste signaalprofiel vereist `--rows 9` en gebruikt geen willekeurige waarden.
+
 ### Aanvullende controles
 
 Tijdens de ontwikkeling is ook de gecontroleerde mei-export `Escalatielogs 01-05-2026 tot 31-05-2026.xlsx` gebruikt.
