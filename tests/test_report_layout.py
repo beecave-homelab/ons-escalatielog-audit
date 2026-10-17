@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 from generate_synthetic_escalatielog import create_workbook, main, synthetic_rows
-from playwright.sync_api import Error, Playwright, sync_playwright
+from playwright.sync_api import Error, Playwright, expect, sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 STANDARD_FIXTURE = ROOT / "tests/fixtures/synthetic-escalatielog.xlsx"
@@ -228,9 +228,9 @@ def test_drilldown_column_filters_and_full_csv(tmp_path: Path) -> None:
         )
         assert page.locator(".drill-count").text_content() == "1 van 3"
         page.get_by_role("textbox", name="Zoek bronregels").fill("Cliënt")
-        assert page.locator(".drill-count").text_content() == "0 van 3"
+        expect(page.locator(".drill-count")).to_have_text("0 van 3")
         page.get_by_role("textbox", name="Zoek bronregels").fill("Locatie")
-        assert page.locator(".drill-count").text_content() == "1 van 3"
+        expect(page.locator(".drill-count")).to_have_text("1 van 3")
         assert page.locator("#drillBody tbody tr:visible").count() == 1
         page.locator("#drillOverlay").screenshot(path=str(tmp_path / "drilldown-filters.png"))
         with page.expect_download() as download_info:

@@ -4,11 +4,21 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
-## [0.18.0] - 2026-10-16
+## [0.19.0] - 2026-10-17
 
 ### Toegevoegd
 
 - In het tabblad **Instellingen** kun je auditinstellingen exporteren naar en importeren vanuit een lokaal JSON-bestand. Exporteren leest de huidige formulierwaarden, valideert ze en downloadt een UTF-8 JSON-bestand met een formaatnaam, een onafhankelijke `schemaVersion: 1` en een `settings`-object. Importeren controleert de JSON-structuur, de formaatnaam, de ondersteunde versie, verwachte en onbekende sleutels, typen en bereiken, en vult bij een geldig bestand het formulier in. Een ongeldig bestand wordt volledig afgewezen met een melding; bestaande formulierwaarden, analyseresultaten en exports blijven ongemoeid. De functionaliteit werkt zonder geselecteerd Excelbestand, na bestandsselectie en na een analyse. Het bestand bevat uitsluitend configuratie uit `SETTINGS_SCHEMA` en gebruikt geen browseropslag of netwerkverkeer (#87).
+
+## [0.18.0] - 2026-10-16
+
+### Toegevoegd
+
+- Tabellen en drilldowns tonen standaard maximaal 500 rijen met een knop *Meer tonen* per volgende portie. De teller `x van y` blijft het volledige gefilterde aantal tonen; zoeken, filteren, sorteren en CSV-export werken op de volledige set (#55).
+
+### Opgelost
+
+- Zoeken in tabellen en drilldowns is gedebounceerd (150 ms) en gebruikt voorberekende, genormaliseerde zoektekst per regel, zodat een toetsaanslag niet langer de hele tabel herbouwt. Bij 50.000 bronregels daalt de tijd per toetsaanslag van honderden milliseconden naar enkele milliseconden (#55).
 
 ## [0.17.0] - 2026-10-16
 
