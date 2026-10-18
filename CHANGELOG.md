@@ -9,6 +9,7 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 ### Onderhoud
 
 - Leg de medewerkerssleutel eenmalig vast bij aggregatie en gebruik die in peeranalyse en bronselecties van tabellen, grafieken en medewerkerspreiding. De koppeling blijft daardoor onafhankelijk van zichtbare identificatievelden. Regressietests bewaken ook dat de analyse geen globale toestand of bronregels verandert en alle nachtberekeningen de doorgegeven instellingen gebruiken (#63).
+- Voeg gerichte regressietests toe voor datumparsing, CSV-opmaak en formulebeveiliging, instellingsvalidatie en reconciliatie bij uitsluiting van 30-minutenregels. Een tweede deterministisch synthetisch profiel controleert her-escalaties, zeer snelle herhaling, bursts en cliëntclusters in acht XLSX-varianten; de bestaande standaardfixture blijft ongewijzigd (#59).
 
 ## [0.19.0] - 2026-10-17
 
