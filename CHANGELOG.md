@@ -4,6 +4,10 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+### Onderhoud
+
+- Voeg gerichte regressietests toe voor datumparsing, CSV-opmaak en formulebeveiliging, instellingsvalidatie en reconciliatie bij uitsluiting van 30-minutenregels. Een tweede deterministisch synthetisch profiel controleert her-escalaties, zeer snelle herhaling, bursts en cliëntclusters in acht XLSX-varianten; de bestaande standaardfixture blijft ongewijzigd (#59).
+
 ## [0.19.0] - 2026-10-17
 
 ### Toegevoegd
