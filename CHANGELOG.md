@@ -4,6 +4,12 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+## [0.19.2] - 2026-10-19
+
+### Onderhoud
+
+- Verminder herhaald rekenwerk bij grote exports: hergebruik controleprioriteiten, houd unieke waarden in burst- en cliëntvensters bij en groepeer vergelijkbare medewerkers vooraf. Analyse-uitkomsten, bronselecties en exports blijven gelijk. De regressietest wacht op de zichtbare werkruimte zonder dynamische tekstevaluatie, zodat de CSP ook in Linux-CI intact blijft (#64).
+
 ## [0.19.1] - 2026-10-18
 
 ### Onderhoud
