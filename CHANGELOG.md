@@ -8,6 +8,12 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 - Rapporteer met Chromium CDP welke benoemde functies van het inline applicatiescript worden aangeroepen in een vast synthetisch referentiescenario. De pytest-samenvatting toont de meting en niet-aangeroepen functies ook in CI, zonder nieuwe drempel. Verduidelijk dat de bestaande 85%-poort Python-testcode meet en geen dekking van de JavaScript-app of ontwikkelscripts (#58).
 
+## [0.19.2] - 2026-10-19
+
+### Onderhoud
+
+- Verminder herhaald rekenwerk bij grote exports: hergebruik controleprioriteiten, houd unieke waarden in burst- en cliëntvensters bij en groepeer vergelijkbare medewerkers vooraf. Analyse-uitkomsten, bronselecties en exports blijven gelijk. De regressietest wacht op de zichtbare werkruimte zonder dynamische tekstevaluatie, zodat de CSP ook in Linux-CI intact blijft (#64).
+
 ## [0.19.1] - 2026-10-18
 
 ### Onderhoud
