@@ -4,6 +4,10 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+### Onderhoud
+
+- Rapporteer met Chromium CDP welke benoemde functies van het inline applicatiescript worden aangeroepen in een vast synthetisch referentiescenario. De pytest-samenvatting toont de meting en niet-aangeroepen functies ook in CI, zonder nieuwe drempel. Verduidelijk dat de bestaande 85%-poort Python-testcode meet en geen dekking van de JavaScript-app of ontwikkelscripts (#58).
+
 ## [0.19.1] - 2026-10-18
 
 ### Onderhoud
