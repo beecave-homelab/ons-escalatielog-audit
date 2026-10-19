@@ -140,7 +140,18 @@ def test_read_settings_rejects_invalid_values(page: Page, key: str, value: str) 
         }""",
         {"key": key, "value": value},
     )
-    assert actual == {"error": f"Ongeldige instelling: {key}", "unchanged": True}
+    label = page.locator(f'label[for="set-{key}"]').text_content()
+    bounds = (
+        "een geheel getal van 0 tot en met 23"
+        if key in ("nightStartHour", "nightEndHour")
+        else "een geheel getal van minimaal 0"
+        if key == "activationDelayThresholdMinutes"
+        else "een geheel getal van minimaal 1"
+    )
+    assert actual == {
+        "error": f"Ongeldige instelling: {label}. Vul {bounds} in.",
+        "unchanged": True,
+    }
 
 
 def test_read_settings_accepts_zero_delay_and_hour_limits(page: Page) -> None:

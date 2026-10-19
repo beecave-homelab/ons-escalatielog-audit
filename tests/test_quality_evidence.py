@@ -218,7 +218,7 @@ def test_quality_evidence_near_duplicate_excluded(tmp_path: Path) -> None:
         }""",
             rows,
         )
-        page.locator("#tabs").get_by_role("button", name="Datakwaliteit", exact=True).click()
+        page.locator("#tabs").get_by_role("tab", name="Datakwaliteit", exact=True).click()
         page.locator("#qualityTable tbody tr").filter(has_text="Exact dubbel").click()
         assert page.locator("#drillBody tbody tr").count() == 2
         assert page.evaluate("state.drilldown.rows.map(r => r['Excel-rij'])") == [2, 3]

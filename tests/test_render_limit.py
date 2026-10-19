@@ -71,7 +71,7 @@ def test_table_renders_max_500_rows_with_more_button(page) -> None:
     assert page.locator("#attentionTable .count-label").text_content() == "620 van 620"
 
     # Search filters the full set, not only the rendered rows.
-    page.get_by_role("textbox", name="Zoeken…").fill("Team 3")
+    page.locator("#attentionTable .table-search").fill("Team 3")
     expect(page.locator("#attentionTable .count-label")).to_have_text("62 van 620")
     expect(page.locator("#attentionTable tbody tr")).to_have_count(62)
     assert page.locator("#attentionTable .more-rows-btn").count() == 0
@@ -83,7 +83,7 @@ def test_search_is_debounced(page) -> None:
     page, errors = page
     load_table(page, 30, search=True)
 
-    search = page.get_by_role("textbox", name="Zoeken…")
+    search = page.locator("#attentionTable .table-search")
     search.fill("Medewerker 0017")
     # Directly after typing the table is not yet re-filtered (debounce).
     assert page.locator("#attentionTable .count-label").text_content() == "30 van 30"

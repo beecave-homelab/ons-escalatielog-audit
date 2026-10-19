@@ -1,6 +1,6 @@
 # Ons Escalatielog Audit
 
-![Version: 0.19.2](https://img.shields.io/badge/version-0.19.2-00A0C8.svg)
+![Version: 0.19.3](https://img.shields.io/badge/version-0.19.3-00A0C8.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 
 Ons Escalatielog Audit is een zelfstandige webpagina voor het controleren van `.xlsx`-exports met escalatielogs uit Nedap Ons. De webui maakt opvallende patronen zichtbaar en laat je doorklikken naar de bijbehorende Excelregels. Het hulpmiddel is bedoeld voor functioneel applicatiebeheerders, CISO's en privacy officers.
@@ -32,6 +32,8 @@ De webui biedt de volgende mogelijkheden:
 - **Dashboard als PNG.** Exporteer het volledige dashboard als één afbeelding met een vaste indeling. Ook onderdelen buiten het zichtbare scherm worden meegenomen, inclusief volledige labels, periode, analysetijdstip, versie en toegepaste instellingen.
 - **Rapportages.** Exporteer aandachtspunten, bronregels en een zelfstandig HTML-rapport. Het rapport bevat de auditflow, themabalken, tijdpatronen per weekdag en uur, en topgrafieken naast de bijbehorende tabellen.
 - **Interactieve rapporttabellen.** Zoek en filter direct boven de tabellen in het HTML-rapport. Een teller toont hoeveel opgenomen regels zichtbaar zijn. Brede tabellen kun je horizontaal verschuiven. Bij afdrukken worden alle opgenomen regels getoond, ook wanneer filters actief zijn.
+
+Met het toetsenbord wissel je tussen tabbladen met de pijltjestoetsen, Home en End. Sorteer een tabel via de knop in een kolomkop; de pijl toont de richting. Meldingen staan ook bij de exportknoppen en instellingen. Bij ongeldige instellingen gaat de focus naar het veld en lees je welke waarden zijn toegestaan.
 
 De gebruikte berekeningen, definities en signaleringsregels staan in [Berekeningen, tellingen en patroonherkenning](docs/berekeningen-en-patroonherkenning.md).
 

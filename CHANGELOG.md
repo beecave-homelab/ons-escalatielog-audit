@@ -4,6 +4,13 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+## [0.19.3] - 2026-10-19
+
+### Opgelost
+
+- Maak hoofdtabbladen en subtabs van Verdieping bedienbaar met pijltjestoetsen, Home en End. Rollen, geselecteerde toestand en koppelingen met de panelen volgen de actieve tab. Tabelkoppen bevatten sorteerknoppen met zichtbare richting en `aria-sort`; zoekvelden noemen de tabel (#56).
+- Toon export- en instellingsmeldingen ook bij de actie, met één gedeelde schermlezeraankondiging. PNG- en ZIP-successen gebruiken de bestaande succesopmaak. Ongeldige instellingen noemen het veldlabel en toegestane bereik, krijgen focus en een foutmarkering; de markering verdwijnt zodra de invoer geldig is (#61).
+
 ### Onderhoud
 
 - Rapporteer met Chromium CDP welke benoemde functies van het inline applicatiescript worden aangeroepen in een vast synthetisch referentiescenario. De pytest-samenvatting toont de meting en niet-aangeroepen functies ook in CI, zonder nieuwe drempel. Verduidelijk dat de bestaande 85%-poort Python-testcode meet en geen dekking van de JavaScript-app of ontwikkelscripts (#58).

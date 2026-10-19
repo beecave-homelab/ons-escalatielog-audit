@@ -141,7 +141,7 @@ def test_error_cell_reads_empty_and_reports_foutcel(page, tmp_path):
     assert 3 in result["missRows"], "De echt lege cel blijft onder Ontbrekend/ongeldig veld"
     assert "NaN" not in page.locator("#qualityTable").text_content()
 
-    page.locator("#tabs").get_by_role("button", name="Datakwaliteit", exact=True).click()
+    page.locator("#tabs").get_by_role("tab", name="Datakwaliteit", exact=True).click()
     page.locator("#qualityTable tbody tr").filter(has_text="Foutcel in bron").click()
     assert page.locator("#drillBody tbody tr").count() == 1
     assert page.evaluate("state.drilldown.rows.map(r => r['Excel-rij'])") == [2]
