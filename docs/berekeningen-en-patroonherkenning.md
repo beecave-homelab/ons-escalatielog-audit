@@ -571,7 +571,7 @@ Het signaal blijft wel zichtbaar en telt mee in de datakwaliteitsthemakaart.
 
 Hierdoor kun je de aantallen van themakaarten en prioriteitsgroepen niet rechtstreeks bij elkaar optellen.
 
-De prioriteit bepaalt uitsluitend de volgorde van controle.
+De prioriteit bepaalt uitsluitend de volgorde van controle. `analyze()` legt het prioriteitsbesluit en de uitleg eenmaal per aandachtspunt vast, vóór de sortering. Overzichten, bronselecties en exports hergebruiken dat besluit. Een nieuwe analyse bouwt de besluiten opnieuw op met de dan toegepaste instellingen.
 
 De webui toont hiermee niet aan dat de thema's onafhankelijk van elkaar zijn. De prioriteitslabels geven ook geen oordeel over de ernst of waarschijnlijkheid van een overtreding.
 
@@ -609,7 +609,7 @@ De medewerker zelf telt niet mee.
 
 Standaard moeten per groep minimaal drie **andere** medewerkers beschikbaar zijn.
 
-De webui sorteert de waarden en bepaalt vervolgens de mediaan. Bij een oneven aantal peers is dit de middelste waarde. Bij een even aantal gebruikt de webui het gemiddelde van de twee middelste waarden.
+De webui groepeert medewerkers met een stabiele context vooraf per team, deskundigheid en combinatie. Per groep worden de waarden eenmaal gesorteerd. Voor iedere medewerker wordt precies diens eigen waarde uit de mediaanbepaling weggelaten, ook als meerdere medewerkers dezelfde waarde hebben. De webui bepaalt vervolgens de mediaan. Bij een oneven aantal peers is dit de middelste waarde. Bij een even aantal gebruikt de webui het gemiddelde van de twee middelste waarden.
 
 ![Beslisroute van medewerkerscontext naar een beschikbare peer-ratio](assets/peervergelijking.svg)
 
@@ -664,6 +664,8 @@ In het HTML-rapport staat deze uitleg binnen dezelfde inklapbare sectie als de t
 Het doorklikvenster **Bronregels achter peeranalyse** is bedoeld om de onderliggende regels te controleren. De uitleg van de ratio's staat bij de tabel.
 
 ### 11.2 Bursts per medewerker
+
+Bij de vensteranalyses worden aantallen per unieke sleutel bijgehouden terwijl het venster opschuift. Alleen het uiteindelijk geselecteerde venster krijgt een kopie van zijn bronregels. De bestaande inclusieve grens, selectievolgorde en beslisregels bij gelijke kandidaten blijven gelden.
 
 Een burst is een groot aantal escalatiepogingen van één medewerker binnen een voortschrijdend tijdvenster.
 
