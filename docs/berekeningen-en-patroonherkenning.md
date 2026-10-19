@@ -2,7 +2,7 @@
 title: Berekeningen, tellingen en patroonherkenning
 applies_to: escalatielog-audit-webui.html
 tags: [escalatielogs, audit, functioneel-beheer]
-updated: 2026-10-18
+updated: 2026-10-19
 ---
 
 ## Berekeningen, tellingen en patroonherkenning
@@ -1048,6 +1048,16 @@ De tijdmatrix toont ook nulwaarden als tekst.
 De cliëntgrafiek en de bijbehorende rapporttabel gebruiken dezelfde sortering. Eerst op het aantal unieke medewerkers en daarna op escalatievolume.
 
 Bestaande rapportlimieten blijven van toepassing en worden expliciet vermeld.
+
+### Toetsenbordbediening en terugkoppeling
+
+Hoofdtabbladen en de subtabs van Verdieping gebruiken gekoppelde `tablist`-, `tab`- en `tabpanel`-rollen. Per tabbalk heeft alleen de geselecteerde tab een gewone tabstop. Links/rechts wisselt de tab met terugloop aan de uiteinden; Home en End kiezen de eerste en laatste tab. De focus volgt de keuze. Bestaande doorklikacties en de knop Instellingen gebruiken dezelfde selectie.
+
+De kolomkoppen van `tableWidget` bevatten native sorteerknoppen. Enter of spatie sorteert de volledige gefilterde set; de huidige richting staat in `aria-sort` en een zichtbare pijl. Sorteren, zoeken en filteren blijven uitsluitend weergavefuncties en veranderen geen analyse-uitkomsten. Het zoekveld noemt de betreffende tabel.
+
+Gedeelde actiemeldingen worden eenmaal aangekondigd via de statusregel in het uploadvak (`role="status"`, `aria-live="polite"`). Zichtbare kopieën bij de exportacties en instellingen hebben geen eigen live region en zijn voor schermlezers verborgen. Succesmeldingen blijven ook in tekst herkenbaar en gebruiken de bestaande succesopmaak.
+
+Bij ongeldige numerieke instellingen noemt de melding het zichtbare label en het toegestane bereik. Het instellingenpaneel opent, het eerste ongeldige veld krijgt focus en `aria-invalid="true"`. Het veld verwijst naar de bereiktoelichting. Zodra die invoer geldig is, verdwijnt de markering; er wordt nog geen analyse of instelling toegepast. Een geldige instellingenimport verwijdert eveneens eerdere foutmarkeringen. Deze bediening verandert geen drempels of analysecriteria.
 
 ## 13. Datakwaliteit en interpretatie
 
