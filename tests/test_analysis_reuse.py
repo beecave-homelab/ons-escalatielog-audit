@@ -310,7 +310,7 @@ def test_priority__computed_once_and_reused_for_render_and_report(page) -> None:
     page.locator("#fileInput").set_input_files(STANDARD_FIXTURE)
     # De fixture van de bestaande uploadflow wordt door de gewone analyse gelezen.
     page.locator("#analyzeBtn").click()
-    page.wait_for_function("state.result !== null")
+    page.wait_for_selector("#workspace.show")
     result = page.evaluate(
         """() => {
           const original=priorityDecision;let calls=0;
