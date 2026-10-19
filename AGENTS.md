@@ -104,6 +104,17 @@ Bij een productiewijziging vanuit `dev` moeten ontwikkelbestanden dus uit de
 resulterende boom worden verwijderd. Breid de toelatingslijst alleen uit voor
 actuele gebruikersdocumentatie en daadwerkelijk gebruikte diagrammen.
 
+## Schrijfstijl documentatie
+
+Dit geldt voor `README.md`, `CHANGELOG.md` en `docs/berekeningen-en-patroonherkenning.md`.
+
+- Groepeer samenhangende zinnen in een alinea met één herkenbaar onderwerp. Een reeks alinea's van één zin is alleen terecht als iedere zin een eigen onderwerp heeft.
+- Beschrijf eerst de hoofdregel, dan de voorwaarden en uitzonderingen en daarna het gevolg. Houd een voorbeeld of referentiegetal bij de regel die het toelicht.
+- Schrijf natuurlijk Nederlands en wissel korte en iets langere zinnen af. Vervang losse zinnen niet door lange zinnen die de lezer twee keer moet lezen.
+- Gebruik een opsomming voor echte verzamelingen, voorwaarden of stappen, niet als vervanging van lopende uitleg.
+- Zet technische implementatiedetails in een eigen alinea als ze de uitleg over het gebruik onderbreken.
+- Behoud bij herschrijven definities, identifiers, getallen, grenswaarden, tellers en noemers, uitzonderingen en waarschuwingen. Een kortere tekst is geen reden om nuance te schrappen.
+
 ## Conventions
 
 - Keep the single-file architecture; do not split into modules or introduce a bundler.

@@ -4,6 +4,10 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+### Onderhoud
+
+- Herschrijf de rekenreferentie vanaf §4.1 tot samenhangende alinea's met een vaste volgorde van regel, voorwaarde, uitzondering en gevolg. Bij het zoeken en filteren in bronregeldetails staat de technische werking nu apart van de gebruiksuitleg. Definities, getallen, koppen en ankers blijven gelijk. AGENTS.md bevat daarvoor nu schrijfregels (#97).
+
 ## [0.19.3] - 2026-10-19
 
 ### Opgelost
