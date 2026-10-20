@@ -7,6 +7,7 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 ### Onderhoud
 
 - Herschrijf de rekenreferentie vanaf §4.1 tot samenhangende alinea's met een vaste volgorde van regel, voorwaarde, uitzondering en gevolg. Bij het zoeken en filteren in bronregeldetails staat de technische werking nu apart van de gebruiksuitleg. Definities, getallen, koppen en ankers blijven gelijk. AGENTS.md bevat daarvoor nu schrijfregels (#97).
+- AGENTS.md is volledig naar het Nederlands vertaald. Een nieuwe taalsectie schrijft Nederlands voor in gebruikers- en projectteksten, en Engels in code, identifiers en codecommentaar. Ook moeten agents voortaan hun tijdelijke bestanden, zoals bestanden in `/tmp`, en zelf gestarte processen opruimen voordat ze een taak afronden.
 
 ## [0.19.3] - 2026-10-19
 
