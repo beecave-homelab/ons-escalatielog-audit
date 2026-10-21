@@ -1,58 +1,84 @@
 # AGENTS.md
 
-Guidance for coding agents working in this repository. Read this first; then `README.md` and `docs/berekeningen-en-patroonherkenning.md` for the functional definitions.
+Richtlijnen voor codeeragents in deze repository. Lees dit bestand eerst en daarna `README.md` en `docs/berekeningen-en-patroonherkenning.md` voor de functionele definities.
 
-## What this is
+## Wat dit is
 
-A **single-file, offline web app** (`escalatielog-audit-webui.html`) that audits Nedap Ons *escalatielog* exports (`.xlsx`). A functioneel beheerder opens the file in a browser, drops in the export, and gets counts, signals ("aandachtspunten"), drilldowns, a CSV export and a standalone HTML report. Language of UI, docs and commit messages is **Dutch**.
+Een **offline webapp in één bestand** (`escalatielog-audit-webui.html`) die *escalatielog*-exports (`.xlsx`) uit Nedap Ons controleert. Een functioneel beheerder opent het bestand in een browser, sleept de export erin en krijgt tellingen, signalen ("aandachtspunten"), drilldowns, een CSV-export en een zelfstandig HTML-rapport. De repository is Nederlandstalig, behalve de code zelf; zie [Taal](#taal).
 
-The webui has no build step, server, framework or runtime dependency. Everything is inline HTML/CSS/JS (~820 lines, long lines, dense style). Development-only checks use Python, uv, mdformat, Ruff, pytest and Playwright.
+De webui heeft geen buildstap, server, framework of runtime-afhankelijkheid. Alles staat inline in HTML, CSS en JavaScript (ongeveer 1400 regels, lange regels, compacte stijl). Alleen de ontwikkelcontroles gebruiken Python, uv, mdformat, Ruff, pytest en Playwright.
 
-## Repository layout
+## Taal
 
-| Path | Purpose |
+Tekst die mensen lezen schrijf je in het Nederlands. Code en codecommentaar schrijf je in het Engels.
+
+In het Nederlands:
+
+- alle tekst in de webui: labels, knoppen, hulpteksten, meldingen en foutmeldingen, het HTML-rapport en de kolomkoppen van CSV-exports;
+- `README.md`, `CHANGELOG.md`, `AGENTS.md` en alles onder `docs/`, ook de tekst in de SVG-diagrammen;
+- hulpteksten, uitvoer en foutmeldingen van scripts en tests, zoals `--help`, `[controles] Fout: …` en de tekst van exceptions en assertions;
+- namen van GitHub Actions-workflows, -jobs en -stappen (`name:`). Hernoem een verplichte status zoals **Versiecontrole** of **Productiedocumentatie** niet zonder de branchbescherming van `main` aan te passen;
+- de `description` in `pyproject.toml`;
+- commitberichten, issues, pull requests en reviewreacties.
+
+In het Engels:
+
+- de code zelf: functie-, variabele- en klassenamen, testnamen en bestandsnamen van code, zoals `analyze`, `renderOverview` en `test_search_is_debounced`;
+- commentaar en docstrings in code-, script- en configuratiebestanden, ook in de inline JavaScript en CSS van de HTML. Bestaand Nederlands commentaar hoef je niet in één keer te vertalen; maak het Engels zodra je die regels toch wijzigt. Issue #99 vertaalt de rest;
+- de vaste header van Bash-scripts (`Script Description`, `Author`, `Version`, `License`, `Creation Date`, `Last Modified`, `Usage`), inclusief de beschrijving.
+
+Deze vaste termen blijven zoals ze zijn, ongeacht de taal eromheen:
+
+- de kolomnamen van de Nedap Ons-export in `REQUIRED_HEADERS`, letterlijk zoals de bron ze levert (bijvoorbeeld `Escalatie reden`);
+- signaalcodes en andere bestaande domeintermen in de code, zoals `NIET_GEACTIVEERD`;
+- het type en de emoji vooraan in een commitbericht (`docs 📝:`) en GitHub-trefwoorden zoals `Closes #123` en `Relates to #123`;
+- productnamen.
+
+## Indeling van de repository
+
+| Pad | Doel |
 | -- | -- |
-| `escalatielog-audit-webui.html` | The entire application. Version constant `APP_VERSION` near the top of the `<script>`. |
-| `README.md` | User-facing intro, usage, required input columns, privacy. Contains the version badge. |
-| `CHANGELOG.md` | Release history with user-visible changes grouped by SemVer version. |
-| `pyproject.toml` / `.mdformat.toml` | Development dependencies and configuration for djLint, Ruff, pytest, coverage and mdformat. |
-| `uv.lock` | Reproducible lockfile for development-only Python tooling. |
-| `tests/generate_synthetic_escalatielog.py` | Seeded CLI generator for deterministic, data-free XLSX exports. |
-| `tests/fixtures/synthetic-escalatielog.xlsx` | Standard synthetic export: 2,000 rows generated with seed `20260918`; safe to commit. |
-| `tests/test_report_layout.py` | Synthetic Playwright regression test for exported report tables; contains no personal data. |
-| `docs/berekeningen-en-patroonherkenning.md` | Authoritative functional/technical reference (16 sections): populations, signals, thresholds, tie-breaks, defaults (§14), reference results (§15). Has frontmatter with `updated:` date. |
-| `docs/assets/` | SVG diagrams used by README/docs. All text must stay inside the viewBox; `scripts/check-svg-text-bounds.sh` (and CI) enforce this. |
-| `escalatielogs/` | Local test exports (**gitignored**, contain personal data; never commit). The historically used May export `Escalatielogs 01-05-2026 tot 31-05-2026.xlsx` lives here; it is not a documentation reference — docs §15 points at the committed synthetic fixture. |
-| `exports/` | Output written during manual testing (**gitignored**; contains personal data — never commit). |
-| `to-do/` | Gitignored local scratch/todo directory; not used by the webui. |
-| `project-overview.md` | Gitignored; not present in this repo. |
+| `escalatielog-audit-webui.html` | De volledige applicatie. De versieconstante `APP_VERSION` staat bovenaan de `<script>`. |
+| `README.md` | Introductie voor gebruikers, gebruik, verplichte invoerkolommen en privacy. Bevat de versiebadge. |
+| `CHANGELOG.md` | Releasegeschiedenis met zichtbare wijzigingen, gegroepeerd per SemVer-versie. |
+| `pyproject.toml` / `.mdformat.toml` | Ontwikkelafhankelijkheden en configuratie voor djLint, Ruff, pytest, coverage en mdformat. |
+| `uv.lock` | Reproduceerbaar lockbestand voor de Python-hulpmiddelen die alleen bij ontwikkeling nodig zijn. |
+| `tests/generate_synthetic_escalatielog.py` | CLI-generator met vaste seed voor deterministische XLSX-exports zonder echte gegevens. |
+| `tests/fixtures/synthetic-escalatielog.xlsx` | Synthetische standaardexport: 2.000 regels, gegenereerd met seed `20260918`. Mag worden gecommit. |
+| `tests/test_report_layout.py` | Synthetische Playwright-regressietest voor de tabellen in het geëxporteerde rapport. Bevat geen persoonsgegevens. |
+| `docs/berekeningen-en-patroonherkenning.md` | Gezaghebbende functionele en technische referentie (19 secties): populaties, signalen, drempels, tie-breaks, standaardinstellingen (§14) en referentie-uitkomsten (§15). Heeft frontmatter met een `updated:`-datum. |
+| `docs/assets/` | SVG-diagrammen voor README en docs. Alle tekst moet binnen de viewBox blijven; `scripts/check-svg-text-bounds.sh` en CI controleren dat. |
+| `escalatielogs/` | Lokale testexports (**gitignored**, bevatten persoonsgegevens; nooit committen). Hier staat de eerder gebruikte meiexport `Escalatielogs 01-05-2026 tot 31-05-2026.xlsx`. Die is geen referentie voor de documentatie; docs §15 verwijst naar de gecommitte synthetische fixture. |
+| `exports/` | Uitvoer van handmatige tests (**gitignored**, bevat persoonsgegevens; nooit committen). |
+| `to-do/` | Gitignored lokale werkmap voor kladwerk en takenlijsten. De webui gebruikt deze map niet. |
+| `project-overview.md` | Gitignored en niet aanwezig in deze repository. |
 
-## Architecture of the HTML file
+## Opbouw van het HTML-bestand
 
-Sections, in file order:
+De onderdelen in volgorde van het bestand:
 
-1. `<head>`: strict CSP (`default-src 'none'; connect-src 'none'`, inline style/script only). **Do not relax it** and do not add `fetch`/XHR/storage APIs — "geen netwerkverkeer, geen browseropslag" is a documented product guarantee.
-2. `<style>`: all CSS.
-3. `<body>`: upload card, tab bar, tab panels (Overzicht, Aandachtspunten, Medewerkers/Cliënten/Teams/…, Verdieping, Auditlogica, Systeem, Datakwaliteit, Instellingen), drilldown overlay, footer. Elements with class `app-version` are filled from `APP_VERSION` at startup.
+1. `<head>`: strikte CSP (`default-src 'none'; connect-src 'none'`, alleen inline style en script). **Versoepel die niet** en voeg geen `fetch`, XHR of opslag-API's toe. "Geen netwerkverkeer, geen browseropslag" is een gedocumenteerde productbelofte.
+2. `<style>`: alle CSS.
+3. `<body>`: uploadkaart, tabbalk, tabpanelen (Overzicht, Aandachtspunten, Medewerkers/Cliënten/Teams/…, Verdieping, Auditlogica, Systeem, Datakwaliteit, Instellingen), drilldown-overlay en footer. Bij het opstarten krijgen elementen met de klasse `app-version` de waarde van `APP_VERSION`.
 4. `<script>`:
-   - **Constants**: `APP_VERSION`, `REQUIRED_HEADERS` (14 columns), `SYSTEM_REASONS`, `SIGNAL_META`, `DEFAULT_SETTINGS`, `SETTINGS_SCHEMA`, `SOURCE_COLUMNS`.
-   - **XLSX reader**: hand-written ZIP (local-file headers, stored + deflate via `DecompressionStream('deflate-raw')`), shared strings, `parseWorksheet`, sheet selection = first sheet whose first 10 rows contain all required headers. Elements are matched by local name (`getElementsByTagNameNS('*', …)`), so namespace prefixes work; cells/rows without an `r` attribute take the previous index + 1; phonetic runs (`rPh`) in shared/inline strings are ignored. Error cells (`t="e"`) become `''` and are recorded per row as non-enumerable `__errorCols` → `errorFields` → Datakwaliteit *Foutcel in bron* (manualRows only, so error cells in system rows are not reported). No ZIP64, no merging of sheets.
-   - **Normalisation**: `parseDate` (Excel serial 1900-system, `dd-mm-yyyy, hh:mm[:ss]`, ISO with `T`; date-only text is rejected), `normalizeRows`, `isSystemEvent`, `exactRowKey`/`deduplicateManualRows`.
-   - **Analysis**: `analyze()` builds the populations `allRows → systemRows / manualRows → duplicateRows / auditRows → attention`, computes signals, then `peerAnalysis`, `burstAnalysis`, `clientClusterAnalysis`, `concentrationAnalysis`, `reasonUseAnalysis`, `auditLogicAnalysis`, `aggregate*`, `analyzeQuality`. All findings that end up in exports must be produced here, **not in render functions**.
-   - **Rendering**: `render()` → `renderOverview`, `renderTables`, `renderDeepDive`, `renderAuditLogic`, `renderTime`, `tableWidget` (search/sort/filter are view-only), `openDrilldown` (rows carry non-enumerable `__rows`/`previousSourceRow` metadata).
-   - **Exports**: `toCsv` (`;` separator, BOM, CRLF, formula-injection guard for `=`, `+`, `@`, `-…` but not bare `-` or plain numbers), `exportAttentionCsv`, `exportDrilldownCsv`, `exportReport` (self-contained HTML string template; tables render as collapsible `<details>` sections grouped under an anchor TOC, and a `beforeprint` handler opens all sections for printing). File names via `exportBaseName`. Both the CSVs and the HTML report contain personal data; treat them with the same care as the source export.
-   - **Settings**: `renderSettings`/`readSettings`; integers only, hours 0–23, activation delay may be 0, other thresholds ≥1; invalid input is rejected without applying.
+   - **Constanten**: `APP_VERSION`, `REQUIRED_HEADERS` (14 kolommen), `SYSTEM_REASONS`, `SIGNAL_META`, `DEFAULT_SETTINGS`, `SETTINGS_SCHEMA`, `SOURCE_COLUMNS`.
+   - **XLSX-lezer**: zelfgeschreven ZIP-lezer (local-file headers, stored en deflate via `DecompressionStream('deflate-raw')`), shared strings en `parseWorksheet`. De lezer kiest het eerste werkblad waarvan de eerste 10 rijen alle verplichte kolomkoppen bevatten. Elementen worden op lokale naam gezocht (`getElementsByTagNameNS('*', …)`), zodat namespace-prefixen werken. Cellen en rijen zonder `r`-attribuut krijgen de vorige index + 1. Fonetische runs (`rPh`) in shared en inline strings worden genegeerd. Foutcellen (`t="e"`) worden `''` en worden per rij vastgelegd als niet-enumereerbare `__errorCols` → `errorFields` → Datakwaliteit *Foutcel in bron*. Dat gebeurt alleen voor manualRows, dus foutcellen in systeemregels worden niet gemeld. Geen ZIP64 en geen samenvoeging van werkbladen.
+   - **Normalisatie**: `parseDate` (Excel-serienummer in het 1900-systeem, `dd-mm-yyyy, hh:mm[:ss]`, ISO met `T`; tekst met alleen een datum wordt afgewezen), `normalizeRows`, `isSystemEvent`, `exactRowKey`/`deduplicateManualRows`.
+   - **Analyse**: `analyze()` bouwt de populaties `allRows → systemRows / manualRows → duplicateRows / auditRows → attention` op, berekent de signalen en roept daarna `peerAnalysis`, `burstAnalysis`, `clientClusterAnalysis`, `concentrationAnalysis`, `reasonUseAnalysis`, `auditLogicAnalysis`, `aggregate*` en `analyzeQuality` aan. Alle bevindingen die in exports terechtkomen, moeten hier ontstaan en **niet in renderfuncties**.
+   - **Weergave**: `render()` → `renderOverview`, `renderTables`, `renderDeepDive`, `renderAuditLogic`, `renderTime`, `tableWidget` (zoeken, sorteren en filteren veranderen alleen de weergave) en `openDrilldown` (rijen dragen niet-enumereerbare metadata `__rows`/`previousSourceRow`).
+   - **Exports**: `toCsv` (scheidingsteken `;`, BOM, CRLF, beveiliging tegen formule-injectie voor `=`, `+`, `@` en `-…`, maar niet voor een losse `-` of gewone getallen), `exportAttentionCsv`, `exportDrilldownCsv` en `exportReport`. Dat laatste is een zelfstandig HTML-sjabloon als string. Tabellen staan daarin als inklapbare `<details>`-secties onder een inhoudsopgave met ankers, en een `beforeprint`-handler klapt alle secties open voor afdrukken. Bestandsnamen komen uit `exportBaseName`. De CSV's en het HTML-rapport bevatten persoonsgegevens; behandel ze net zo zorgvuldig als de bronexport.
+   - **Instellingen**: `renderSettings`/`readSettings`. Alleen gehele getallen; uren 0–23, de activatievertraging mag 0 zijn en andere drempels zijn ≥1. Ongeldige invoer wordt afgewezen en niet toegepast.
 
-Always HTML-escape with `esc()` before inserting data into the DOM or the report.
+Escape gegevens altijd met `esc()` voordat je ze in de DOM of het rapport zet.
 
-## Invariants to keep
+## Vaste regels
 
-- Reconciliation: `allRows = systemRows + duplicateRows + auditRows`. The optional 30-minute exclusion is applied inside `isSystemEvent`, so excluded rows count as `systemRows` and the identity always holds. Datakwaliteit uses `manualRows`; Auditlogica uses `allRows`.
-- Signal semantics documented in docs §7–§11: inclusive re-escalation window, tie-break on lower Excel row, activation delay strictly `>` threshold, night window wrap-around (start inclusive, end exclusive), theme-based priority, dedup on all 14 trimmed source fields (first copy kept).
-- A row can carry several signals but counts **once** as an aandachtspunt.
-- Wording: signals are triage indicators, never proof of unlawful access or dossier viewing. Keep such disclaimers in UI, report and docs.
-- **Docs follow code**: the docs state that the implementation wins on conflict and must be updated. Any behavioural change ⇒ update the relevant section in `docs/berekeningen-en-patroonherkenning.md` (and its `updated:` date) and, if user-visible, `README.md`.
-- **Version**: semver only (`0.6.0` style). Keep `APP_VERSION` in the HTML, `project.version` in `pyproject.toml` and the badge in `README.md` equal, and record each release in `CHANGELOG.md`. Never write `v6`, `v6.0`, etc.
+- Reconciliatie: `allRows = systemRows + duplicateRows + auditRows`. De optionele uitsluiting van 30-minutenregels gebeurt in `isSystemEvent`. Uitgesloten regels tellen daardoor als `systemRows` en de gelijkheid klopt altijd. Datakwaliteit gebruikt `manualRows`; Auditlogica gebruikt `allRows`.
+- De signaalbetekenis staat in docs §7–§11: het venster voor her-escalaties is inclusief, een gelijke stand wordt beslist op de laagste Excelrij, de activatievertraging moet strikt `>` de drempel zijn, het nachtvenster loopt door over middernacht (begin inclusief, eind exclusief), de prioriteit volgt het thema en ontdubbeling gebeurt op alle 14 getrimde bronvelden (de eerste kopie blijft staan).
+- Een regel kan meerdere signalen hebben, maar telt **één keer** als aandachtspunt.
+- Formulering: signalen zijn triage-indicatoren en nooit bewijs van onrechtmatige toegang of het inzien van een dossier. Houd die disclaimers in de UI, het rapport en de docs.
+- **Docs volgen de code**: volgens de docs wint de implementatie bij een tegenstrijdigheid en moeten de docs worden bijgewerkt. Werk bij elke gedragswijziging de betreffende sectie in `docs/berekeningen-en-patroonherkenning.md` bij, inclusief de `updated:`-datum, en ook `README.md` als de wijziging zichtbaar is voor gebruikers.
+- **Versie**: alleen SemVer (in de vorm `0.6.0`). Houd `APP_VERSION` in de HTML, `project.version` in `pyproject.toml` en de badge in `README.md` gelijk en leg elke release vast in `CHANGELOG.md`. Schrijf nooit `v6`, `v6.0` en dergelijke.
 
 ## Versiebeleid vóór merge naar main
 
@@ -63,13 +89,15 @@ Always HTML-escape with `esc()` before inserting data into the DOM or the report
 - Een push die `main` aanmaakt of herstelt heeft de null-SHA als basis; de versiecontrole faalt dan bewust met de uitleg dat handmatig met de laatst uitgebrachte versie moet worden vergeleken.
 - De bestaande verplichte CI-status **Versiecontrole** controleert de doelbranch-SHA voor PR's naar `main`, de merge queue en pushes op `main`, zonder padfilter. Ontbrekende refs zijn een fout. Publiceren blijft een afzonderlijke handmatige stap via de bestaande releaseworkflow; een merge publiceert geen release automatisch.
 
-## Verifying changes
+## Wijzigingen controleren
 
-Run `scripts/install-dependencies.sh --check` to prepare and validate a fresh Linux Codex Cloud environment. The script installs the pinned uv version when needed, synchronizes the lockfile, activates the Git hooks in `.githooks/` (`git config core.hooksPath .githooks`) and prefers a distribution-provided Chromium so setup does not depend on the Playwright browser download.
+Voer `scripts/install-dependencies.sh --check` uit om een nieuwe Linux-omgeving in Codex Cloud voor te bereiden en te controleren. Het script installeert zo nodig de vastgezette uv-versie, synchroniseert het lockbestand en activeert de Git-hooks in `.githooks/` (`git config core.hooksPath .githooks`). Het geeft de voorkeur aan een Chromium uit de distributie, zodat de installatie niet afhangt van de browserdownload van Playwright.
 
-Run the development checks with `uv sync --locked` followed by `scripts/run-checks.sh`: that is the single list CI and `--check` share (version, privacy paths, production docs, mdformat, djLint, Ruff, SVG text bounds and pytest). The existing `--cov=tests` coverage follows Playwright greenlets and measures Python test/support code under `tests/`, not the runtime JavaScript or `scripts/`. This Python test-code gate must remain at or above 85%. `tests/test_app_coverage.py` separately uses Chromium CDP to report the proportion of V8-reported named inline-app functions called in one synthetic reference scenario (load, analysis, navigation, drilldown, CSV and HTML export). `tests/conftest.py` prints this report in local and CI pytest summaries, including uncalled function names. It is reporting only, with no JavaScript threshold; it is not line/branch coverage or coverage aggregated over the full suite. A called function may still contain untested paths. The pytest suite verifies the committed standard synthetic export, builds a temporary layout-focused XLSX file and checks exported report tables in a locally installed Chrome, Edge or Chromium browser; it must not use files from `escalatielogs/`.
+Voer de ontwikkelcontroles uit met `uv sync --locked` en daarna `scripts/run-checks.sh`. Dat is de ene lijst die CI en `--check` delen: versie, privacypaden, productiedocumentatie, mdformat, djLint, Ruff, SVG-tekstgrenzen en pytest. De bestaande coverage met `--cov=tests` volgt Playwright-greenlets en meet de Python-test- en hulpcode onder `tests/`, niet de JavaScript van de app en niet `scripts/`. Deze poort voor Python-testcode moet op 85% of hoger blijven.
 
-For the full analysis regression, re-run the synthetic reference file `tests/fixtures/synthetic-escalatielog.xlsx` with default settings and compare to docs §15. Key figures:
+`tests/test_app_coverage.py` meet daarnaast via Chromium CDP welk deel van de door V8 gemelde benoemde functies in het inline appscript wordt aangeroepen in één synthetisch referentiescenario (laden, analyse, navigatie, drilldown, CSV- en HTML-export). `tests/conftest.py` toont dit rapport in de pytest-samenvatting, lokaal en in CI, inclusief de namen van functies die niet zijn aangeroepen. Het is alleen een rapportage zonder JavaScript-drempel. Het is geen regel- of branchcoverage en ook geen coverage over de hele testsuite; een aangeroepen functie kan nog ongeteste paden bevatten. De pytest-suite controleert de gecommitte synthetische standaardexport, bouwt een tijdelijk XLSX-bestand voor de opmaak en controleert de geëxporteerde rapporttabellen in een lokaal geïnstalleerde Chrome, Edge of Chromium. De suite mag geen bestanden uit `escalatielogs/` gebruiken.
+
+Voor de volledige analyseregressie draai je het synthetische referentiebestand `tests/fixtures/synthetic-escalatielog.xlsx` opnieuw met de standaardinstellingen en vergelijk je de uitkomst met docs §15. De belangrijkste cijfers:
 
 | Controle | Uitkomst |
 | -- | -: |
@@ -80,11 +108,15 @@ For the full analysis regression, re-run the synthetic reference file `tests/fix
 | Unieke aandachtspunten | 1790 (99,3 %) |
 | Bursts / cliëntclusters | 0 / 5 |
 
-For the manual reference check, open the HTML in Chromium/Chrome (needs `DecompressionStream`; Edge/Chrome 80+, Firefox 113+, Safari 16.4+). Check the console for errors, verify the figures above, exercise one drilldown, one CSV export and the HTML report. If figures change intentionally, update docs §15 in the same change.
+Open voor de handmatige referentiecontrole de HTML in Chromium of Chrome. De app heeft `DecompressionStream` nodig (Edge/Chrome 80+, Firefox 113+, Safari 16.4+). Controleer de console op fouten, controleer de cijfers hierboven en probeer één drilldown, één CSV-export en het HTML-rapport. Veranderen de cijfers bewust, werk dan docs §15 in dezelfde wijziging bij.
 
-For synthetic edge cases, call `analyze()`/`analyzeQuality()` directly in the page context with hand-built row objects.
+Voor synthetische randgevallen roep je `analyze()`/`analyzeQuality()` direct aan in de paginacontext, met zelf opgebouwde rijobjecten.
 
-For performance changes, run `uv run python scripts/measure_render_performance.py [--html PATH] [--runs N]` before and after the change and record both outputs in the PR. It builds a deterministic synthetic set of 50,000 rows, 3,000 employees and 20,000 clients in the page and prints JSON with the per-run and median durations of `analyze()`, `render()` and each `render*` sub-step. Use at least 3 runs, measure the baseline from a copy of the base HTML (`--html`), and keep other browsers and test runs idle while measuring.
+Bij prestatiewijzigingen voer je `uv run python scripts/measure_render_performance.py [--html PATH] [--runs N]` uit vóór en na de wijziging en zet je beide uitvoeren in de PR. Het script bouwt in de pagina een deterministische synthetische set van 50.000 regels, 3.000 medewerkers en 20.000 cliënten. Het print JSON met de duur per run en de mediaan van `analyze()`, `render()` en elke `render*`-substap. Gebruik minstens 3 runs, meet de baseline op een kopie van de HTML van de basisbranch (`--html`) en laat andere browsers en testruns tijdens het meten stilstaan.
+
+## Taak afronden
+
+Een taak is pas klaar als je al het tijdelijke werk hebt opgeruimd dat je voor die taak hebt aangemaakt. Denk aan bestanden en mappen in `/tmp` of elders buiten de repository, tijdelijke kopieën van de HTML (zoals de baseline voor `measure_render_performance.py`), tijdelijke testbestanden en scripts, testexports in `exports/` en servers of browserprocessen die je hebt gestart. Ruim alleen op wat je zelf hebt aangemaakt; verwijder geen bestaande bestanden van de gebruiker. Lukt opruimen niet, meld dan welke paden of processen zijn achtergebleven.
 
 ## Productiedocumentatie
 
@@ -104,19 +136,30 @@ Bij een productiewijziging vanuit `dev` moeten ontwikkelbestanden dus uit de
 resulterende boom worden verwijderd. Breid de toelatingslijst alleen uit voor
 actuele gebruikersdocumentatie en daadwerkelijk gebruikte diagrammen.
 
-## Conventions
+## Schrijfstijl documentatie
 
-- Keep the single-file architecture; do not split into modules or introduce a bundler.
-- Format HTML markup with `uv run djlint . --reformat`. The configured formatter leaves embedded CSS and JavaScript compact; keep their one-line functions, `const` maps and minimal comments, and don't reformat unrelated lines.
-- Commit messages follow `type emoji: Dutch imperative summary`, e.g. `docs 📝: Voeg uitleg over de analyseketen toe aan de README`, `chore 📦: …`.
-- Never commit anything from `escalatielogs/` or `exports/`; both contain real personal data. `scripts/check-sensitive-paths.sh` blocks (case-insensitive) everything under those directories except `.gitkeep`, every `*.xlsx` outside `tests/fixtures/` and every file whose name starts with `escalatie_log_controle_`. The `.githooks/` pre-commit and pre-push hooks run the same check; `scripts/install-dependencies.sh` activates them with `git config core.hooksPath .githooks`.
-- Do not create commits or PRs unless explicitly asked.
+Dit geldt voor `README.md`, `CHANGELOG.md` en `docs/berekeningen-en-patroonherkenning.md`.
 
-## Issues and pull requests
+- Groepeer samenhangende zinnen in een alinea met één herkenbaar onderwerp. Een reeks alinea's van één zin is alleen terecht als iedere zin een eigen onderwerp heeft.
+- Beschrijf eerst de hoofdregel, dan de voorwaarden en uitzonderingen en daarna het gevolg. Houd een voorbeeld of referentiegetal bij de regel die het toelicht.
+- Schrijf natuurlijk Nederlands en wissel korte en iets langere zinnen af. Vervang losse zinnen niet door lange zinnen die de lezer twee keer moet lezen.
+- Gebruik een opsomming voor echte verzamelingen, voorwaarden of stappen, niet als vervanging van lopende uitleg.
+- Zet technische implementatiedetails in een eigen alinea als ze de uitleg over het gebruik onderbreken.
+- Behoud bij herschrijven definities, identifiers, getallen, grenswaarden, tellers en noemers, uitzonderingen en waarschuwingen. Een kortere tekst is geen reden om nuance te schrappen.
 
-- Apply the repository's existing labels to every issue and pull request. Inspect the available labels first and select only labels that describe the primary type and relevant cross-cutting concerns; do not invent near-duplicate labels without explicit approval.
-- Every pull request must link the issue or issues it addresses. Use a GitHub closing keyword such as `Closes #123` only when merging the PR fully resolves that issue; otherwise use a non-closing reference such as `Relates to #123` and state what remains.
-- Attach a screenshot or short video only when an issue or pull request concerns visual changes in the webui. Prefer a clear before/after pair. Skip visual evidence for all other changes, including analysis logic, scripts, CI, tests and documentation.
-- When visual evidence is required, upload it to the pull request so reviewers can view it directly; a local filesystem path is not sufficient.
-- Screenshots and videos must use synthetic or otherwise non-personal data. Never attach source files or generated exports from `escalatielogs/` or `exports/` to an issue or pull request.
-- Do not open a pull request while its required issue link or labels are missing. For visual webui changes, also require the visual evidence; if it cannot be produced, stop and ask the user how to proceed.
+## Afspraken
+
+- Houd de architectuur van één bestand aan. Splits niet op in modules en voeg geen bundler toe.
+- Formatteer de HTML-opmaak met `uv run djlint . --reformat`. De geconfigureerde formatter laat de ingesloten CSS en JavaScript compact. Houd daar de functies van één regel, de `const`-maps en het minimale commentaar aan en herformatteer geen regels die niets met de wijziging te maken hebben.
+- Commitberichten volgen `type emoji: Nederlandse samenvatting in de gebiedende wijs`, bijvoorbeeld `docs 📝: Voeg uitleg over de analyseketen toe aan de README` of `chore 📦: …`.
+- Commit nooit iets uit `escalatielogs/` of `exports/`; beide bevatten echte persoonsgegevens. `scripts/check-sensitive-paths.sh` blokkeert (hoofdletterongevoelig) alles in die mappen behalve `.gitkeep`, elk `*.xlsx`-bestand buiten `tests/fixtures/` en elk bestand waarvan de naam begint met `escalatie_log_controle_`. De pre-commit- en pre-push-hooks in `.githooks/` voeren dezelfde controle uit; `scripts/install-dependencies.sh` activeert ze met `git config core.hooksPath .githooks`.
+- Maak geen commits of PR's tenzij daar expliciet om wordt gevraagd.
+
+## Issues en pull requests
+
+- Geef elke issue en pull request de bestaande labels van de repository. Bekijk eerst welke labels er zijn en kies alleen labels die het hoofdtype en relevante overkoepelende aandachtspunten beschrijven. Maak zonder expliciete toestemming geen labels aan die bijna gelijk zijn aan bestaande.
+- Elke pull request moet verwijzen naar de issue of issues die hij oplost. Gebruik een GitHub-sluitwoord zoals `Closes #123` alleen als de merge van de PR die issue volledig oplost. Gebruik anders een verwijzing die de issue niet sluit, zoals `Relates to #123`, en vermeld wat er nog openstaat.
+- Voeg alleen een screenshot of korte video toe als een issue of pull request over visuele wijzigingen in de webui gaat. Een duidelijk voor-en-napaar heeft de voorkeur. Laat visueel bewijs weg bij alle andere wijzigingen, zoals analyselogica, scripts, CI, tests en documentatie.
+- Upload visueel bewijs dat nodig is naar de pull request, zodat reviewers het daar direct kunnen bekijken. Een lokaal bestandspad is niet genoeg.
+- Screenshots en video's moeten synthetische of andere niet-persoonlijke gegevens gebruiken. Voeg nooit bronbestanden of gegenereerde exports uit `escalatielogs/` of `exports/` toe aan een issue of pull request.
+- Open geen pull request zolang de verplichte issueverwijzing of labels ontbreken. Bij visuele webuiwijzigingen is ook het visuele bewijs verplicht. Kun je dat niet maken, stop dan en vraag de gebruiker hoe je verder moet.
