@@ -1,4 +1,4 @@
-"""Controleer versies, verpak een Git-commit en hervat uitsluitend identieke conceptreleases."""
+"""Check versions, package a Git commit and resume only identical draft releases."""
 
 from __future__ import annotations
 
@@ -98,7 +98,7 @@ def package(revision: str, version: str, output: Path) -> str:
 
 
 class GitHub:
-    """Gebruik gh-authenticatie zonder tokens te lezen of weer te geven."""
+    """Use gh authentication without reading or displaying tokens."""
 
     def __init__(self, repository: str):
         if not re.fullmatch(r"[\w.-]+/[\w.-]+", repository):
@@ -185,7 +185,7 @@ def prepare(api, version: str, sha: str, assets: dict[str, Path], notes: str):
             if len(existing) < 100:
                 break
             page += 1
-    # Alle bestaande objecten zijn gecontroleerd vóór de eerste mutatie.
+    # All existing objects are checked before the first mutation.
     if tag is None:
         api.request("git/refs", method="POST", payload={"ref": f"refs/tags/{version}", "sha": sha})
     if release is None:
@@ -215,7 +215,10 @@ def prepare(api, version: str, sha: str, assets: dict[str, Path], notes: str):
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(
+        description="Controleer versies, verpak een Git-commit en hervat uitsluitend "
+        "identieke conceptreleases."
+    )
     parser.add_argument("command", choices=("check", "package", "prepare"))
     parser.add_argument("--version")
     parser.add_argument("--revision")
@@ -234,7 +237,7 @@ def main():
             parser.error("prepare vereist --version, --output en --repository")
         if args.revision is not None:
             parser.error("prepare bouwt altijd uit HEAD; --revision is niet toegestaan")
-        # Bouw opnieuw uit dezelfde Git-commit; vertrouw geen externe artefacten.
+        # Rebuild from the same Git commit; do not trust external artifacts.
         sha = git("rev-parse", "HEAD").decode().strip()
         package(sha, args.version, args.output)
         assets = {

@@ -1,6 +1,6 @@
-# Lokale bronbestanden en exports kunnen persoonsgegevens bevatten. Alleen de
-# bestaande .gitkeep-bestanden mogen ooit worden gevolgd; synthetische fixtures
-# horen onder tests/fixtures/.
+# Local source files and exports can contain personal data. Only the
+# existing .gitkeep files may ever be tracked; synthetic fixtures
+# belong under tests/fixtures/.
 escalatielogs/*
 !escalatielogs/.gitkeep
 
@@ -8,13 +8,13 @@ exports/*
 !exports/.gitkeep
 to-do/
 
-# Exports en rapporten met persoonsgegevens mogen nooit worden gevolgd;
-# synthetische fixtures horen uitsluitend onder tests/fixtures/.
+# Exports and reports containing personal data may never be tracked;
+# synthetic fixtures belong only under tests/fixtures/.
 *.xlsx
 !tests/fixtures/*.xlsx
 escalatie_log_controle_*
 
-# Overig project-lokaal.
+# Other project-local files.
 .DS_Store
 project-overview.md
 .env

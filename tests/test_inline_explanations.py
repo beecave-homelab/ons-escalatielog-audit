@@ -1,4 +1,4 @@
-"""Productie-uitleg bij synthetische analyse, inclusief lege en grensgevallen."""
+"""Production explanations on synthetic analysis, including empty and boundary cases."""
 
 from pathlib import Path
 

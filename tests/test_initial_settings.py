@@ -1,11 +1,11 @@
-"""Instellingen zijn vóór de eerste analyse bereikbaar en worden toegepast."""
+"""Settings are reachable before the first analysis and are applied."""
 
 from playwright.sync_api import expect, sync_playwright
 from test_report_layout import ROOT, STANDARD_FIXTURE, launch_browser
 
 
 def test_initial_settings_survive_file_selection_and_apply() -> None:
-    """Een eerste analyse gebruikt de vooraf ingevulde drempels en schakelaars."""
+    """A first analysis uses the pre-filled thresholds and toggles."""
     with sync_playwright() as playwright:
         browser = launch_browser(playwright)
         page = browser.new_page()
@@ -41,7 +41,7 @@ def test_initial_settings_survive_file_selection_and_apply() -> None:
 
 
 def test_invalid_initial_settings_block_analysis_and_allow_retry() -> None:
-    """Ongeldige invoer start geen analyse en blijft beschikbaar voor herstel."""
+    """Invalid input starts no analysis and stays available for correction."""
     with sync_playwright() as playwright:
         browser = launch_browser(playwright)
         page = browser.new_page()

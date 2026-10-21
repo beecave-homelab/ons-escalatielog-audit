@@ -1,4 +1,4 @@
-"""Controleer de SVG-tekstcontrole in root-coördinaten met tijdelijke SVG's."""
+"""Check the SVG text check in root coordinates with temporary SVGs."""
 
 import subprocess
 from pathlib import Path

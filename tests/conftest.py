@@ -1,10 +1,10 @@
-"""Toon applicatiefunctiedekking ook bij geslaagde tests met uitvoercapturing."""
+"""Show application function coverage even when tests pass with output capturing."""
 
 from app_coverage import APP_COVERAGE
 
 
 def pytest_terminal_summary(terminalreporter, exitstatus, config) -> None:
-    """Scheid de synthetische JavaScript-meting zichtbaar van Python-testcoverage."""
+    """Visibly separate the synthetic JavaScript measurement from Python test coverage."""
     report = config.stash.get(APP_COVERAGE, None)
     if report is None:
         return

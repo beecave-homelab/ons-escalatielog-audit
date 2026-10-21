@@ -1,11 +1,11 @@
-"""Regressietests voor issue #55: rendertlimiet en zoek-debounce.
+"""Regression tests for issue #55: render limit and search debounce.
 
-- tableWidget toont standaard maximaal RENDER_ROW_LIMIT (500) rijen en
-  voegt een knop 'Meer tonen' toe zodra de gefilterde set groter is.
-- Zoeken, sorteren en filteren werken op de volledige set; de teller
-  toont het volledige gefilterde aantal.
-- De drilldown gebruikt dezelfde limiet en knop.
-- Het zoekveld is gedebounceerd (SEARCH_DEBOUNCE_MS).
+- tableWidget shows at most RENDER_ROW_LIMIT (500) rows by default and
+  adds a 'Meer tonen' button once the filtered set is larger.
+- Searching, sorting and filtering work on the full set; the counter
+  shows the full filtered count.
+- The drilldown uses the same limit and button.
+- The search field is debounced (SEARCH_DEBOUNCE_MS).
 """
 
 import pytest
@@ -143,7 +143,7 @@ def test_drilldown_limit_and_more_button(page) -> None:
 
 
 def test_drilldown_reopen_does_not_grow_listeners(page) -> None:
-    """S1: heropening voegt geen nieuwe click-listener toe aan #drillBody."""
+    """S1: reopening adds no new click listener to #drillBody."""
     page, errors = page
     rows = [{"sourceRow": i + 2} for i in range(5)]
     before = page.evaluate(
@@ -159,9 +159,9 @@ def test_drilldown_reopen_does_not_grow_listeners(page) -> None:
         " ? getEventListeners(document.querySelector('#drillBody')).click?.length ?? 0"
         " : -1"
     )
-    # getEventListeners is alleen beschikbaar in CDP-context, niet in de
-    # pagina. Val terug op functioneel bewijs: Meer tonen moet na drie
-    # heropeningen nog steeds precies één portie toevoegen.
+    # getEventListeners is only available in the CDP context, not in the
+    # page. Fall back to functional evidence: Meer tonen must still add
+    # exactly one portion after three reopenings.
     assert before in (-1, 1) and after in (-1, 1)
     page.evaluate("rows => openDrilldown('Test', rows)", [{"sourceRow": i + 2} for i in range(520)])
     more = page.locator("#drillBody .drill-more .more-rows-btn")

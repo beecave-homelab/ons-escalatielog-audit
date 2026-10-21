@@ -1,4 +1,4 @@
-"""Gerichte randgevallen en een tweede synthetische referentie voor issue #59."""
+"""Targeted edge cases and a second synthetic reference for issue #59."""
 
 from collections.abc import Iterator
 from pathlib import Path
@@ -9,7 +9,7 @@ from generate_synthetic_escalatielog import create_workbook, main, synthetic_row
 from playwright.sync_api import Page, sync_playwright
 from test_report_layout import ROOT, STANDARD_FIXTURE, launch_browser
 
-# Handmatig afgeleid uit de zeven auditregels, niet uit analyze()-uitvoer.
+# Derived by hand from the seven audit rows, not from analyze() output.
 EXPECTED_SIGNALS = {
     "NIET_GEACTIVEERD": 0,
     "NACHT": 0,
@@ -32,7 +32,7 @@ EXPECTED_SIGNALS = {
 
 @pytest.fixture(scope="module")
 def browser():
-    """Hergebruik één browser; ieder geval krijgt een lege pagina."""
+    """Reuse one browser; each case gets a blank page."""
     with sync_playwright() as playwright:
         browser = launch_browser(playwright)
         yield browser
@@ -41,7 +41,7 @@ def browser():
 
 @pytest.fixture
 def page(browser) -> Iterator[Page]:
-    """Start de echte applicatie zonder bronbestanden met persoonsgegevens."""
+    """Start the real application without source files containing personal data."""
     page = browser.new_page()
     errors: list[str] = []
     page.on("pageerror", lambda error: errors.append(str(error)))
@@ -77,7 +77,7 @@ def page(browser) -> Iterator[Page]:
     ],
 )
 def test_parse_date_boundaries(page: Page, value, expected) -> None:
-    """Kalendercontrole, tijdfractie en jaarovergang houden vaste betekenis."""
+    """Calendar validation, time fractions and year transitions keep fixed meaning."""
     actual = page.evaluate("value => parseDate(value)?.display ?? null", value)
     assert actual == expected
 
@@ -99,14 +99,14 @@ def test_parse_date_boundaries(page: Page, value, expected) -> None:
     ],
 )
 def test_csv_formula_guard(page: Page, value, expected: str) -> None:
-    """Formules krijgen een apostrof; gewone negatieve getallen blijven getallen."""
+    """Formulas get an apostrophe; ordinary negative numbers stay numbers."""
     assert page.evaluate("value => toCsv([{Waarde:value}])", value) == (
         f'\ufeff"Waarde"\r\n"{expected}"'
     )
 
 
 def test_csv_format_and_escaping(page: Page) -> None:
-    """BOM, puntkomma, CRLF, quotes en meerregelige cellen blijven exact behouden."""
+    """BOM, semicolon, CRLF, quotes and multi-line cells stay exactly preserved."""
     actual = page.evaluate(
         "rows => toCsv(rows)",
         [{"Tekst": 'a;"b"\r\nc', "Leeg": None}, {"Tekst": "einde", "Leeg": ""}],
@@ -128,7 +128,7 @@ def test_csv_format_and_escaping(page: Page) -> None:
     ],
 )
 def test_read_settings_rejects_invalid_values(page: Page, key: str, value: str) -> None:
-    """De formulierlezer weigert ongeldige waarden zonder instellingen toe te passen."""
+    """The form reader rejects invalid values without applying settings."""
     actual = page.evaluate(
         """({key,value}) => {
             renderSettings();
@@ -155,7 +155,7 @@ def test_read_settings_rejects_invalid_values(page: Page, key: str, value: str) 
 
 
 def test_read_settings_accepts_zero_delay_and_hour_limits(page: Page) -> None:
-    """Vertraging nul en beide uurgrenzen zijn geldig; lezen past niets toe."""
+    """A delay of zero and both hour bounds are valid; reading applies nothing."""
     assert page.evaluate(
         """() => {
             renderSettings();
@@ -171,7 +171,7 @@ def test_read_settings_accepts_zero_delay_and_hour_limits(page: Page) -> None:
 
 @pytest.mark.parametrize("exclude", [False, True])
 def test_duration_exclusion_reconciles_before_dedup(page: Page, exclude: bool) -> None:
-    """Twee gelijke 30-minutenregels verhuizen samen naar de systeemgroep."""
+    """Two identical 30-minute rows move to the system group together."""
     matrix = synthetic_rows(9, 20260918, "signals")
     matrix[1][6] = matrix[-1][6] = "30"
     actual = page.evaluate(
@@ -202,7 +202,7 @@ def test_duration_exclusion_reconciles_before_dedup(page: Page, exclude: bool) -
 def test_signal_profile_roundtrip(
     page: Page, tmp_path: Path, shared: bool, numeric: bool, stored: bool
 ) -> None:
-    """Alle acht XLSX-varianten leveren dezelfde vaste signalen en bronrelaties."""
+    """All eight XLSX variants produce the same fixed signals and source relations."""
     workbook = tmp_path / "signalen.xlsx"
     options = {"shared_strings": shared, "numeric_dates": numeric, "stored": stored}
     digest = create_workbook(workbook, 9, 20260918, "signals", **options)
@@ -247,7 +247,7 @@ def test_signal_profile_roundtrip(
 
 
 def test_generator_cli_and_standard_fixture_unchanged(tmp_path: Path, monkeypatch) -> None:
-    """CLI-opties werken en de bestaande §15-fixture blijft byte-identiek."""
+    """CLI options work and the existing §15 fixture stays byte-identical."""
     standard = tmp_path / "standaard.xlsx"
     create_workbook(standard, 2000, 20260918)
     assert standard.read_bytes() == STANDARD_FIXTURE.read_bytes()
@@ -279,7 +279,7 @@ def test_generator_cli_and_standard_fixture_unchanged(tmp_path: Path, monkeypatc
 
 
 def test_quality_and_system_drilldowns_keep_exact_source_rows(page: Page) -> None:
-    """De duplicaatgroep en systeemgroep openen uitsluitend hun eigen bronregels."""
+    """The duplicate group and system group open only their own source rows."""
     page.evaluate(
         """matrix => {
             state.result=analyze(normalizeRows(matrix,0),{...DEFAULT_SETTINGS});

@@ -1,4 +1,4 @@
-"""Gedeelde tijdsuitleg en echte analysegrenzen met synthetische bronregels."""
+"""Shared time explanation and real analysis boundaries with synthetic source rows."""
 
 import pytest
 from playwright.sync_api import expect, sync_playwright

@@ -1,4 +1,4 @@
-"""Gemengde, herleidbare Top-X en lokaal tekstsjabloon met synthetische gegevens."""
+"""Mixed, traceable Top-X and a local text template with synthetic data."""
 
 from pathlib import Path
 
@@ -9,19 +9,19 @@ from test_report_layout import STANDARD_FIXTURE
 
 
 def load_reference(page) -> None:
-    """Lees de gecommitteerde synthetische referentie via de echte uploadroute."""
+    """Read the committed synthetic reference via the real upload route."""
     page.locator("#fileInput").set_input_files(STANDARD_FIXTURE)
     page.locator("#analyzeBtn").click()
     expect(page.locator("#workspace")).to_be_visible(timeout=30_000)
 
 
 def open_editor(page) -> None:
-    """Open alleen de sjablooneditor, zonder de methode-uitklapper te veranderen."""
+    """Open only the template editor without changing the method disclosure."""
     page.get_by_text("Samenvatting maken en kopiëren", exact=True).click()
 
 
 def test_mixed_findings_use_actual_windows_and_stable_order(page) -> None:
-    """Iedere soort behoudt de eigen criteria en bronregels, ook bij overlap."""
+    """Each kind keeps its own criteria and source rows, also on overlap."""
     data = page.evaluate(
         """() => {
           const patches=Array.from({length:6},(_,i)=>({
@@ -60,7 +60,7 @@ def test_mixed_findings_use_actual_windows_and_stable_order(page) -> None:
 
 
 def test_selection_limit_and_drilldown_preserve_analysis(page) -> None:
-    """De view-selectie begrenst alleen de Top-X en opent exact haar bewijsgroep."""
+    """The view selection only limits the Top-X and opens exactly its evidence group."""
     load_reference(page)
     before = page.evaluate(
         "JSON.stringify([[...state.result.signalCounts],attentionRows(state.result.attention)])"
@@ -90,7 +90,7 @@ def test_selection_limit_and_drilldown_preserve_analysis(page) -> None:
 
 
 def test_summary_validation_is_literal_and_limited_to_selected_data(page) -> None:
-    """Bronwaarden worden niet opnieuw als sjabloon of HTML geïnterpreteerd."""
+    """Source values are not reinterpreted as template or HTML."""
     data = page.evaluate(
         """() => {
           const r=runRows([{'Gebruiker':'{positie}<img src=x onerror=alert(1)>',
@@ -113,7 +113,7 @@ def test_summary_validation_is_literal_and_limited_to_selected_data(page) -> Non
 
 
 def test_preview_gates_copy_and_reports_clipboard_failure(page) -> None:
-    """Kopiëren volgt het bekeken voorbeeld en meldt een geweigerd klembord eerlijk."""
+    """Copying follows the viewed preview and honestly reports a refused clipboard."""
     load_reference(page)
     open_editor(page)
     page.evaluate(
@@ -141,7 +141,7 @@ def test_preview_gates_copy_and_reports_clipboard_failure(page) -> None:
 
 
 def test_report_and_png_share_selection_and_exclude_template(page, tmp_path: Path) -> None:
-    """Exports gebruiken dezelfde analysegegevens, zonder vrije sjabloontekst."""
+    """Exports use the same analysis data, without free template text."""
     load_reference(page)
     page.locator("#findingLimit").fill("3")
     page.locator("#applyFindingLimit").click()
@@ -170,7 +170,7 @@ def test_report_and_png_share_selection_and_exclude_template(page, tmp_path: Pat
 
 
 def test_patterns_without_individual_signals_and_empty_analysis(page) -> None:
-    """Patronen blijven zelfstandige kandidaten; een lege analyse is geen fout."""
+    """Patterns stay standalone candidates; an empty analysis is not an error."""
     values = page.evaluate(
         """() => {
           const disabled=Object.fromEntries(Object.keys(DEFAULT_SETTINGS)
@@ -193,7 +193,7 @@ def test_patterns_without_individual_signals_and_empty_analysis(page) -> None:
 
 @pytest.mark.parametrize("width", [390, 1440])
 def test_findings_layout_and_html_escaping(page, width: int) -> None:
-    """Lange bronwaarden blijven leesbaar en worden niet als HTML uitgevoerd."""
+    """Long source values stay readable and are not executed as HTML."""
     load_reference(page)
     page.set_viewport_size({"width": width, "height": 1000})
     page.evaluate(
@@ -206,7 +206,7 @@ def test_findings_layout_and_html_escaping(page, width: int) -> None:
 
 
 def test_pending_copy_identifies_old_selection_and_source_rows_are_capped(page) -> None:
-    """Een vertraagd klembord krijgt een eerlijke melding; grote bewijssets blijven compleet."""
+    """A delayed clipboard gets an honest message; large evidence sets stay complete."""
     load_reference(page)
     open_editor(page)
     page.evaluate(
@@ -237,7 +237,7 @@ def test_pending_copy_identifies_old_selection_and_source_rows_are_capped(page) 
 
 @pytest.mark.parametrize("exporter", ["exportDashboardPng", "exportOverviewVisualsZip"])
 def test_export_refuses_selection_changed_during_encoding(page, exporter: str) -> None:
-    """Een nieuwe Top-X mag geen download van de vorige selectie opleveren."""
+    """A new Top-X must not produce a download of the previous selection."""
     load_reference(page)
     downloads = []
     page.on("download", lambda download: downloads.append(download.suggested_filename))

@@ -1,4 +1,4 @@
-"""Analyse zonder globale toestand en bronselecties met vaste sleutels (#63)."""
+"""Analysis without global state and source selections with fixed keys (#63)."""
 
 import pytest
 from playwright.sync_api import sync_playwright
@@ -32,7 +32,7 @@ def page():
 
 
 def test_analyze__keeps_entire_state_and_input_with_explicit_night_window(page) -> None:
-    """Alle aggregaties volgen s; analyse verandert geen state-eigenschap of bronrij."""
+    """All aggregations follow s; analysis changes no state property or source row."""
     result = page.evaluate(
         """() => {
           const rows=makeRows([{}, {'Escalatiedoel type':'Locatie'}]);
@@ -72,7 +72,7 @@ def test_analyze__keeps_entire_state_and_input_with_explicit_night_window(page) 
 def test_employee_key__survives_display_changes_in_peers_and_drilldowns(
     page, number: str, login: str, name: str, key: str
 ) -> None:
-    """Nummer, account of naam blijven leidend als weergavevelden later veranderen."""
+    """Number, account or name remain leading when display fields change later."""
     result = page.evaluate(
         """({number,login,name,key}) => {
           const rows=makeRows([
@@ -85,7 +85,7 @@ def test_employee_key__survives_display_changes_in_peers_and_drilldowns(
           const keys=groups.map(group=>group.find(x=>x.__key===key)?.__key);
           const hidden=groups.every(group=>group.every(x=>
             !Object.keys(x).includes('__key')&&!toCsv([x]).includes('__key')));
-          // Wijzig uitsluitend zichtbare identificatievelden: de koppeling mag niet meeveranderen.
+          // Change only visible identification fields: the coupling must not follow along.
           for(const group of groups)for(const x of group){
             x.Medewerkernummer='Ander nummer';x.Gebruikersnaam='Ander account';
             x.Medewerker='Andere naam';
@@ -122,7 +122,7 @@ def test_employee_key__survives_display_changes_in_peers_and_drilldowns(
 
 
 def test_employee_key__omits_rows_without_any_identity(page) -> None:
-    """Ontbrekende identiteit maakt geen medewerkersgroep of peergroep aan."""
+    """Missing identity creates no employee group or peer group."""
     result = page.evaluate(
         """() => {
           const r=analyze(makeRows([{'Medewerkernummer':'-','Gebruikersnaam':'',

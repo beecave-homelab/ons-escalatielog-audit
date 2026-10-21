@@ -1,4 +1,4 @@
-"""Verplicht versie en releasebeschrijving bij applicatiewijzigingen naar main."""
+"""Require a version bump and release notes for application changes to main."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from check_release_version import APP, check_version, one
 
 
 def section(changelog: str, version: str) -> str:
-    """Lees alleen de sectie voor de gekozen versie, inclusief datum."""
+    """Read only the section for the chosen version, including its date."""
     match = re.search(
         rf"^## \[{re.escape(version)}\].*?(?=^## |\Z)",
         changelog,
@@ -20,7 +20,7 @@ def section(changelog: str, version: str) -> str:
 
 
 def check_change(read_base, read_head, changed: set[str]) -> bool:
-    """Documentatie/test/CI-only heeft geen productbump nodig."""
+    """Documentation-, test- and CI-only changes need no product version bump."""
     if APP not in changed:
         return False
     old, _ = check_version(read_base)
@@ -37,12 +37,12 @@ def check_change(read_base, read_head, changed: set[str]) -> bool:
 
 
 def git(*args: str) -> bytes:
-    """Laat ontbrekende Git-refs en bestanden expliciet falen."""
+    """Let missing Git refs and files fail explicitly."""
     return subprocess.check_output(["git", *args])
 
 
 def check_refs(base: str, head: str = "HEAD") -> bool:
-    """Vergelijk volledige Git-bomen; inclusief verwijderde en hernoemde app."""
+    """Compare complete Git trees, including a deleted or renamed app."""
     if re.fullmatch(r"0+", base):
         raise ValueError(
             "De basis is de null-SHA: een push die main aanmaakt of herstelt heeft "
@@ -69,7 +69,9 @@ def check_refs(base: str, head: str = "HEAD") -> bool:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(
+        description="Verplicht versie en releasebeschrijving bij applicatiewijzigingen naar main."
+    )
     parser.add_argument("--base", required=True, help="Doelbranch-SHA vóór de wijziging")
     parser.add_argument("--head", default="HEAD", help="Te controleren commit (standaard HEAD)")
     args = parser.parse_args()

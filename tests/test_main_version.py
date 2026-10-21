@@ -1,4 +1,4 @@
-"""Borg het versiebeleid met synthetische bronnen en echte tijdelijke Git-bomen."""
+"""Enforce the version policy with synthetic sources and real temporary Git trees."""
 
 import importlib.util
 import subprocess
@@ -19,7 +19,7 @@ SPEC.loader.exec_module(policy)
 
 
 def files(version: str = "1.2.3", pending: str = "") -> dict[str, str]:
-    """Geef volledig fictieve versiebestanden inclusief virtuele lockpackage."""
+    """Return fully fictional version files including a virtual lock package."""
     result = source(version, pending)
     result["uv.lock"] = f'[[package]]\nname = "ons-escalatielog-audit"\nversion = "{version}"\n'
     return result
@@ -27,13 +27,13 @@ def files(version: str = "1.2.3", pending: str = "") -> dict[str, str]:
 
 @pytest.mark.parametrize("version", ["1.2.4", "1.3.0", "2.0.0", "1.10.0"])
 def test_product_change_requires_higher_version(version: str) -> None:
-    """Patch, minor, major en numerieke meercijferige SemVer zijn toegestaan."""
+    """Patch, minor, major and multi-digit numeric SemVer are allowed."""
     assert policy.check_change(files().__getitem__, files(version).__getitem__, {policy.APP})
 
 
 @pytest.mark.parametrize("version", ["1.2.3", "1.2.2", "1.1.9", "0.9.9"])
 def test_product_change_rejects_equal_or_lower_version(version: str) -> None:
-    """Een oude releasebeschrijving legitimeert geen ongewijzigde/lager versie."""
+    """An old release description does not legitimate an unchanged or lower version."""
     with pytest.raises(ValueError, match="hogere SemVer"):
         policy.check_change(files().__getitem__, files(version).__getitem__, {policy.APP})
 
@@ -49,7 +49,7 @@ def test_product_change_rejects_equal_or_lower_version(version: str) -> None:
     ],
 )
 def test_non_product_change_does_not_require_bump(changed: set[str]) -> None:
-    """Niet-runtimewijzigingen mogen ongepubliceerde notities behouden."""
+    """Non-runtime changes may keep unpublished notes."""
     data = files(pending="- Toekomstige wijziging.")
     assert not policy.check_change(data.__getitem__, data.__getitem__, changed)
 
@@ -66,7 +66,7 @@ def test_non_product_change_does_not_require_bump(changed: set[str]) -> None:
     ],
 )
 def test_product_change_rejects_invalid_release(name: str, value: str, error: str) -> None:
-    """Controleer ontbrekende beschrijving, datum en uiteenlopende versies."""
+    """Check missing description, date and divergent versions."""
     head = files("1.2.4")
     head[name] = value
     with pytest.raises(ValueError, match=error):
@@ -74,7 +74,7 @@ def test_product_change_rejects_invalid_release(name: str, value: str, error: st
 
 
 def test_product_change_rejects_unreleased_notes() -> None:
-    """Een productmerge moet volledig aan een releaseversie gekoppeld zijn."""
+    """A product merge must be fully tied to a release version."""
     with pytest.raises(ValueError, match="Nog niet uitgebracht"):
         policy.check_change(
             files().__getitem__, files("1.2.4", "- Rest.").__getitem__, {policy.APP}
@@ -82,7 +82,7 @@ def test_product_change_rejects_unreleased_notes() -> None:
 
 
 def test_preexisting_future_section_must_be_updated() -> None:
-    """Een wijziging elders in de changelog vervangt geen nieuwe releasebeschrijving."""
+    """A change elsewhere in the changelog does not replace a new release description."""
     base, head = files(), files("1.2.4")
     base["CHANGELOG.md"] += policy.section(head["CHANGELOG.md"], "1.2.4") + "\n"
     with pytest.raises(ValueError, match="changelogsectie"):
@@ -95,7 +95,7 @@ def test_preexisting_future_section_must_be_updated() -> None:
 
 @pytest.fixture
 def repository(tmp_path: Path, monkeypatch):
-    """Maak een echte Git-basis, zonder afhankelijkheid van de werkrepository."""
+    """Create a real Git base without depending on the working repository."""
     monkeypatch.chdir(tmp_path)
     subprocess.run(["git", "init", "-q"], check=True)
     subprocess.run(["git", "config", "user.email", "test@example.invalid"], check=True)
@@ -112,7 +112,7 @@ def repository(tmp_path: Path, monkeypatch):
 
 
 def test_git_comparison_and_cli(repository) -> None:
-    """De CLI vergelijkt commitbomen en negeert ongecommitteerde bronwijzigingen."""
+    """The CLI compares commit trees and ignores uncommitted source changes."""
     root, commit, base = repository
     commit(files("1.2.4"))
     (root / policy.APP).write_text("Ongecommitteerd")
@@ -126,7 +126,7 @@ def test_git_comparison_and_cli(repository) -> None:
 
 
 def test_git_doc_only_and_missing_refs(repository) -> None:
-    """Een documentatiecommit slaagt; een onbekende ref faalt expliciet."""
+    """A documentation commit passes; an unknown ref fails explicitly."""
     _, commit, base = repository
     head = files()
     head["README.md"] += "\nGebruikersuitleg."
@@ -139,14 +139,14 @@ def test_git_doc_only_and_missing_refs(repository) -> None:
 
 
 def test_null_sha_base_fails_deliberately() -> None:
-    """Een push die main aanmaakt of herstelt heeft geen vorige commit."""
+    """A push that creates or restores main has no previous commit."""
     with pytest.raises(ValueError, match="null-SHA"):
         policy.check_refs("0" * 40)
 
 
 @pytest.mark.parametrize("rename", [True, False])
 def test_removed_or_renamed_app_is_not_exempt(repository, rename: bool) -> None:
-    """Verwijderen of hernoemen mag de productcontrole niet omzeilen."""
+    """Removing or renaming must not bypass the product check."""
     root, commit, base = repository
     app = root / policy.APP
     if rename:
@@ -159,7 +159,7 @@ def test_removed_or_renamed_app_is_not_exempt(repository, rename: bool) -> None:
 
 
 def test_version_workflow_compares_all_main_events() -> None:
-    """De verplichte status haalt geschiedenis op en controleert alle main-events."""
+    """The required status fetches history and checks all main events."""
     workflow = yaml.load((ROOT / ".github/workflows/ci.yml").read_text(), Loader=yaml.BaseLoader)
     for event in ("pull_request", "push", "merge_group"):
         assert workflow["on"][event] == {"branches": ["main"]}
