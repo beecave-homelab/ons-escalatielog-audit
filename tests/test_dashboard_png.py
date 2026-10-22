@@ -77,6 +77,12 @@ def test_png_complete_offline_and_viewport_independent(page, tmp_path):
           r.auditRows.filter(x=>x.veryFastMinutes!==null).length,
           r.attention.length,r.bursts.length,r.clientClusters.length]}"""
     ) == [2000, 156, 42, 1802, 250, 558, 40, 310, 544, 1391, 66, 0, 0, 1790, 0, 5]
+    text = " ".join(line["value"] for line in drawing["lines"])
+    assert "Ons Escalatielog Audit · Dashboard" in text
+    for title in ("Activatie en herhaling", "Volume en spreiding", "Datakwaliteit"):
+        assert title in text
+    assert "niet optelbaar" in text
+    assert "FAB" not in text and "CISO" not in text and "Privacy Officer" not in text
     model = drawing["model"]
     # DOM changes must never change exported audit findings.
     assert page.evaluate(
@@ -254,6 +260,9 @@ def test_overview_visuals_zip_individual_and_offline(page, tmp_path):
     for drawing in drawings:
         text = " ".join(line["value"] for line in drawing["lines"])
         assert drawing["title"] in text
+        assert "FAB" not in text and "CISO" not in text and "Privacy Officer" not in text
+        if drawing["title"] in ("Activatie en herhaling", "Volume en spreiding", "Datakwaliteit"):
+            assert "niet optelbaar" in text
         assert "01-05-2026" in text
         assert "31-05-2026" in text
         assert "geen bewijs van dossierinzage" in text

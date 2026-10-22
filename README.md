@@ -1,9 +1,9 @@
 # Ons Escalatielog Audit
 
-![Version: 0.19.5](https://img.shields.io/badge/version-0.19.5-00A0C8.svg)
+![Version: 0.19.6](https://img.shields.io/badge/version-0.19.6-00A0C8.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 
-Ons Escalatielog Audit is een zelfstandige webpagina voor het controleren van `.xlsx`-exports met escalatielogs uit Nedap Ons. De webui maakt opvallende patronen zichtbaar en laat je doorklikken naar de bijbehorende Excelregels. Het hulpmiddel is bedoeld voor functioneel applicatiebeheerders, CISO's en privacy officers.
+Ons Escalatielog Audit is een zelfstandige webpagina voor het controleren van `.xlsx`-exports met escalatielogs uit Nedap Ons. De webui maakt opvallende patronen zichtbaar en laat je doorklikken naar de bijbehorende Excelregels. Grafieken en overzichten ondersteunen de controle van deze patronen en de bijbehorende bronregels.
 
 De analyse draait volledig in de browser. Het Excelbestand wordt niet geüpload en de webui maakt geen verbinding met externe diensten.
 
@@ -27,6 +27,7 @@ De webui biedt de volgende mogelijkheden:
 - **Peervergelijkingen.** Vergelijk medewerkers met vergelijkbare collega's. De gebruikte peer-ratio's worden bij de tabel toegelicht. De analyse onderzoekt ook korte pieken, cliëntclusters en concentraties.
 - **Uitleg bij signalen.** Lees hoe de webui controleprioriteit, her-escalaties, geselecteerde tijdvensters, peer-ratio's en top-3-concentratie bepaalt. Deze uitleg staat zowel in de webui als in het HTML-rapport. Details tonen de gekoppelde tijden. Het rapport bevat bij her-escalatie ook een fictief rekenvoorbeeld.
 - **Tijdlijnen.** Bekijk wanneer een activatie als laat telt en welke starturen binnen het nachtvenster vallen. Late activatie begint strikt ná de ingestelde grens. De tijdlijnen gebruiken de actuele analyse-instellingen en staan ook in het HTML-rapport.
+- **Opvallendheden om te onderzoeken.** Bekijk standaard tien bevindingen en pas het aantal aan van 1 tot en met 50. De drie controlecategorieën Activatie en herhaling, Volume en spreiding en Datakwaliteit kunnen dezelfde auditregels bevatten; hun aantallen zijn daarom niet optelbaar.
 - **Controleerbare brongegevens.** Open vanuit cijfers, grafieken en tabellen de Excelregels waarop de uitkomsten zijn gebaseerd.
 - **Losse visuals.** Exporteer alle visuals uit Overzicht als PNG-bestanden in één ZIP. Iedere afbeelding krijgt een herkenbare naam en bijbehorende brongegevens. Je kunt de afbeeldingen bijvoorbeeld toevoegen aan een TOPdesk-melding.
 - **Dashboard als PNG.** Exporteer het volledige dashboard als één afbeelding met een vaste indeling. Ook onderdelen buiten het zichtbare scherm worden meegenomen, inclusief volledige labels, periode, analysetijdstip, versie en toegepaste instellingen.

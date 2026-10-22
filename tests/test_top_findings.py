@@ -61,11 +61,13 @@ def test_mixed_findings_use_actual_windows_and_stable_order(page) -> None:
 
 def test_selection_limit_and_drilldown_preserve_analysis(page) -> None:
     """The view selection only limits the Top-X and opens exactly its evidence group."""
+    expect(page.locator("#findingLimit")).to_have_value("10")
+    assert page.evaluate("state.findingLimit") == 10
     load_reference(page)
     before = page.evaluate(
         "JSON.stringify([[...state.result.signalCounts],attentionRows(state.result.attention)])"
     )
-    expect(page.locator(".finding-item")).to_have_count(5)
+    expect(page.locator(".finding-item")).to_have_count(10)
     expected = page.evaluate("selectedFindings()[1].__rows.map(x=>x.sourceRow)")
     page.locator('[data-finding="1"]').click()
     assert page.evaluate("state.drilldown.rows.map(x=>x['Excel-rij'])") == sorted(expected)
@@ -140,11 +142,13 @@ def test_preview_gates_copy_and_reports_clipboard_failure(page) -> None:
     assert page.evaluate("document.activeElement.id") == "findingPreview"
 
 
-def test_report_and_png_share_selection_and_exclude_template(page, tmp_path: Path) -> None:
+@pytest.mark.parametrize("limit", [None, 3])
+def test_report_and_png_share_selection_and_exclude_template(page, tmp_path: Path, limit) -> None:
     """Exports use the same analysis data, without free template text."""
     load_reference(page)
-    page.locator("#findingLimit").fill("3")
-    page.locator("#applyFindingLimit").click()
+    if limit is not None:
+        page.locator("#findingLimit").fill(str(limit))
+        page.locator("#applyFindingLimit").click()
     open_editor(page)
     page.locator("#findingTemplate").fill("PRIVÉTEST {onderwerp}")
     page.locator("#previewFindings").click()
@@ -159,9 +163,10 @@ def test_report_and_png_share_selection_and_exclude_template(page, tmp_path: Pat
     pending.value.save_as(report)
     html = report.read_text(encoding="utf-8")
     assert "PRIVÉTEST" not in html
+    assert "Rapport gegenereerd door Ons Escalatielog Audit" in html
     page.goto(report.as_uri())
     section = page.locator("#s-opvallendheden")
-    expect(section.locator("tbody tr")).to_have_count(3)
+    expect(section.locator("tbody tr")).to_have_count(limit or 10)
     for row in expected:
         assert row["Onderwerp"] in section.inner_text()
         assert row["Selectiereden"].strip() in section.inner_text()
@@ -259,3 +264,32 @@ def test_export_refuses_selection_changed_during_encoding(page, exporter: str) -
     expect(page.locator("#status")).to_contain_text("De Top-X is intussen gewijzigd")
     expect(page.locator("#pngBtn")).to_be_enabled()
     expect(page.locator("#visualsZipBtn")).to_be_enabled()
+
+
+def test_role_neutral_categories_preserve_source_evidence(page) -> None:
+    """Category titles and drilldowns describe the same underlying source sets."""
+    expect(page.locator("h1")).to_have_text("Ons Escalatielog Audit")
+    expect(page).to_have_title("Ons Escalatielog Audit")
+    expect(page.locator(".brand p")).to_have_text(
+        "Maakt patronen in escalatielogs uit Nedap Ons zichtbaar met grafieken en "
+        "overzichten en koppelt deze aan de bijbehorende bronregels."
+    )
+    load_reference(page)
+    titles = ["Activatie en herhaling", "Volume en spreiding", "Datakwaliteit"]
+    for index, (title, category) in enumerate(
+        zip(titles, ["access", "scope", "data"], strict=True)
+    ):
+        expected = page.evaluate(
+            "cat => state.result.auditRows.filter(x => "
+            "x.signals.some(s => signalCategory(s) === cat)).map(x => x.sourceRow)",
+            category,
+        )
+        button = page.locator("#reviewSummary button").nth(index)
+        expect(button).to_have_attribute(
+            "aria-label", f"{title}: {len(expected)} bronregels openen"
+        )
+        button.click()
+        assert page.evaluate("state.drilldown.rows.map(x => x['Excel-rij'])") == sorted(expected)
+        page.locator("#drillCloseBtn").click()
+    expect(page.locator("#reviewSummary")).to_contain_text("niet optelbaar")
+    assert page.evaluate("dashboardPngModel().reviews.map(x => x.title)") == titles
