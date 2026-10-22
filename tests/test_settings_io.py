@@ -1,4 +1,4 @@
-"""Instellingen importeren en exporteren als lokaal JSON-bestand (issue #87)."""
+"""Import and export settings as a local JSON file (issue #87)."""
 
 import json
 from pathlib import Path
@@ -10,7 +10,7 @@ SETTINGS_FILE_NAME = "escalatielog-audit-instellingen.json"
 
 
 def open_settings(page) -> None:
-    """Open het Instellingen-tabblad via de knop in het uploadvak."""
+    """Open the Instellingen tab via the button in the upload area."""
     page.get_by_role("button", name="Instellingen", exact=True).filter(visible=True).click()
     expect(page.locator("#settingsGrid")).to_be_visible()
 
@@ -64,7 +64,7 @@ def _write_settings_json(tmp_path: Path, payload: dict) -> Path:
 
 
 def test_export_import_roundtrip_before_analysis(tmp_path: Path) -> None:
-    """Exporteren en importeren herstelt dezelfde formulierwaarden zonder bestand."""
+    """Export and import restore the same form values without a file."""
     with sync_playwright() as playwright:
         browser = launch_browser(playwright)
         page = browser.new_page(accept_downloads=True)
@@ -103,7 +103,7 @@ def test_export_import_roundtrip_before_analysis(tmp_path: Path) -> None:
 
 
 def test_export_import_roundtrip_after_analysis(tmp_path: Path) -> None:
-    """Exporteren en importeren werken na een uitgevoerde analyse."""
+    """Export and import work after a completed analysis."""
     with sync_playwright() as playwright:
         browser = launch_browser(playwright)
         page = browser.new_page(accept_downloads=True)
@@ -139,7 +139,7 @@ def test_export_import_roundtrip_after_analysis(tmp_path: Path) -> None:
 
 
 def test_export_blocked_by_invalid_input(tmp_path: Path) -> None:
-    """Ongeldige formulierwaarden blokkeren export met een zichtbare foutmelding."""
+    """Invalid form values block export with a visible error message."""
     from playwright.sync_api import TimeoutError as PlaywrightTimeout
 
     with sync_playwright() as playwright:
@@ -148,8 +148,8 @@ def test_export_blocked_by_invalid_input(tmp_path: Path) -> None:
         page.goto((ROOT / "escalatielog-audit-webui.html").as_uri())
         open_settings(page)
         page.locator("#set-activeAccessMinutes").fill("0")
-        # De luisteraar moet actief zijn vóór de klik, anders vangt hij de
-        # download van diezelfde klik nooit (zie de ronde-trip-tests hierboven).
+        # The listener must be active before the click, otherwise it never
+        # catches the download of that same click (see the round-trip tests above).
         try:
             with page.expect_download(timeout=2_000) as download_info:
                 page.locator("#exportSettingsBtn").click()
@@ -165,7 +165,7 @@ def test_export_blocked_by_invalid_input(tmp_path: Path) -> None:
 
 
 def test_import_rejects_invalid_json(tmp_path: Path) -> None:
-    """Ongeldige JSON wordt afgewezen zonder gedeeltelijke wijzigingen."""
+    """Invalid JSON is rejected without partial changes."""
     bad = tmp_path / "bad.json"
     bad.write_text("not valid json {{{", encoding="utf-8")
     with sync_playwright() as playwright:
@@ -181,7 +181,7 @@ def test_import_rejects_invalid_json(tmp_path: Path) -> None:
 
 
 def test_import_rejects_unknown_schema_version(tmp_path: Path) -> None:
-    """Een niet-ondersteunde formaatversie wordt afgewezen."""
+    """An unsupported format version is rejected."""
     payload = _valid_payload()
     payload["schemaVersion"] = 99
     f = _write_settings_json(tmp_path, payload)
@@ -197,7 +197,7 @@ def test_import_rejects_unknown_schema_version(tmp_path: Path) -> None:
 
 
 def test_import_rejects_unknown_key(tmp_path: Path) -> None:
-    """Onbekende instellingen worden afgewezen."""
+    """Unknown settings are rejected."""
     payload = _valid_payload()
     payload["settings"]["nonExistentSetting"] = 42
     f = _write_settings_json(tmp_path, payload)
@@ -213,7 +213,7 @@ def test_import_rejects_unknown_key(tmp_path: Path) -> None:
 
 
 def test_import_rejects_missing_key(tmp_path: Path) -> None:
-    """Ontbrekende instellingen worden afgewezen."""
+    """Missing settings are rejected."""
     payload = _valid_payload()
     del payload["settings"]["activeAccessMinutes"]
     f = _write_settings_json(tmp_path, payload)
@@ -229,7 +229,7 @@ def test_import_rejects_missing_key(tmp_path: Path) -> None:
 
 
 def test_import_rejects_wrong_type(tmp_path: Path) -> None:
-    """Verkeerde typen worden afgewezen."""
+    """Wrong types are rejected."""
     payload = _valid_payload()
     payload["settings"]["signalNight"] = "yes"
     f = _write_settings_json(tmp_path, payload)
@@ -245,7 +245,7 @@ def test_import_rejects_wrong_type(tmp_path: Path) -> None:
 
 
 def test_import_rejects_out_of_range(tmp_path: Path) -> None:
-    """Waarden buiten het toegestane bereik worden afgewezen."""
+    """Values outside the allowed range are rejected."""
     payload = _valid_payload()
     payload["settings"]["nightStartHour"] = 25
     f = _write_settings_json(tmp_path, payload)
@@ -261,7 +261,7 @@ def test_import_rejects_out_of_range(tmp_path: Path) -> None:
 
 
 def test_import_rejects_wrong_format_name(tmp_path: Path) -> None:
-    """Onbekende formaatnaam wordt afgewezen."""
+    """An unknown format name is rejected."""
     payload = _valid_payload()
     payload["format"] = "something-else"
     f = _write_settings_json(tmp_path, payload)
@@ -277,7 +277,7 @@ def test_import_rejects_wrong_format_name(tmp_path: Path) -> None:
 
 
 def test_import_does_not_modify_analysis(tmp_path: Path) -> None:
-    """Import wijzigt geen bestaand analyseresultaat of toegepaste instellingen."""
+    """Import does not change an existing analysis result or applied settings."""
     with sync_playwright() as playwright:
         browser = launch_browser(playwright)
         page = browser.new_page(accept_downloads=True)
@@ -298,7 +298,7 @@ def test_import_does_not_modify_analysis(tmp_path: Path) -> None:
 
 
 def test_import_then_rerun_applies_settings(tmp_path: Path) -> None:
-    """Na import en heranalyse zijn de geïmporteerde waarden toegepast."""
+    """After import and re-analysis the imported values are applied."""
     with sync_playwright() as playwright:
         browser = launch_browser(playwright)
         page = browser.new_page(accept_downloads=True)

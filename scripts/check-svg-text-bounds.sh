@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
-# Controleer dat alle tekst in docs/assets/*.svg binnen de viewBox valt.
-# Voorkomt herhaling van issue #10: labels die midden in een woord afgekapt worden.
-# Tekst wordt in root-coördinaten gemeten, zodat transforms op <g> meetellen.
-#
-# Gebruik: scripts/check-svg-text-bounds.sh [pad-naar-svg...]  (default: docs/assets/*.svg)
 set -euo pipefail
+
+# Script Description: Check that all text in docs/assets/*.svg stays within the viewBox.
+# Author: beecave-homelab
+# Version: 0.1.0
+# License: MIT
+# Creation Date: 21/09/2026
+# Last Modified: 21/10/2026
+# Usage: scripts/check-svg-text-bounds.sh [svg-path...]  (default: docs/assets/*.svg)
+#
+# Prevents a regression of issue #10 (labels clipped mid-word).
+# Text is measured in root coordinates, so transforms on <g> count.
 
 cd "$(dirname "$0")/.."
 

@@ -1,4 +1,4 @@
-"""Vat V8-functiedekking samen zonder brondata of JavaScript-evaluaties mee te tellen."""
+"""Summarize V8 function coverage without counting source data or JavaScript evaluations."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ APP_COVERAGE = pytest.StashKey[dict[str, Any]]()
 
 
 def summarize_functions(scripts: list[dict[str, Any]], url: str) -> dict[str, Any]:
-    """Selecteer alleen het applicatiedocument en benoemde functies met een hoofdrange."""
+    """Select only the application document and named functions with a root range."""
     functions = []
     for script in scripts:
         if script["url"] != url:

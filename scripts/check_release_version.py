@@ -1,4 +1,4 @@
-"""Controleer de applicatieversie en bijbehorende changelogsectie."""
+"""Check the application version and accompanying changelog section."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ def one(pattern: str, text: str, name: str) -> str:
 
 
 def check_version(read, version: str | None = None, *, release: bool = False) -> tuple[str, str]:
-    """Gewone CI staat ongepubliceerde wijzigingen toe; releasevoorbereiding blokkeert ze."""
+    """Regular CI allows unpublished changes; release preparation blocks them."""
     app = one(r"const APP_VERSION\s*=\s*[\"\']([^\"\']+)[\"\']", read(APP), "APP_VERSION")
     project = one(r'^version\s*=\s*"([^"]+)"', read("pyproject.toml"), "project.version")
     badge = one(r"badge/version-([^-]+)-", read("README.md"), "versiebadge")
@@ -51,7 +51,9 @@ def check_version(read, version: str | None = None, *, release: bool = False) ->
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(
+        description="Controleer de applicatieversie en bijbehorende changelogsectie."
+    )
     parser.add_argument("--version")
     parser.add_argument(
         "--release", action="store_true", help="Blokkeer ongepubliceerde wijzigingen"

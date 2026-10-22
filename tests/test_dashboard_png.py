@@ -1,4 +1,4 @@
-"""Controleer de echte lokale dashboard-PNG met uitsluitend synthetische gegevens."""
+"""Check the real local dashboard PNG with synthetic data only."""
 
 import struct
 from pathlib import Path

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Beperk documentatie op main tot de gebruikte productiedocumentatie."""
+"""Limit documentation on main to the product documentation in use."""
 
 import argparse
 import subprocess
@@ -19,7 +19,9 @@ ALLOWED = frozenset(
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(
+        description="Beperk documentatie op main tot de gebruikte productiedocumentatie."
+    )
     parser.add_argument("--revision", help="Controleer een Git-boom in plaats van lokale bestanden")
     args = parser.parse_args()
     root = Path(subprocess.check_output(["git", "rev-parse", "--show-toplevel"], text=True).strip())

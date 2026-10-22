@@ -1,4 +1,4 @@
-"""HTTP-regressie onder het Pages-projectpad, uitsluitend met synthetische data."""
+"""HTTP regression under the Pages project path, with synthetic data only."""
 
 import functools
 import threading

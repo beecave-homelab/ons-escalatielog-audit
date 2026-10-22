@@ -1,10 +1,10 @@
-"""Gelijke analyse-uitkomsten en hergebruik van prioriteiten bij optimalisatie (#64)."""
+"""Identical analysis outcomes and priority reuse under optimization (#64)."""
 
 import pytest
 from playwright.sync_api import sync_playwright
 from test_report_layout import ROOT, STANDARD_FIXTURE, launch_browser
 
-# Bevroren referentie van main 14e797a: oorspronkelijke volledige zoeklussen.
+# Frozen reference from main 14e797a: the original full search loops.
 REFERENCES = r"""
 function referencePeers(employees,
 rows,
@@ -248,7 +248,7 @@ def page():
 
 
 def test_windows__match_original_search_and_exact_source_order(page) -> None:
-    """Vensterleden, grenzen, gelijke kandidaten en ontbrekende sleutels blijven gelijk."""
+    """Window members, boundaries, tied candidates and missing keys stay identical."""
     result = page.evaluate(
         """() => {
           let seed=64;
@@ -283,7 +283,7 @@ def test_windows__match_original_search_and_exact_source_order(page) -> None:
 @pytest.mark.parametrize("size", [0, 1, 2, 3, 4, 7, 12, 25])
 @pytest.mark.parametrize("minimum", [1, 2, 4])
 def test_peers__match_original_medians_context_and_evidence(page, size, minimum) -> None:
-    """Zelfuitsluiting, even/oneven medianen, dubbelen en wisselende context blijven gelijk."""
+    """Self-exclusion, even/odd medians, duplicates and varying context stay identical."""
     result = page.evaluate(
         """({size,minimum}) => {
           const employees=Array.from({length:size},(_,i)=>bindEmployeeKey({
@@ -306,9 +306,9 @@ def test_peers__match_original_medians_context_and_evidence(page, size, minimum)
 
 
 def test_priority__computed_once_and_reused_for_render_and_report(page) -> None:
-    """Sortering, scherm en rapport hergebruiken één prioriteitsbesluit per aandachtspunt."""
+    """Sorting, screen and report reuse one priority decision per attention item."""
     page.locator("#fileInput").set_input_files(STANDARD_FIXTURE)
-    # De fixture van de bestaande uploadflow wordt door de gewone analyse gelezen.
+    # The fixture from the existing upload flow is read by the regular analysis.
     page.locator("#analyzeBtn").click()
     page.wait_for_selector("#workspace.show")
     result = page.evaluate(

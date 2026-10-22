@@ -159,10 +159,10 @@ def mixed_rows(row_count: int, rng: random.Random) -> list[list[str]]:
 
 
 def signal_rows() -> list[list[str]]:
-    """Negen vaste bronregels met controleerbare herhaling en vensters."""
+    """Nine fixed source rows with verifiable repetition and windows."""
     rows = []
-    # Eén medewerker: vijf pogingen in 30 minuten, waarvan drie op hetzelfde doel.
-    # Twee andere teams bezoeken dat doel binnen hetzelfde clustervenster.
+    # One employee: five attempts in 30 minutes, three of them on the same target.
+    # Two other teams visit that target within the same cluster window.
     for employee, target, minute in (
         (1, 1, 0),
         (1, 1, 4),
@@ -200,7 +200,7 @@ def signal_rows() -> list[list[str]]:
 def variant_worksheet(
     rows: list[list[str]], shared_strings: bool, numeric_dates: bool
 ) -> tuple[str, list[str]]:
-    """Schrijf gedeelde teksten en echte numerieke duur- en datumcellen."""
+    """Write shared strings and real numeric duration and date cells."""
     strings: list[str] = []
     indices: dict[str, int] = {}
     xml_rows = []

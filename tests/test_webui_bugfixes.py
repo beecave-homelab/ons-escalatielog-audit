@@ -1,9 +1,9 @@
-"""Regressietests voor issues #54 en #62.
+"""Regression tests for issues #54 and #62.
 
-- Lege en niet-numerieke duur vormen één categorie '(leeg of ongeldig)'
-  met een drilldown die precies de meegetelde bronregels opent (#54).
-- Kleine webui-fixes: signaalfilter op hele namen, herselectie van
-  hetzelfde bestand en opruiming van de drilldown-ResizeObserver (#62).
+- Empty and non-numeric durations form one category '(leeg of ongeldig)'
+  with a drilldown that opens exactly the counted source rows (#54).
+- Small webui fixes: signal filter on whole names, reselecting the same
+  file and cleanup of the drilldown ResizeObserver (#62).
 """
 
 from pathlib import Path
@@ -26,7 +26,7 @@ def page():
 
 
 def load_duration_rows(page) -> None:
-    """Dubieuze duurwaarden via normalizeRows -> analyze -> render."""
+    """Dubious duration values via normalizeRows -> analyze -> render."""
     page.evaluate(
         """() => {
           const base = [
@@ -87,7 +87,7 @@ def test_empty_and_invalid_duration_form_one_bucket(page, tmp_path: Path) -> Non
     assert "null minuten" not in report_html
     assert "(leeg of ongeldig)" in report_html
 
-    # De duurcategorie opent precies de drie meegetelde bronregels.
+    # The duration category opens exactly the three counted source rows.
     page.locator('.tab[data-view="logic"]').click()
     page.locator("#logicTable tbody tr").filter(has_text="(leeg of ongeldig)").click()
     assert page.locator("#drillBody tbody tr").count() == 3
@@ -98,7 +98,7 @@ def test_empty_and_invalid_duration_form_one_bucket(page, tmp_path: Path) -> Non
     ]
     page.locator("#drillCloseBtn").click()
 
-    # De systeemcategorie met lege duur opent de ene meegetelde regel.
+    # The system category with empty duration opens the one counted row.
     page.locator('.tab[data-view="system"]').click()
     system_row = page.locator("#systemTable tbody tr").filter(has_text="cliënt gekoppeld")
     assert system_row.count() == 1

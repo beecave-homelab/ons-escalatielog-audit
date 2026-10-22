@@ -1,4 +1,4 @@
-"""Controleer de publicatiegrens en commitbinding van de Pages-workflow."""
+"""Check the publication boundary and commit binding of the Pages workflow."""
 
 import os
 import subprocess

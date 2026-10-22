@@ -1,4 +1,4 @@
-"""Controleer de privacygrens met een tijdelijke Git-repository."""
+"""Check the privacy boundary with a temporary Git repository."""
 
 import shutil
 import subprocess

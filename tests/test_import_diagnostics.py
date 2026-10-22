@@ -1,4 +1,4 @@
-"""Importdiagnostiek met uitsluitend synthetische XLSX-werkbladen."""
+"""Import diagnostics with synthetic XLSX worksheets only."""
 
 from pathlib import Path
 from xml.sax.saxutils import quoteattr

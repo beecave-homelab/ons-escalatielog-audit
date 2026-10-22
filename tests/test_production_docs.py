@@ -1,4 +1,4 @@
-"""Controleer de productiegrens in lokale bestanden en resulterende Git-bomen."""
+"""Check the production boundary in local files and resulting Git trees."""
 
 import shutil
 import subprocess

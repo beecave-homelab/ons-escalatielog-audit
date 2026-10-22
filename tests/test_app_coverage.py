@@ -1,4 +1,4 @@
-"""Meet het echte inline script met CDP; rapporteer functies zonder nieuwe kwaliteitspoort."""
+"""Measure the real inline script with CDP; report functions without a new quality gate."""
 
 import pytest
 from app_coverage import APP_COVERAGE, summarize_functions
@@ -7,7 +7,7 @@ from test_report_layout import ROOT, STANDARD_FIXTURE, launch_browser
 
 
 def test_app_function_coverage__reports_synthetic_reference_scenario(request) -> None:
-    """Meet laden, analyseren, tabbladen, drilldown en de CSV-/HTML-export offline."""
+    """Measure loading, analysis, tabs, drilldown and the CSV/HTML export offline."""
     with sync_playwright() as playwright:
         browser = launch_browser(playwright)
         page = browser.new_page(accept_downloads=True)
@@ -34,7 +34,7 @@ def test_app_function_coverage__reports_synthetic_reference_scenario(request) ->
             report = summarize_functions(scripts, url)
             assert 0 < report["called"] <= report["total"]
             assert 0 < report["percentage"] <= 100
-            # Ontbrekende uitvoer is een meetfout; het percentage is geen kwaliteitspoort.
+            # Missing output is a measurement error; the percentage is not a quality gate.
             assert any(
                 script["url"] == url
                 and any(function["functionName"] == "analyze" for function in script["functions"])
@@ -48,7 +48,7 @@ def test_app_function_coverage__reports_synthetic_reference_scenario(request) ->
 
 
 def test_summary__excludes_other_documents_and_uses_function_entry_count() -> None:
-    """Andere documenten, naamloze wrappers en bloktellingen zijn geen appfuncties."""
+    """Other documents, anonymous wrappers and block counts are not app functions."""
     functions = [
         {"functionName": "", "ranges": [{"startOffset": 0, "endOffset": 90, "count": 1}]},
         {
@@ -73,7 +73,7 @@ def test_summary__excludes_other_documents_and_uses_function_entry_count() -> No
 
 
 def test_terminal_report__names_measurement_scope_and_has_no_threshold() -> None:
-    """De zichtbare CI-uitvoer benoemt scenario, meting en de bestaande Pythonpoort."""
+    """The visible CI output names the scenario, the measurement and the existing Python gate."""
     from conftest import pytest_terminal_summary
 
     class Reporter:

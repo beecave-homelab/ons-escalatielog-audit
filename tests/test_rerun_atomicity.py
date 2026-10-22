@@ -1,4 +1,4 @@
-"""Atomair opnieuw analyseren en analyse-instellingen in het rapport (issue #50)."""
+"""Atomic re-analysis and analysis settings in the report (issue #50)."""
 
 import re
 from pathlib import Path

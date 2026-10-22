@@ -1,14 +1,14 @@
-"""Meet analyze()- en render()-tijden van de webui op een grote synthetische set.
+"""Measure analyze() and render() times of the webui on a large synthetic set.
 
-De pagina bouwt deterministisch 50.000 regels met 3.000 medewerkers en
-20.000 cliënten (plus 40 locaties) via normalizeRows(). Per run meet het
-script de duur van analyze(), render() en de deelrenders. De uitvoer is JSON
-met alle runs en de mediaan per fase. Er worden geen bestanden gelezen uit
-escalatielogs/ of exports/.
+The page deterministically builds 50,000 rows with 3,000 employees and
+20,000 clients (plus 40 locations) via normalizeRows(). Per run the
+script measures the duration of analyze(), render() and the sub-renders.
+The output is JSON with all runs and the median per phase. No files are
+read from escalatielogs/ or exports/.
 
-Gebruik:
+Usage:
   uv run python scripts/measure_render_performance.py
-  uv run python scripts/measure_render_performance.py --html pad/naar/webui.html --runs 5
+  uv run python scripts/measure_render_performance.py --html path/to/webui.html --runs 5
 """
 
 from __future__ import annotations
@@ -80,7 +80,7 @@ RUN = """() => {
 
 
 def measure(html: Path, runs: int) -> dict:
-    """Open de webui in Chromium en meet het opgegeven aantal runs."""
+    """Open the webui in Chromium and measure the given number of runs."""
     sys.path.insert(0, str(ROOT / "tests"))
     from playwright.sync_api import sync_playwright
     from test_report_layout import launch_browser
@@ -105,7 +105,9 @@ def measure(html: Path, runs: int) -> dict:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser = argparse.ArgumentParser(
+        description="Meet analyze()- en render()-tijden van de webui op een grote synthetische set."
+    )
     parser.add_argument("--html", type=Path, default=ROOT / "escalatielog-audit-webui.html")
     parser.add_argument("--runs", type=int, default=3)
     args = parser.parse_args()

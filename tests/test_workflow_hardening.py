@@ -1,4 +1,4 @@
-"""Controleer de hardening van de GitHub Actions-workflows en de gedeelde controlelijst."""
+"""Check the hardening of the GitHub Actions workflows and the shared checklist."""
 
 import re
 from pathlib import Path

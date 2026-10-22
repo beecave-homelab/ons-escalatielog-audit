@@ -1,6 +1,6 @@
-"""Regressietests voor issue #53: XLSX-lezervarianten en foutcellen.
+"""Regression tests for issue #53: XLSX reader variants and error cells.
 
-De tests gebruiken uitsluitend synthetische, gegevensvrije werkbladen.
+The tests use only synthetic, data-free worksheets.
 """
 
 from pathlib import Path
@@ -73,7 +73,7 @@ def row_xml(row_index: int, cells: dict[int, str], prefix: str = "") -> str:
 
 
 def test_error_cell_reads_empty_and_reports_foutcel(page, tmp_path):
-    """Een foutcel is leeg en staat als Foutcel in bron onder Datakwaliteit."""
+    """An error cell reads empty and appears as Foutcel in bron under Datakwaliteit."""
     page, errors = page
     workbook = tmp_path / "foutcel.xlsx"
 
@@ -90,7 +90,7 @@ def test_error_cell_reads_empty_and_reports_foutcel(page, tmp_path):
     empty_cells = {
         index: inline_cell(f"{column_name(index)}3", empty_values[h])
         for index, h in enumerate(HEADERS, 1)
-        if index != 2  # Medewerkernummer ontbreekt echt
+        if index != 2  # Medewerkernummer is genuinely missing
     }
     files = workbook_files([])
     files["xl/worksheets/sheet1.xml"] = (
@@ -151,7 +151,7 @@ def test_error_cell_reads_empty_and_reports_foutcel(page, tmp_path):
 
 @pytest.mark.parametrize("compression", [ZIP_STORED, ZIP_DEFLATED])
 def test_namespaced_workbook_parses_like_unprefixed(page, tmp_path, compression):
-    """x:-prefixes op alle SpreadsheetML- en package-elementen lezen hetzelfde in."""
+    """x: prefixes on all SpreadsheetML and package elements read in identically."""
     page, errors = page
     strings = HEADERS + [BASE_VALUES[h] for h in HEADERS]
     matrix_rows = [list(range(14)), list(range(14, 28))]
@@ -219,7 +219,7 @@ def test_namespaced_workbook_parses_like_unprefixed(page, tmp_path, compression)
 
 
 def test_cells_and_rows_without_r_attribute(page):
-    """Cellen zonder r volgen de vorige cel; rijen zonder r de vorige rij."""
+    """Cells without r follow the previous cell; rows without r the previous row."""
     page, errors = page
     sheet = (
         f'<worksheet xmlns="{MAIN_NS}"><sheetData>'
@@ -241,7 +241,7 @@ def test_cells_and_rows_without_r_attribute(page):
 
 
 def test_shared_strings_skip_phonetic_and_keep_rich_runs(page):
-    """rPh-tekst telt niet mee; rich-text runs worden aaneengeschakeld."""
+    """rPh text does not count; rich-text runs are concatenated."""
     page, errors = page
     shared_doc = (
         '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'

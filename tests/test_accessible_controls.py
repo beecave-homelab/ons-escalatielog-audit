@@ -1,4 +1,4 @@
-"""Toetsenbordnavigatie, sorteren en status-/veldterugkoppeling (#56, #61)."""
+"""Keyboard navigation, sorting and status/field feedback (#56, #61)."""
 
 import re
 
@@ -21,14 +21,14 @@ def page():
 
 
 def analyze(page) -> None:
-    """Gebruik de gedeelde synthetische referentie via de normale uploadflow."""
+    """Use the shared synthetic reference through the normal upload flow."""
     page.locator("#fileInput").set_input_files(STANDARD_FIXTURE)
     page.locator("#analyzeBtn").click()
     page.wait_for_selector("#workspace.show")
 
 
 def test_tabs__keyboard_wraps_selects_and_links_visible_panels(page) -> None:
-    """Beide tabbalken hebben één tabstop, passende rollen en gekoppelde panelen."""
+    """Both tab bars have one tab stop, appropriate roles and linked panels."""
     analyze(page)
     tabs = page.get_by_role("tablist", name="Hoofdtabbladen")
     first = tabs.get_by_role("tab", name="Overzicht", exact=True)
@@ -74,7 +74,7 @@ def test_tabs__keyboard_wraps_selects_and_links_visible_panels(page) -> None:
 
 
 def test_table__sorts_complete_data_via_enter_and_space_and_labels_search(page) -> None:
-    """Een native kopknop sorteert beide richtingen zonder toetsenbordfocus te verliezen."""
+    """A native header button sorts both directions without losing keyboard focus."""
     analyze(page)
     page.get_by_role("tab", name="Medewerkers", exact=True).click()
     table = page.locator("#employeesTable")
@@ -104,7 +104,7 @@ def test_table__sorts_complete_data_via_enter_and_space_and_labels_search(page) 
 
 
 def test_status__announces_once_and_shows_success_next_to_export(page) -> None:
-    """Een echte PNG-download geeft tekst, succesopmaak en één gedeelde live region."""
+    """A real PNG download yields text, success styling and one shared live region."""
     analyze(page)
     with page.expect_download():
         page.locator("#pngBtn").click()
@@ -133,7 +133,7 @@ def test_status__announces_once_and_shows_success_next_to_export(page) -> None:
 def test_settings__names_bounds_focuses_error_and_clears_on_recovery(
     page, key, bad, good, bound
 ) -> None:
-    """Ongeldige invoer verandert geen analyse en herstelde invoer verliest de foutmarkering."""
+    """Invalid input does not change the analysis and recovered input loses the error marking."""
     analyze(page)
     page.get_by_role("tab", name="Instellingen", exact=True).click()
     before = page.evaluate("JSON.stringify(state.settings)")

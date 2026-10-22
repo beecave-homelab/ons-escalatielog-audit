@@ -1,4 +1,4 @@
-"""Drilldownbewijs komt uit de in analyze() vastgelegde index (issue #51)."""
+"""Drilldown evidence comes from the index recorded in analyze() (issue #51)."""
 
 import re
 
