@@ -24,7 +24,7 @@ In het Nederlands:
 In het Engels:
 
 - de code zelf: functie-, variabele- en klassenamen, testnamen en bestandsnamen van code, zoals `analyze`, `renderOverview` en `test_search_is_debounced`;
-- commentaar en docstrings in code-, script- en configuratiebestanden, ook in de inline JavaScript en CSS van de HTML. Bestaand Nederlands commentaar hoef je niet in één keer te vertalen; maak het Engels zodra je die regels toch wijzigt. Issue #99 vertaalt de rest;
+- commentaar en docstrings in code-, script- en configuratiebestanden, ook in de inline JavaScript en CSS van de HTML;
 - de vaste header van Bash-scripts (`Script Description`, `Author`, `Version`, `License`, `Creation Date`, `Last Modified`, `Usage`), inclusief de beschrijving.
 
 Deze vaste termen blijven zoals ze zijn, ongeacht de taal eromheen:
