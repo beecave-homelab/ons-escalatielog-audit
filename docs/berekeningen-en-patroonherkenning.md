@@ -775,7 +775,7 @@ Het `beforeprint`-event opent ook de geneste prioriteitsgroepen en peerdefinitie
 
 ### Toetsenbordbediening en terugkoppeling
 
-Hoofdtabbladen en de subtabs van Verdieping gebruiken gekoppelde `tablist`-, `tab`- en `tabpanel`-rollen. Per tabbalk heeft alleen de geselecteerde tab een gewone tabstop. Links/rechts wisselt de tab met terugloop aan de uiteinden; Home en End kiezen de eerste en laatste tab. De focus volgt de keuze. Bestaande doorklikacties en de knop Instellingen gebruiken dezelfde selectie.
+Hoofdtabbladen en de subtabs van Verdieping gebruiken gekoppelde `tablist`-, `tab`- en `tabpanel`-rollen. Per tabbalk heeft alleen de geselecteerde tab een gewone tabstop. Links/rechts wisselt de tab met terugloop aan de uiteinden; Home en End kiezen de eerste en laatste tab. De focus volgt de keuze. Bestaande doorklikacties gebruiken dezelfde selectie. **Instellingen** is geen tab: de knop in het uploadvak opent het instellingenpaneel en verbergt de analysepanelen zonder een tab te selecteren. Iedere tabkeuze keert terug naar de analyse.
 
 De kolomkoppen van `tableWidget` bevatten native sorteerknoppen. Enter of spatie sorteert de volledige gefilterde set; de huidige richting staat in `aria-sort` en een zichtbare pijl. Sorteren, zoeken en filteren blijven uitsluitend weergavefuncties en veranderen geen analyse-uitkomsten. Het zoekveld noemt de betreffende tabel.
 
@@ -869,7 +869,7 @@ Het HTML-rapport bevat de waarden die daadwerkelijk bij de analyse zijn toegepas
 
 De webui accepteert alleen gehele getallen. Uren moeten tussen 0 en 23 liggen. De drempel voor activatievertraging mag 0 zijn. Alle overige numerieke instellingen moeten minimaal 1 zijn. Ongeldige invoer wordt genegeerd.
 
-Via **Instellingen** in het uploadvak zijn alle drempels en signalen al vóór de eerste analyse bereikbaar, ook zonder bestand. Het kiezen van een bestand bewaart de ingevulde waarden. **Analyse uitvoeren** valideert en gebruikt deze waarden voor de eerste analyse; ongeldige invoer start geen analyse. Na de analyse zijn dezelfde instellingen ook via het tabblad Instellingen bereikbaar.
+Via **Instellingen** in het uploadvak zijn alle drempels en signalen al vóór de eerste analyse bereikbaar, ook zonder bestand. Het kiezen van een bestand bewaart de ingevulde waarden. **Analyse uitvoeren** valideert en gebruikt deze waarden voor de eerste analyse; ongeldige invoer start geen analyse. Na de analyse zijn dezelfde instellingen via dezelfde knop bereikbaar.
 
 Na een succesvolle analyse pas je wijzigingen toe met **Analyse opnieuw uitvoeren**. Nieuwe instellingen worden pas vastgelegd wanneer de heranalyse volledig slaagt. Mislukt de analyse of de weergave, dan blijven het getoonde resultaat, de toegepaste instellingen en het analysetijdstip ongewijzigd. De statusregel toont dan een foutmelding.
 
@@ -877,7 +877,7 @@ Bekende systeemredenen blijven altijd uitgesloten, ongeacht de instelling van de
 
 ### Instellingen bewaren en inladen
 
-In het tabblad **Instellingen** kun je auditinstellingen exporteren naar en importeren vanuit een lokaal JSON-bestand. Beide acties werken ook vóór de eerste analyse.
+In het instellingenpaneel kun je auditinstellingen exporteren naar en importeren vanuit een lokaal JSON-bestand. Beide acties werken ook vóór de eerste analyse.
 
 **Exporteren** leest de huidige formulierwaarden, valideert ze met dezelfde regels als `readSettings()`, en downloadt een UTF-8 JSON-bestand met de naam `escalatielog-audit-instellingen.json`. Het bestand bevat:
 

@@ -138,7 +138,7 @@ def test_reanalysis_report_and_responsive_guidance(page, tmp_path):
         page.locator('.tab[data-view="time"]').click()
         assert page.locator(".night-guidance").evaluate("el=>el.scrollWidth<=el.clientWidth")
         page.locator('.tab[data-view="attention"]').click()
-    page.locator('.tab[data-view="settings"]').click()
+    page.locator("#settingsBtn").click()
     page.locator("#set-activationDelayThresholdMinutes").fill("0")
     page.locator("#set-signalActivationDelay").uncheck()
     page.locator("#set-nightStartHour").fill("6")

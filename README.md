@@ -1,6 +1,6 @@
 # Ons Escalatielog Audit
 
-![Version: 0.20.0](https://img.shields.io/badge/version-0.20.0-00A0C8.svg)
+![Version: 0.20.1](https://img.shields.io/badge/version-0.20.1-00A0C8.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 
 Ons Escalatielog Audit is een zelfstandige webpagina voor het controleren van `.xlsx`-exports met escalatielogs uit Nedap Ons. De webui maakt opvallende patronen zichtbaar en laat je doorklikken naar de bijbehorende Excelregels. Grafieken en overzichten ondersteunen de controle van deze patronen en de bijbehorende bronregels.
@@ -89,7 +89,7 @@ De PNG-export en het HTML-rapport gebruiken de laatste succesvolle analyse. Heb 
 
 ### Instellingen bewaren en inladen
 
-In het tabblad **Instellingen** kun je je auditinstellingen als een lokaal JSON-bestand bewaren en bij een volgende controle weer inladen.
+In het instellingenpaneel — via de knop **Instellingen** in het uploadvak — kun je je auditinstellingen als een lokaal JSON-bestand bewaren en bij een volgende controle weer inladen.
 
 - **Instellingen exporteren** leest de huidige formulierwaarden, valideert ze en downloadt een bestand `escalatielog-audit-instellingen.json`. Bevat ook waarden die afwijken van de standaardinstellingen. Bij ongeldige invoer verschijnt een foutmelding en wordt geen bestand aangemaakt.
 - **Instellingen importeren** leest een `.json`-bestand in de browser. Het bestand wordt gecontroleerd op structuur, formaatnaam, formaatversie, verwachte sleutels, typen en bereiken. Een ongeldig bestand wordt volledig afgewezen; bestaande formulierwaarden en analyseresultaten blijven ongemoeid.
