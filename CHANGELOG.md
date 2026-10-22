@@ -4,6 +4,13 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+## [0.20.0] - 2026-10-22
+
+### Gewijzigd
+
+- Vervang de uitputtende losse PNG-bundel door acht gerichte afbeeldingen, ook bij lege resultaten. De nieuwe auditsamenvatting verenigt populaties en prioriteiten; Signalen per thema combineert unieke thematellingen met afzonderlijke signalen, nulwaarden, toegepaste drempels en vervolgaanwijzingen. Medewerker- en teamgrafieken blijven standaard aanwezig (#106).
+- Download iedere standaardafbeelding of het optionele medewerkerprofiel rechtstreeks via **Eén afbeelding als PNG**. PNG’s bevatten compacte herkomst, relevante instellingen en één waarschuwing; de ZIP gebruikt korte bestandsnamen zoals `01_auditsamenvatting.png`. De volledige dashboard-PNG en het HTML-rapport blijven beschikbaar. Analyse, signalen en CSV-kolommen blijven gelijk (#106).
+
 ## [0.19.6] - 2026-10-22
 
 ### Gewijzigd

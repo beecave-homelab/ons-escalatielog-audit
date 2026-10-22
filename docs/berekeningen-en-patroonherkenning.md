@@ -1103,58 +1103,46 @@ De webui weigert een export wanneer de afbeelding groter zou worden dan 48 miljo
 
 Als de analyse verandert terwijl de PNG wordt gecodeerd, houdt de webui de verouderde download tegen. De melding vraagt dan om de export opnieuw uit te voeren. Een nieuwe exportpoging blijft mogelijk. De bestaande analysegegevens blijven beschikbaar. Na een geslaagde export vervangt een downloadbevestiging een eventuele eerdere exportfout.
 
-### Losse visuals als ZIP
+### Acht standaard-PNG’s en afzonderlijke downloads
 
-Met **Losse visuals als ZIP** kun je de dashboardonderdelen afzonderlijk exporteren. De volledige dashboardexport blijft daarnaast beschikbaar.
+**Acht PNG’s als ZIP** bevat altijd de volgende acht afbeeldingen, in deze volgorde. Lege resultaten blijven als herkenbare lege weergave of nulwaarden aanwezig; de samenstelling hangt niet af van aanwezige signalen.
 
-De ZIP bevat een PNG per:
+| Nummer | Afbeelding | Inhoud |
+| -- | -- | -- |
+| 01 | Auditsamenvatting | Bronbestand, systeemregels, duplicaten en auditpopulatie; unieke aandachtspunten met aandeel en prioriteitsverdeling; unieke medewerkers en cliënten. |
+| 02 | Opvallendheden om te onderzoeken | De actuele gemengde Top-X, met selectiereden, periode en bronrijen; dezelfde selectie als de webui (§19). |
+| 03 | Signalen per thema | Unieke auditregels per controlethema met afzonderlijke signaaltellingen, nulwaarden, uitgeschakelde controles, definities, drempels en vervolgaanwijzingen. Thema’s en signalen kunnen overlappen en zijn niet optelbaar. |
+| 04 | Tijdpatroon | Alle weekdag-/uurcellen, inclusief nul; ruwe aantallen zonder correctie voor diensten of aantal weekdagen. Regels zonder geldige starttijd ontbreken in de heatmap; hun aantal staat erbij. |
+| 05 | Cliënten met veel verschillende medewerkers | Maximaal tien herkenbare cliëntdoelen met de meeste unieke medewerkers, inclusief niet-geactiveerde escalatiepogingen. |
+| 06 | Meeste escalaties per medewerker | De bestaande topgrafiek op handmatige auditregels. |
+| 07 | Meest voorkomende teams | De bestaande topgrafiek op volume binnen de auditpopulatie. |
+| 08 | Opgegeven redenen | De bestaande topgrafiek van genormaliseerde handmatige escalatieredenen. |
 
-- Controleperspectief.
-- KPI-kaart.
-- Donut.
-- Topgrafiek.
-- Aanwezig signaal.
+De samenvatting toont iedere populatietelling eenmaal. De prioriteitsverdeling is triage, geen ernst- of risicoscore. Ook medewerker- en teamvolumes zijn geen risicoscores: rooster, inzet en caseload blijven relevante context. De aparte KPI-, controleperspectief-, donut-, signaal-, beoordelingsroute- en instellingenafbeeldingen vervallen uit de standaardbundel. De begeleiding en volledige instellingen blijven beschikbaar in de webui en het HTML-rapport.
 
-Daarnaast krijgen de auditflow, controlefocus, controlethema's, tijdheatmap, medewerkerprofiel, beoordelingsroute en toegepaste instellingen ieder een eigen PNG. Als er geen signalen zijn, bevat de ZIP een afbeelding van de lege signaalweergave.
+Onder **Eén afbeelding als PNG** kies je iedere standaardafbeelding voor een directe download. Daarnaast is **Medewerkerprofiel: volume × cliëntspreiding** daar optioneel beschikbaar. Dit profiel zit niet in de ZIP; punten kunnen overlappen en de statische afbeelding biedt geen interactieve bronregeldetails. De interactieve visual op Overzicht en de volledige dashboard-PNG blijven beschikbaar.
 
-**Afmetingen**
+**Afmetingen en herkomst**
 
-Iedere losse afbeelding is 1.200 pixels breed. De hoogte hangt af van de betreffende visual en de bijbehorende context. Losse visuals gebruiken schaal 1 om bestandsgrootte en geheugengebruik te beperken.
+Iedere losse afbeelding is 1.200 pixels breed op schaal 1. De hoogte volgt de inhoud, met dezelfde leesbare tekstgrootten en groottegrenzen als voorheen. Het volledige dashboard blijft schaal 2 gebruiken en is 2.400 pixels breed.
 
-Het volledige dashboard gebruikt schaal 2 en is daardoor 2.400 pixels breed. Dit biedt meer detail bij inzoomen.
+Elke losse PNG bevat titel, bronbestand, waargenomen datumbereik, analysetijdstip en applicatieversie. De populatiecontext vermeldt de uitsluiting van systeemregels, exacte duplicaten en de stand van het optionele 30-minutenfilter. In de auditsamenvatting staan de populatieaantallen in het inhoudelijke overzicht; de andere PNG’s noemen de auditpopulatie in de kop. Signalen vermelden de toepasselijke drempel bij de definitie. De Top-X vermeldt de grenzen voor toegang, activatie, tijd, volume, bursts en cliëntclusters. Exports volgen uitsluitend toegepaste analyse-instellingen.
 
-**Metadata en bestandsnamen**
+Eén beknopte waarschuwing per losse afbeelding vraagt om menselijke controle, vermeldt dat signalen geen bewijs van dossierinzage of onrechtmatige toegang zijn en dat de afbeelding persoonsgegevens kan bevatten. Het waargenomen datumbereik bewijst geen volledige exportperiode. De webui, bronregels en het HTML-rapport blijven nodig voor details en alle instellingen.
 
-Iedere afbeelding bevat:
+**Bestandsnamen**
 
-- De titel.
-- Het bronbestand.
-- Het waargenomen datumbereik.
-- Het analysetijdstip.
-- De applicatieversie.
-- De toegangstermijn.
-- Het nachtvenster.
-- De privacywaarschuwing.
+Binnen de ZIP hebben de PNG’s korte vaste namen:
 
-De afzonderlijke instellingenafbeelding bevat alle toegepaste instellingen.
+`01_auditsamenvatting.png`, `02_opvallendheden.png`, `03_signalen-per-thema.png`, `04_tijdpatroon.png`, `05_clientspreiding.png`, `06_medewerkers.png`, `07_teams.png`, `08_redenen.png`.
 
-De bestandsnamen volgen:
+Een directe PNG-download heet `<exportBaseName>_overzicht_<volgnummer>_<visualnaam>.png`; het optionele profiel gebruikt `09_medewerkerprofiel`. De ZIP blijft `<exportBaseName>_overzicht_visuals.zip` heten. Herkomst staat ook in iedere afbeelding, zodat die na uitpakken of afzonderlijk delen herkenbaar blijft. De uiteindelijke weergavegrootte hangt af van het systeem waarin je de afbeelding gebruikt, bijvoorbeeld TOPdesk.
 
-`<exportBaseName>_overzicht_<volgnummer>_<visualnaam>.png`
+**Technische verwerking en fouten**
 
-De ZIP heet:
+De browser tekent iedere visual rechtstreeks vanuit hetzelfde analysemodel als de volledige dashboard-PNG; er worden geen nieuwe bevindingen berekend en geen delen uit een grote afbeelding gesneden. De ZIP wordt volledig in het geheugen opgebouwd met standaard ZIP-records en CRC-32. De PNG’s krijgen geen extra compressie, omdat PNG zelf al gecomprimeerd is. Er zijn geen externe bibliotheken, netwerkverkeer of browseropslag nodig. De ZIP is niet versleuteld en kan persoonsgegevens bevatten.
 
-`<exportBaseName>_overzicht_visuals.zip`
-
-De visualnaam volgt de titel op Overzicht. Daarbij wordt onderscheid gemaakt tussen kerncijfers, verhoudingen en signalen. Na het uitpakken kun je iedere afbeelding afzonderlijk gebruiken, bijvoorbeeld in TOPdesk. De uiteindelijke weergavegrootte hangt af van het systeem waarin je de afbeelding gebruikt.
-
-**Technische verwerking**
-
-De browser tekent iedere visual rechtstreeks vanuit hetzelfde analysemodel als de volledige dashboard-PNG. De webui snijdt de losse afbeeldingen dus niet uit één grote afbeelding.
-
-De ZIP wordt volledig in het geheugen opgebouwd. Daarbij gebruikt de webui standaard ZIP-records en CRC-32. De PNG-bestanden krijgen geen aanvullende compressie, omdat PNG zelf al gecomprimeerd is. Er zijn geen externe bibliotheken, netwerkverkeer of browseropslag nodig. De ZIP is niet versleuteld en kan persoonsgegevens bevatten.
-
-Tijdens het genereren zijn beide exportknoppen uitgeschakeld. Als de analyse tussentijds verandert of een coderingsfout optreedt, wordt geen gedeeltelijke of verouderde ZIP gedownload. Na iedere visual geeft de webui de tijdelijke canvassen vrij.
+Tijdens PNG- en ZIP-generatie zijn de PNG-acties en afbeeldingskeuze uitgeschakeld. Bij gewijzigde analyse of Top-X, een nieuw bestand, een coderingsfout of een te grote afbeelding wordt geen gedeeltelijke of verouderde download aangeboden. Tijdelijke canvassen worden vrijgegeven en opnieuw proberen blijft mogelijk.
 
 ## 19. Gemengde Top-X en kopieerbare samenvatting
 
