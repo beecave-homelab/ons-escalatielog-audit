@@ -339,7 +339,7 @@ def test_visuals_zip_errors_stale_analysis_and_empty(page):
 def test_single_png_matches_bundle_or_optional_profile(page, tmp_path, index):
     """Every standard image and the optional profile has a usable individual action."""
     load_analysis(page)
-    page.locator("#visualExports summary").click()
+    page.locator("#visualExportsBtn").click()
     page.locator("#visualChoice").select_option(str(index))
     page.context.set_offline(True)
     expected = page.evaluate(
@@ -518,9 +518,9 @@ def test_curated_long_labels_top_fifty_and_viewport_bounds(page):
     assert len(result["findings"]) == 50
     assert "50." in result["texts"][1]
     assert result["texts"][4].count("L") >= 1200
+    page.locator("#visualExportsBtn").click()
     for width in (390, 1440):
         page.set_viewport_size({"width": width, "height": 900})
-        page.locator("#visualExports").evaluate("e => e.open=true")
         assert page.locator("#visualPngBtn").is_visible()
         assert page.locator("#visualChoice").is_visible()
         bounds = page.locator("#visualChoice").bounding_box()
