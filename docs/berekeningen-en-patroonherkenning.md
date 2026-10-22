@@ -365,7 +365,7 @@ In het referentiebestand komen de volgende tijdsduren voor:
 
 Voor her-escalaties gebruikt de webui daarnaast `activeAccessMinutes = 840`. Deze periode van 14 uur is een overgenomen functionele aanname voor triage. De export bevestigt niet dat toegang gedurende deze volledige periode geldig bleef of dat deze niet tussentijds is ingetrokken.
 
-Laat FAB controleren of de ingestelde toegangstermijn overeenkomt met de inrichting van Nedap Ons. Een onjuiste termijn verandert welke her-escalaties worden geselecteerd. Bewaar daarom bij iedere beoordeling de toegepaste instellingen.
+Controleer of de ingestelde toegangstermijn overeenkomt met de inrichting van Nedap Ons. Een onjuiste termijn verandert welke her-escalaties worden geselecteerd. Bewaar daarom bij iedere beoordeling de toegepaste instellingen.
 
 ## 8. Her-escalaties en activatievertraging
 
@@ -1041,6 +1041,8 @@ De export gebruikt de laatste uitgevoerde analyse, inclusief de toegepaste inste
 
 ### Inhoud van de dashboardexport
 
+De drie controlecategorieën op Overzicht heten **Activatie en herhaling**, **Volume en spreiding** en **Datakwaliteit**. Ze tellen respectievelijk auditregels met minimaal één signaal in `access`, `scope` of `data`. Dezelfde auditregel kan in meerdere categorieën meetellen; de aantallen zijn daarom niet optelbaar. De bronregeldetails en PNG-exports gebruiken dezelfde categoriegegevens.
+
 De PNG bevat:
 
 - De drie controleperspectieven.
@@ -1156,7 +1158,7 @@ Tijdens het genereren zijn beide exportknoppen uitgeschakeld. Als de analyse tus
 
 ## 19. Gemengde Top-X en kopieerbare samenvatting
 
-**Opvallendheden om te onderzoeken** toont standaard vijf bevindingen. Het aantal is op Overzicht instelbaar van 1 tot en met 50, uitsluitend gehele getallen. **Selectie toepassen** verandert alleen deze selectie, niet de analyse, signalen, prioriteiten of CSV-bestanden. De selectie gebruikt de laatste geslaagde analyse en volgt geen nog niet toegepaste drempelwijzigingen.
+**Opvallendheden om te onderzoeken** toont standaard tien bevindingen. Het aantal is op Overzicht instelbaar van 1 tot en met 50, uitsluitend gehele getallen. **Selectie toepassen** verandert alleen deze selectie, niet de analyse, signalen, prioriteiten of CSV-bestanden. De selectie gebruikt de laatste geslaagde analyse en volgt geen nog niet toegepaste drempelwijzigingen.
 
 ### Selectie en rangschikking
 

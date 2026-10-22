@@ -4,6 +4,13 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+## [0.19.6] - 2026-10-22
+
+### Gewijzigd
+
+- Gebruik consequent de naam Ons Escalatielog Audit en beschrijf de werking met grafieken, overzichten en bronregels in de ondertitel. Maak actuele teksten en de drie controlecategorieën rolneutraal; vermeld dat hun aantallen kunnen overlappen en niet optelbaar zijn (#104).
+- Toon standaard tien opvallendheden. Het instelbare bereik van 1–50, de selectievolgorde en de gedeelde selectie in HTML-rapport en PNG-exports blijven gelijk (#104).
+
 ## [0.19.5] - 2026-10-22
 
 ### Gewijzigd

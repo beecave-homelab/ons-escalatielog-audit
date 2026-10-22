@@ -472,7 +472,7 @@ wheels = [
 
 [[package]]
 name = "ons-escalatielog-audit"
-version = "0.19.5"
+version = "0.19.6"
 source = { virtual = "." }
 
 [package.dev-dependencies]
