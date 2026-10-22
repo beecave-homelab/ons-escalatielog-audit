@@ -9,7 +9,7 @@ from zipfile import ZIP_DEFLATED, ZIP_STORED, ZipFile
 
 import pytest
 from generate_synthetic_escalatielog import HEADERS, column_name, workbook_files
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import expect, sync_playwright
 from test_report_layout import ROOT, launch_browser
 
 MAIN_NS = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
@@ -266,4 +266,60 @@ def test_shared_strings_skip_phonetic_and_keep_rich_runs(page):
         [shared_doc, sheet],
     )
     assert matrix[0] == ["Houd mij", "deel 1deel 2"]
+    assert not errors
+
+
+def rewrite_declared_size(path: Path, member: str, declared: int) -> None:
+    """Overwrite only the central-directory uncompressed size of one member."""
+    data = bytearray(path.read_bytes())
+    eocd = data.rfind(b"PK\x05\x06")
+    assert eocd >= 0, "Geen einde van ZIP-structuur gevonden"
+    total = int.from_bytes(data[eocd + 10 : eocd + 12], "little")
+    offset = int.from_bytes(data[eocd + 16 : eocd + 20], "little")
+    for _ in range(total):
+        assert data[offset : offset + 4] == b"PK\x01\x02", "Ongeldige central directory"
+        name_length = int.from_bytes(data[offset + 28 : offset + 30], "little")
+        extra_length = int.from_bytes(data[offset + 30 : offset + 32], "little")
+        comment_length = int.from_bytes(data[offset + 32 : offset + 34], "little")
+        name = bytes(data[offset + 46 : offset + 46 + name_length]).decode()
+        if name == member:
+            data[offset + 24 : offset + 28] = declared.to_bytes(4, "little")
+            path.write_bytes(data)
+            return
+        offset += 46 + name_length + extra_length + comment_length
+    raise AssertionError(f"ZIP-onderdeel niet gevonden: {member}")
+
+
+@pytest.mark.parametrize(
+    ("compression", "mode", "expected"),
+    [
+        (ZIP_DEFLATED, "over-limit", "meer dan de toegestane 512 MB"),
+        (ZIP_STORED, "over-limit", "meer dan de toegestane 512 MB"),
+        (ZIP_DEFLATED, "one-less", "komt niet overeen met de ZIP-inhoudsopgave"),
+        (ZIP_DEFLATED, "one-more", "komt niet overeen met de ZIP-inhoudsopgave"),
+    ],
+)
+def test_zip_entry_size_limit_and_mismatch(page, tmp_path, compression, mode, expected):
+    """The reader rejects oversized declared entries and size mismatches (#65)."""
+    page, errors = page
+    workbook = tmp_path / "groottecontrole.xlsx"
+    rows = [HEADERS, [BASE_VALUES[h] for h in HEADERS]]
+    write_xlsx(workbook, workbook_files(rows), compression=compression)
+    member = "xl/worksheets/sheet1.xml"
+    with ZipFile(workbook) as archive:
+        actual = archive.getinfo(member).file_size
+    declared = {
+        "over-limit": 600 * 1024 * 1024,
+        "one-less": actual - 1,
+        "one-more": actual + 1,
+    }[mode]
+    rewrite_declared_size(workbook, member, declared)
+
+    page.on("dialog", lambda dialog: dialog.dismiss())
+    page.locator("#fileInput").set_input_files(workbook)
+    page.locator("#analyzeBtn").click()
+    status = page.locator("#status.error")
+    expect(status).to_contain_text(expected)
+    assert member in status.text_content()
+    assert not page.locator("#workspace").is_visible()
     assert not errors
