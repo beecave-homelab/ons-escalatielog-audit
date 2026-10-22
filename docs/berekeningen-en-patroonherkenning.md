@@ -2,7 +2,7 @@
 title: Berekeningen, tellingen en patroonherkenning
 applies_to: escalatielog-audit-webui.html
 tags: [escalatielogs, audit, functioneel-beheer]
-updated: 2026-10-19
+updated: 2026-10-22
 ---
 
 ## Berekeningen, tellingen en patroonherkenning
@@ -23,7 +23,7 @@ Zoeken, sorteren en filteren verandert alleen de tabelweergave. De auditpopulati
 
 Dit document beschrijft het gedrag van de huidige implementatie. Het bevestigt geen leveranciersspecificaties, wettelijke verplichtingen of volledige naleving van normen. Controleer daarom de inrichting en beschikbare logging van Nedap Ons voordat je de uitkomsten inhoudelijk beoordeelt.
 
-De ingebouwde XLSX-lezer is bedoeld voor een escalatielog-export uit de Autorisatie-module van Nedap Ons, met één werkblad en tekst- of getalcellen. De lezer ondersteunt geen ZIP64-bestanden.
+De ingebouwde XLSX-lezer is bedoeld voor een escalatielog-export uit de Autorisatie-module van Nedap Ons, met één werkblad en tekst- of getalcellen. De lezer ondersteunt geen ZIP64-bestanden. Een onderdeel van het XLSX-bestand dat uitgepakt groter is dan 512 MB, wordt geweigerd met een duidelijke melding. Dat geldt ook voor een onderdeel waarvan de uitgepakte grootte afwijkt van de ZIP-inhoudsopgave.
 
 Foutcellen zoals `#N/A` worden als lege waarde ingelezen. In regels die niet als systeemmelding zijn herkend, meldt **Datakwaliteit** ze als *Foutcel in bron*. Fonetische hulptekst in gedeelde tekenreeksen wordt genegeerd. Elementen met een namespaceprefix en cellen of rijen zonder `r`-attribuut worden wel gelezen.
 
@@ -679,6 +679,8 @@ Voor schermlezers vermeldt de teller ook de tabelnaam. De melding bij een leeg z
 ### Zelfstandig gebruik en afdrukken
 
 Het HTML-rapport werkt lokaal zonder netwerkverkeer, externe code of browseropslag. Zonder JavaScript verschijnen geen filterbedieningen, maar alle opgenomen regels blijven leesbaar.
+
+De beveiligingsrichtlijn (CSP) van het rapport staat alleen het meegeleverde filterscript toe, herkend aan een SHA-256-hash van de scriptinhoud. Andere inline scripts en gebeurtenishandlers in het rapport worden geblokkeerd. Voor het exporteren heeft de browser Web Crypto nodig; dat is beschikbaar bij `file://`, `https` en `localhost`.
 
 Bij afdrukken:
 

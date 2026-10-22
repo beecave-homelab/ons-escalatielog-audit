@@ -4,6 +4,13 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+## [0.19.5] - 2026-10-22
+
+### Gewijzigd
+
+- Sta in het HTML-rapport alleen het eigen filterscript toe via een SHA-256-hash in de beveiligingsrichtlijn (CSP), in plaats van `'unsafe-inline'`. Andere inline scripts en gebeurtenishandlers in het rapport blokkeert de browser. De export berekent de hash lokaal met Web Crypto (#65).
+- Weiger XLSX-onderdelen die uitgepakt groter zijn dan 512 MB of waarvan de uitgepakte grootte afwijkt van de ZIP-inhoudsopgave, met een duidelijke melding in plaats van een vastlopend tabblad (#65).
+
 ## [0.19.4] - 2026-10-22
 
 ### Onderhoud

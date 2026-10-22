@@ -1,6 +1,6 @@
 # Ons Escalatielog Audit
 
-![Version: 0.19.4](https://img.shields.io/badge/version-0.19.4-00A0C8.svg)
+![Version: 0.19.5](https://img.shields.io/badge/version-0.19.5-00A0C8.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 
 Ons Escalatielog Audit is een zelfstandige webpagina voor het controleren van `.xlsx`-exports met escalatielogs uit Nedap Ons. De webui maakt opvallende patronen zichtbaar en laat je doorklikken naar de bijbehorende Excelregels. Het hulpmiddel is bedoeld voor functioneel applicatiebeheerders, CISO's en privacy officers.
@@ -130,6 +130,8 @@ De melding vermeldt ook dat alleen de eerste tien rijen zijn gecontroleerd.
 
 Foutcellen in de export, zoals `#N/A`, leest de webui in als lege waarden. Staat een foutcel in een regel die geen systeemmelding is, dan verschijnt die onder **Datakwaliteit** als *Foutcel in bron*, zodat je de export kunt controleren. Foutcellen in systeemmeldingen worden daar niet gemeld.
 
+Een afzonderlijk onderdeel van het XLSX-bestand mag uitgepakt maximaal 512 MB groot zijn; grotere onderdelen weigert de webui met een melding.
+
 ## Uitkomsten beoordelen
 
 Controleer bij iedere analyse:
@@ -151,7 +153,7 @@ Lees de [technische documentatie](docs/berekeningen-en-patroonherkenning.md) voo
 
 De webui verwerkt de Excelgegevens uitsluitend in het geheugen van de browser. Wanneer je de pagina sluit of vernieuwt, worden de ingelezen gegevens gewist.
 
-Bestanden die je exporteert, blijven wel op je apparaat staan. ZIP-, PNG-, CSV- en HTML-bestanden kunnen persoonsgegevens bevatten.
+Bestanden die je exporteert, blijven wel op je apparaat staan. ZIP-, PNG-, CSV- en HTML-bestanden kunnen persoonsgegevens bevatten. Het HTML-rapport voert alleen zijn eigen filterscript uit; de beveiligingsrichtlijn (CSP) staat alleen dat script toe via een SHA-256-hash.
 
 Bewaar en deel deze bestanden volgens de interne afspraken van je organisatie.
 
