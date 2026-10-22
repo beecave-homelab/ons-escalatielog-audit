@@ -525,3 +525,53 @@ def test_curated_long_labels_top_fifty_and_viewport_bounds(page):
         assert page.locator("#visualChoice").is_visible()
         bounds = page.locator("#visualChoice").bounding_box()
         assert bounds["x"] >= 0 and bounds["x"] + bounds["width"] <= width
+
+
+def test_visual_titles_and_slugs_come_from_manifest(page):
+    """Titles and slugs come from the manifest, not from call order."""
+    load_analysis(page)
+    visuals = page.evaluate(
+        "overviewPngVisuals(dashboardPngModel(),true).map(v=>({title:v.title,slug:v.slug}))"
+    )
+    assert [v["title"] for v in visuals] == page.evaluate("[...OVERVIEW_PNG_TITLES]")
+    assert [v["slug"] for v in visuals] == [
+        "auditsamenvatting",
+        "opvallendheden",
+        "signalen-per-thema",
+        "tijdpatroon",
+        "clientspreiding",
+        "medewerkers",
+        "teams",
+        "redenen",
+        "medewerkerprofiel",
+    ]
+
+
+def test_theme_card_values_follow_category_key_not_order(page):
+    """Each theme card looks up its value by category key, not by position."""
+    load_analysis(page)
+    result = page.evaluate(
+        """() => {
+          const visual=overviewPngVisuals(dashboardPngModel(),true)
+            .find(v=>v.slug==='signalen-per-thema');
+          const model=visual.model;
+          const counts=Object.entries(state.result.themeCounts);
+          const distinct=new Set(counts.map(([,v])=>v)).size===counts.length;
+          model.themes=counts.map(([key,amount],i)=>({
+            label:signalCategoryLabel(key),key,
+            amount:distinct?amount:1000*(i+1),
+            value:fmt(distinct?amount:1000*(i+1))})).reverse();
+          const lines=[],original=CanvasRenderingContext2D.prototype.fillText;
+          CanvasRenderingContext2D.prototype.fillText=function(value,x,y){
+            lines.push(String(value));return original.call(this,value,x,y)};
+          try{const canvas=drawDashboardPng(model,visual);canvas.width=0;canvas.height=0}
+          finally{CanvasRenderingContext2D.prototype.fillText=original}
+          return {lines,themes:model.themes.map(t=>({key:t.key,value:t.value})),
+            groups:pngSignalGroups(model.settings).map(g=>({key:g.key,title:g.title}))};
+        }"""
+    )
+    values = {theme["key"]: theme["value"] for theme in result["themes"]}
+    lines = result["lines"]
+    for group in result["groups"]:
+        position = lines.index(group["title"])
+        assert lines[position + 1] == f"{values[group['key']]} unieke regels"
