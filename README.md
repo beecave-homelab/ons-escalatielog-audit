@@ -1,6 +1,6 @@
 # Ons Escalatielog Audit
 
-![Version: 0.19.6](https://img.shields.io/badge/version-0.19.6-00A0C8.svg)
+![Version: 0.20.0](https://img.shields.io/badge/version-0.20.0-00A0C8.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 
 Ons Escalatielog Audit is een zelfstandige webpagina voor het controleren van `.xlsx`-exports met escalatielogs uit Nedap Ons. De webui maakt opvallende patronen zichtbaar en laat je doorklikken naar de bijbehorende Excelregels. Grafieken en overzichten ondersteunen de controle van deze patronen en de bijbehorende bronregels.
@@ -29,7 +29,7 @@ De webui biedt de volgende mogelijkheden:
 - **Tijdlijnen.** Bekijk wanneer een activatie als laat telt en welke starturen binnen het nachtvenster vallen. Late activatie begint strikt ná de ingestelde grens. De tijdlijnen gebruiken de actuele analyse-instellingen en staan ook in het HTML-rapport.
 - **Opvallendheden om te onderzoeken.** Bekijk standaard tien bevindingen en pas het aantal aan van 1 tot en met 50. De drie controlecategorieën Activatie en herhaling, Volume en spreiding en Datakwaliteit kunnen dezelfde auditregels bevatten; hun aantallen zijn daarom niet optelbaar.
 - **Controleerbare brongegevens.** Open vanuit cijfers, grafieken en tabellen de Excelregels waarop de uitkomsten zijn gebaseerd.
-- **Losse visuals.** Exporteer alle visuals uit Overzicht als PNG-bestanden in één ZIP. Iedere afbeelding krijgt een herkenbare naam en bijbehorende brongegevens. Je kunt de afbeeldingen bijvoorbeeld toevoegen aan een TOPdesk-melding.
+- **Losse visuals.** Exporteer acht gerichte PNG’s in één ZIP: auditsamenvatting, opvallendheden, signalen per thema, tijdpatroon, cliëntspreiding, medewerkers, teams en opgegeven redenen. Kies onder **Eén afbeelding als PNG** een van deze afbeeldingen of het optionele medewerkerprofiel voor een losse download. Iedere afbeelding bevat herkomst en relevante analysecontext. Je kunt de afbeeldingen bijvoorbeeld toevoegen aan een TOPdesk-melding.
 - **Dashboard als PNG.** Exporteer het volledige dashboard als één afbeelding met een vaste indeling. Ook onderdelen buiten het zichtbare scherm worden meegenomen, inclusief volledige labels, periode, analysetijdstip, versie en toegepaste instellingen.
 - **Rapportages.** Exporteer aandachtspunten, bronregels en een zelfstandig HTML-rapport. Het rapport bevat de auditflow, themabalken, tijdpatronen per weekdag en uur, en topgrafieken naast de bijbehorende tabellen.
 - **Interactieve rapporttabellen.** Zoek en filter direct boven de tabellen in het HTML-rapport. Een teller toont hoeveel opgenomen regels zichtbaar zijn. Brede tabellen kun je horizontaal verschuiven. Bij afdrukken worden alle opgenomen regels getoond, ook wanneer filters actief zijn.
@@ -83,7 +83,7 @@ Bij het openen van de online showcase ontvangt GitHub het paginaverzoek en regis
 5. Bekijk vervolgens **Overzicht** en **Aandachtspunten**. De gemengde selectie **Opvallendheden om te onderzoeken** toont auditregels, bursts en cliëntclusters met hun selectiereden. Kies hoeveel je wilt zien (1–50) en klik op **Selectie toepassen**. Onder **Samenvatting maken en kopiëren** begint de standaardtekst met lopende zinnen. Je kunt het sjabloon met toegestane placeholders aanpassen, het tekstvoorbeeld controleren en de samenvatting kopiëren. Deze tekst kan persoonsgegevens bevatten.
 6. Klik op een cijfer, grafiek of tabelregel om de bijbehorende bronregels te openen. Je kunt deze doorzoeken en filteren op team, deskundigheid, doeltype en auditcontext. **Bronregels CSV** bevat de volledige geopende selectie, ook wanneer filters actief zijn.
 7. Pas zo nodig de instellingen aan en klik op **Analyse opnieuw uitvoeren**.
-8. Exporteer de gewenste aandachtspunten, bronregels of rapportages. Je kunt ook kiezen voor **Dashboard als PNG** of **Losse visuals als ZIP**. Pak de ZIP uit om afzonderlijke afbeeldingen te gebruiken.
+8. Exporteer de gewenste aandachtspunten, bronregels of rapportages. Je kunt ook kiezen voor **Dashboard als PNG** of **Acht PNG’s als ZIP**. Via **Eén afbeelding als PNG** kies je direct een afzonderlijke afbeelding; het medewerkerprofiel is alleen daar beschikbaar.
 
 De PNG-export en het HTML-rapport gebruiken de laatste succesvolle analyse. Heb je instellingen gewijzigd? Klik dan eerst op **Analyse opnieuw uitvoeren** om die wijzigingen toe te passen. Mislukt die heranalyse, dan blijven de vorige analyse en instellingen actief.
 
