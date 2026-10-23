@@ -4,6 +4,13 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+## [0.20.2] - 2026-10-23
+
+### Gewijzigd
+
+- Rangschik de vijf grafieken op **Overzicht** op brede schermen in drie ruimere rijen: het medewerkerprofiel over de volle breedte, daarna medewerkers naast teams en cliëntspreiding naast redenen. Op smalle schermen blijven de grafieken in dezelfde volgorde onder elkaar staan; titels, toelichtingen, tellingen en doorklikdetails blijven ongewijzigd (#116).
+- Verplaats **Eén afbeelding als PNG** naar de exportknoppen in de werkbalk. De knop klapt het keuzepaneel daaronder open en weer dicht, ook met het toetsenbord; de aparte balk onder de werkbalk verdwijnt (#114).
+
 ## [0.20.1] - 2026-10-22
 
 ### Gewijzigd
