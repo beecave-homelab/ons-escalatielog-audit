@@ -29,7 +29,7 @@ button,input,select{font:inherit}button{cursor:pointer}.app{max-width:1480px;mar
 .kpis.visual{grid-template-columns:repeat(6,minmax(0,1fr))}.kpi .trend{font-size:10px;margin-top:7px;font-weight:750}.trend.good{color:var(--ok)}.trend.warn{color:var(--warn)}.trend.info{color:var(--secondary-dark)}
 .cockpit-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;margin-bottom:14px}.audit-flow{display:grid;grid-template-columns:repeat(5,1fr);gap:0;align-items:stretch}.flow-step{position:relative;padding:14px 14px 13px;border:1px solid var(--line);background:#fff}.flow-step:first-child{border-radius:12px 0 0 12px}.flow-step:last-child{border-radius:0 12px 12px 0}.flow-step:not(:last-child){border-right:0}.flow-step:not(:last-child):after{content:'›';position:absolute;right:-9px;top:50%;transform:translateY(-50%);z-index:2;width:18px;height:18px;border-radius:50%;background:#fff;border:1px solid var(--line);display:grid;place-items:center;color:#8a8f98;font-weight:900}.flow-step .flow-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:800}.flow-step .flow-value{font-size:24px;font-weight:850;margin-top:4px}.flow-step .flow-sub{font-size:10px;color:var(--muted);margin-top:3px}.flow-step.system .flow-value{color:#56727e}.flow-step.audit .flow-value{color:var(--ok)}.flow-step.attention .flow-value{color:var(--warn)}
 .metric-donuts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.donut-card{border:1px solid var(--line);border-radius:13px;padding:13px;display:flex;align-items:center;gap:13px;min-height:105px;background:#fff}.donut{--p:0;--ring:var(--primary);width:76px;height:76px;border-radius:50%;background:conic-gradient(var(--ring) calc(var(--p)*1%),#edf0f3 0);position:relative;flex:none}.donut:after{content:'';position:absolute;inset:9px;border-radius:50%;background:#fff}.donut-center{position:absolute;inset:0;display:grid;place-items:center;z-index:2;font-size:15px;font-weight:850}.donut-copy strong{display:block;font-size:12px}.donut-copy span{display:block;color:var(--muted);font-size:10.5px;line-height:1.35;margin-top:4px}
-.visual-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.visual-grid.three{grid-template-columns:repeat(3,1fr)}.chart-card{padding:17px;min-width:0}.chart-note{font-size:10.5px;color:var(--muted);margin-top:10px}
+.visual-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.chart-wide{grid-column:1/-1}.chart-card{padding:17px;min-width:0}.chart-note{font-size:10.5px;color:var(--muted);margin-top:10px}
 .signal-bars{display:grid;gap:10px}.signal-bar-row{display:grid;grid-template-columns:minmax(150px,1fr) 2fr 55px;gap:10px;align-items:center}.signal-bar-name{font-size:11px;font-weight:750;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.signal-bar-track{height:12px;border-radius:999px;background:#eff1f4;overflow:hidden}.signal-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--primary),#c859ae)}.signal-bar-fill.access{background:linear-gradient(90deg,#A02A85,#cb65b5)}.signal-bar-fill.scope{background:linear-gradient(90deg,#00A0C8,#62cbe1)}.signal-bar-fill.time{background:linear-gradient(90deg,#d88716,#f0b554)}.signal-bar-fill.data{background:linear-gradient(90deg,#667085,#98a2b3)}.signal-bar-value{text-align:right;font-size:11px;font-weight:850}
 .heatmap-wrap{overflow:auto}.heatmap{display:grid;grid-template-columns:72px repeat(24,minmax(24px,1fr));gap:3px;min-width:760px;align-items:center}.heat-label{font-size:10px;color:var(--muted);font-weight:750}.heat-hour{text-align:center;font-size:9px;color:#8a9099}.heat-cell{height:25px;border-radius:5px;background:#f1f2f4;display:grid;place-items:center;font-size:8px;color:transparent;transition:.15s}.heat-cell:hover{outline:2px solid rgba(160,42,133,.22);color:#333;z-index:1}.heat-cell.l1{background:#f7eaf4}.heat-cell.l2{background:#edd0e7}.heat-cell.l3{background:#dca2d1}.heat-cell.l4{background:#c867b2;color:#fff}.heat-cell.l5{background:#9d2f84;color:#fff}
 .scatter{position:relative;height:290px;margin:8px 6px 30px 34px;border-left:1px solid #cfd3d8;border-bottom:1px solid #cfd3d8;background:linear-gradient(to right,transparent 24.8%,#f1f2f4 25%,transparent 25.2%,transparent 49.8%,#f1f2f4 50%,transparent 50.2%,transparent 74.8%,#f1f2f4 75%,transparent 75.2%),linear-gradient(to top,transparent 24.8%,#f1f2f4 25%,transparent 25.2%,transparent 49.8%,#f1f2f4 50%,transparent 50.2%,transparent 74.8%,#f1f2f4 75%,transparent 75.2%)}.scatter-dot{position:absolute;width:10px;height:10px;border-radius:50%;background:var(--primary);transform:translate(-50%,50%);box-shadow:0 0 0 3px rgba(160,42,133,.12);cursor:help}.scatter-dot.attn{background:var(--warn);box-shadow:0 0 0 3px rgba(228,155,58,.15)}.scatter-x,.scatter-y{position:absolute;font-size:9px;color:var(--muted)}.scatter-x{bottom:-23px;left:50%;transform:translateX(-50%)}.scatter-y{left:-32px;top:50%;transform:rotate(-90deg) translateX(-50%);transform-origin:left top;white-space:nowrap}
@@ -54,10 +54,10 @@ button,input,select{font:inherit}button{cursor:pointer}.app{max-width:1480px;mar
 @media(max-width:1050px){.logic-grid{grid-template-columns:repeat(2,1fr)}.review-route{grid-template-columns:1fr}.review-step:not(:last-child):after{display:none}}
 @media(max-width:680px){.logic-grid{grid-template-columns:1fr}.drill-review{padding:9px 14px}}
 
-@media(max-width:1050px){.kpis,.kpis.visual{grid-template-columns:repeat(3,1fr)}.cockpit-grid,.visual-grid,.visual-grid.three{grid-template-columns:1fr}.audit-flow{grid-template-columns:repeat(2,1fr);gap:8px}.flow-step,.flow-step:first-child,.flow-step:last-child{border:1px solid var(--line);border-radius:12px}.flow-step:not(:last-child):after{display:none}.grid-2,.grid-3{grid-template-columns:1fr}.settings-grid{grid-template-columns:repeat(2,1fr)}.upload-grid{grid-template-columns:1fr}.toolbar{align-items:flex-start;flex-direction:column}.export-actions{width:100%}.settings-head{flex-direction:column;align-items:stretch}.settings-actions{justify-content:flex-start}}
+@media(max-width:1050px){.kpis,.kpis.visual{grid-template-columns:repeat(3,1fr)}.cockpit-grid,.visual-grid{grid-template-columns:1fr}.audit-flow{grid-template-columns:repeat(2,1fr);gap:8px}.flow-step,.flow-step:first-child,.flow-step:last-child{border:1px solid var(--line);border-radius:12px}.flow-step:not(:last-child):after{display:none}.grid-2,.grid-3{grid-template-columns:1fr}.settings-grid{grid-template-columns:repeat(2,1fr)}.upload-grid{grid-template-columns:1fr}.toolbar{align-items:flex-start;flex-direction:column}.export-actions{width:100%}.settings-head{flex-direction:column;align-items:stretch}.settings-actions{justify-content:flex-start}}
 @media(max-width:680px){.app{padding:14px}.analysis-banner{align-items:flex-start;flex-direction:column}.analysis-meta{justify-content:flex-start}.kpis.visual{grid-template-columns:1fr 1fr}.audit-flow{grid-template-columns:1fr}.metric-donuts{grid-template-columns:1fr}.priority-strip{grid-template-columns:1fr}.signal-bar-row{grid-template-columns:minmax(110px,1fr) 1.2fr 45px}.topbar{align-items:flex-start}.privacy{display:none}.kpis{grid-template-columns:1fr 1fr}.settings-grid{grid-template-columns:1fr}.signal-grid{grid-template-columns:1fr}.bar-row{grid-template-columns:minmax(90px,1fr) 1.3fr 42px}.export-actions .btn{flex:1}.settings-actions .btn{flex:1 1 auto}.brand p{display:none}}
 @media(max-width:680px){.drill-overlay{padding:0}.drill-panel{width:100vw;height:100vh;border-radius:0}.drill-header{padding:14px;flex-direction:column}.drill-actions{width:100%;justify-content:flex-start}.drill-summary{padding:9px 14px}}
-@media print{body{background:#fff}.upload-card,.toolbar,.export-actions,.footer-note{display:none!important}.app{max-width:none;padding:0}.card{box-shadow:none}.view{display:block!important;page-break-before:always}.view:first-of-type{page-break-before:auto}.table-wrap{max-height:none;overflow:visible}th{position:static}.settings-grid{grid-template-columns:repeat(3,1fr)}}
+@media print{body{background:#fff}.upload-card,.toolbar,.export-actions,.footer-note,.visual-export-panel{display:none!important}.app{max-width:none;padding:0}.card{box-shadow:none}.view{display:block!important;page-break-before:always}.view:first-of-type{page-break-before:auto}.table-wrap{max-height:none;overflow:visible}th{position:static}.settings-grid{grid-template-columns:repeat(3,1fr)}}
 
 .drill-filters{display:flex;align-items:center;gap:8px;flex-wrap:wrap;position:sticky;top:0;z-index:5;background:#fff;padding:10px 20px;border-bottom:1px solid var(--line)}.drill-filters .drill-search{margin:0;width:auto;flex:1 1 210px}.drill-filters .field{min-width:0}.drill-filters .column-filter{flex:1 1 150px}.drill-filters .drill-count{white-space:nowrap}.more-rows td{padding:0}.more-rows-btn,.drill-more{display:inline-flex;align-items:center;justify-content:center;gap:7px;margin:10px auto;padding:10px 14px;font-weight:700;font-size:13px;border:1px solid var(--line);border-radius:10px;background:#fff;color:#444;cursor:pointer}.drill-more{display:block;text-align:center;border:0;background:none}.drill-more .more-rows-btn{margin:0}
 /* 0.6.0: readable controls and drillable summaries */
@@ -139,20 +139,26 @@ button,input,select{font:inherit}button{cursor:pointer}.app{max-width:1480px;mar
             <button class="btn secondary" id="reportBtn">Rapport HTML</button>
             <button class="btn ghost" id="pngBtn" disabled>Dashboard als PNG</button>
             <button class="btn ghost" id="visualsZipBtn" disabled>Acht PNG’s als ZIP</button>
+            <button class="btn ghost"
+                    id="visualExportsBtn"
+                    aria-expanded="false"
+                    aria-controls="visualExports">Eén afbeelding als PNG</button>
           </div>
         </div>
         <div id="actionStatus" class="status action-status" aria-hidden="true"></div>
-        <details class="card section-card"
-                 id="visualExports"
-                 style="margin-bottom:14px">
-          <summary>Eén afbeelding als PNG</summary>
+        <div class="card section-card visual-export-panel"
+             id="visualExports"
+             role="region"
+             aria-labelledby="visualExportsBtn"
+             style="margin-bottom:14px"
+             hidden>
           <div class="export-actions" style="margin-top:12px">
             <label for="visualChoice">Afbeelding</label>
             <select class="field" id="visualChoice" style="max-width:100%" disabled></select>
             <button class="btn ghost" id="visualPngBtn" disabled>Afbeelding downloaden</button>
           </div>
           <p class="muted">De ZIP bevat de acht standaardafbeeldingen. Het medewerkerprofiel is alleen afzonderlijk beschikbaar.</p>
-        </details>
+        </div>
         <section class="view active" id="view-overview">
           <div id="analysisBanner" class="analysis-banner"></div>
           <div id="reviewSummary"></div>
@@ -271,8 +277,8 @@ button,input,select{font:inherit}button{cursor:pointer}.app{max-width:1480px;mar
               <div id="timeHeatmap" class="heatmap"></div>
             </div>
           </div>
-          <div class="visual-grid" style="margin-top:14px">
-            <div class="card chart-card">
+          <div class="visual-grid overview-charts" style="margin-top:14px">
+            <div class="card chart-card chart-wide">
               <div class="section-head">
                 <div>
                   <h3>Medewerkerprofiel: volume × cliëntspreiding</h3>
@@ -284,24 +290,13 @@ button,input,select{font:inherit}button{cursor:pointer}.app{max-width:1480px;mar
             <div class="card chart-card">
               <div class="section-head">
                 <div>
-                  <h3>Cliënten met veel verschillende medewerkers</h3>
-                  <p>Top 10 unieke medewerkers met een escalatiepoging, inclusief niet-geactiveerde pogingen.</p>
-                </div>
-              </div>
-              <div id="clientBreadth" class="bar-list secondary"></div>
-            </div>
-          </div>
-          <div class="visual-grid three" style="margin-top:14px">
-            <div class="card section-card">
-              <div class="section-head">
-                <div>
                   <h3>Meeste escalaties per medewerker</h3>
                   <p>Alleen handmatige auditregels.</p>
                 </div>
               </div>
               <div id="chartEmployees" class="bar-list"></div>
             </div>
-            <div class="card section-card">
+            <div class="card chart-card">
               <div class="section-head">
                 <div>
                   <h3>Meest voorkomende teams</h3>
@@ -310,7 +305,16 @@ button,input,select{font:inherit}button{cursor:pointer}.app{max-width:1480px;mar
               </div>
               <div id="chartTeams" class="bar-list secondary"></div>
             </div>
-            <div class="card section-card">
+            <div class="card chart-card">
+              <div class="section-head">
+                <div>
+                  <h3>Cliënten met veel verschillende medewerkers</h3>
+                  <p>Top 10 unieke medewerkers met een escalatiepoging, inclusief niet-geactiveerde pogingen.</p>
+                </div>
+              </div>
+              <div id="clientBreadth" class="bar-list secondary"></div>
+            </div>
+            <div class="card chart-card">
               <div class="section-head">
                 <div>
                   <h3>Meest voorkomende redenen</h3>
@@ -597,7 +601,7 @@ button,input,select{font:inherit}button{cursor:pointer}.app{max-width:1480px;mar
     </div>
     <script>
 'use strict';
-const APP_VERSION='0.20.1';const EXPLANATION_CSS=document.getElementById('explanationStyles').textContent;
+const APP_VERSION='0.20.2';const EXPLANATION_CSS=document.getElementById('explanationStyles').textContent;
 
 const REQUIRED_HEADERS = [
   'Gebruiker','Medewerkernummer','Medewerkersteam','Deskundigheid medewerker','Gebruikersnaam',
@@ -1422,6 +1426,8 @@ setupTabs($('#tabs'),'.tab','view-','Hoofdtabbladen',closeSettings);
 document.addEventListener('click',e=>{const q=e.target.closest('[data-jump]');if(!q)return;const view=q.dataset.jump;const tab=$(`.tab[data-view="${view}"]`);if(tab)tab.click();});
 setupTabs($('#deepTabs'),'.subtab','deep-','Verdieping');
 $('#drillCloseBtn').addEventListener('click',closeDrilldown);$('#drillCsvBtn').addEventListener('click',exportDrilldownCsv);$('#drillBody').addEventListener('click',e=>{if(e.target.closest('.drill-more .more-rows-btn'))state.drillMore?.()});$('#drillOverlay').addEventListener('click',e=>{if(e.target===$('#drillOverlay'))closeDrilldown()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#drillOverlay').classList.contains('show'))closeDrilldown()});
+$('#visualExportsBtn').addEventListener('click',()=>{const panel=$('#visualExports'),open=panel.hidden;panel.hidden=!open;$('#visualExportsBtn').setAttribute('aria-expanded',String(open));});
+$('#visualExports').addEventListener('keydown',e=>{if(e.key!=='Escape')return;e.preventDefault();$('#visualExports').hidden=true;const b=$('#visualExportsBtn');b.setAttribute('aria-expanded','false');b.focus();});
 $('#visualPngBtn').addEventListener('click',exportOverviewVisualPng);$('#pngBtn').addEventListener('click',exportDashboardPng);$('#visualsZipBtn').addEventListener('click',exportOverviewVisualsZip);$('#csvBtn').addEventListener('click',exportAttentionCsv);$('#reportBtn').addEventListener('click',exportReport);$('#rerunBtn').addEventListener('click',()=>{if(!state.result){runAnalysis();return;}if(!state.rawRows.length)return;let next;try{next=readSettings()}catch(e){setStatus(e.message,'error');return;}setLoading(true,'Analyse opnieuw uitvoeren…','De auditregels worden opnieuw toegepast.');setTimeout(()=>{const prev={settings:state.settings,analysisRunAt:state.analysisRunAt,result:state.result};let committed=false;try{const result=analyze(state.rawRows,next);Object.assign(state,{settings:next,analysisRunAt:new Date(),result});committed=true;render();setStatus(`Analyse opnieuw uitgevoerd: ${fmt(state.result.auditRows.length)} handmatige auditregels.`,'ok')}catch(e){if(committed){Object.assign(state,prev);try{render()}catch(err){console.error(err)}}console.error(e);setStatus(`Analyse opnieuw uitvoeren mislukt: ${e.message||e}. De vorige analyse en instellingen blijven actief.`,'error')}finally{setLoading(false)}},20)});
 // Exact evidence bindings for overview, quality and audit logic.
 function bindDetail(el,title,rows,subtitle=''){
