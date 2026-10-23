@@ -4,6 +4,10 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+### Onderhoud
+
+- Werk de ontwikkelafhankelijkheid pytest bij van 9.0.2 naar 9.0.3 (#120).
+
 ## [0.20.1] - 2026-10-22
 
 ### Gewijzigd
