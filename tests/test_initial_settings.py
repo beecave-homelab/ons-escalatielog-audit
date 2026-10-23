@@ -27,7 +27,7 @@ def test_initial_settings_survive_file_selection_and_apply() -> None:
             page.evaluate("state.result.explanations.settings.activationDelayThresholdMinutes") == 0
         )
         assert page.evaluate("state.result.attention.some(r=>r.signals.includes('NACHT'))") is False
-        page.locator('.tab[data-view="settings"]').click()
+        page.locator("#settingsBtn").click()
         expect(page.locator("#settingsGrid")).to_be_visible()
         expect(page.locator("#rerunBtn")).to_have_text("Analyse opnieuw uitvoeren")
         page.locator("#set-signalNight").check()
@@ -58,7 +58,7 @@ def test_invalid_initial_settings_block_analysis_and_allow_retry() -> None:
         page.locator("#analyzeBtn").click()
         expect(page.locator("#workspace")).to_be_visible(timeout=30_000)
         assert page.evaluate("state.result.explanations.settings.activeAccessMinutes") == 60
-        page.locator('.tab[data-view="settings"]').click()
+        page.locator("#settingsBtn").click()
         page.locator("#set-activeAccessMinutes").fill("120")
         page.locator("#fileInput").set_input_files(STANDARD_FIXTURE)
         expect(page.locator("#settingsGrid")).to_be_visible()

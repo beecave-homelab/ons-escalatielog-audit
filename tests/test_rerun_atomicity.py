@@ -45,7 +45,7 @@ def test_rerun_analyze_failure_keeps_previous_state(tmp_path: Path) -> None:
             }"""
         )
         assert before["night"] == 544
-        page.locator('.tab[data-view="settings"]').click()
+        page.locator("#settingsBtn").click()
         page.locator("#set-signalNight").uncheck()
         page.locator("#set-burstWindowMinutes").fill("45")
         page.evaluate(
@@ -118,7 +118,7 @@ def test_rerun_render_failure_rolls_back(tmp_path: Path) -> None:
               return document.querySelector('#kpis').textContent;
             }"""
         )
-        page.locator('.tab[data-view="settings"]').click()
+        page.locator("#settingsBtn").click()
         page.locator("#set-burstWindowMinutes").fill("45")
         page.evaluate(
             "(()=>{window.__rdd=renderDeepDive;window.__first=true;"

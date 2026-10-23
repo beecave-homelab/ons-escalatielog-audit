@@ -10,8 +10,8 @@ SETTINGS_FILE_NAME = "escalatielog-audit-instellingen.json"
 
 
 def open_settings(page) -> None:
-    """Open the Instellingen tab via the button in the upload area."""
-    page.get_by_role("button", name="Instellingen", exact=True).filter(visible=True).click()
+    """Open the settings panel via the button in the upload area."""
+    page.locator("#settingsBtn").click()
     expect(page.locator("#settingsGrid")).to_be_visible()
 
 
@@ -111,7 +111,7 @@ def test_export_import_roundtrip_after_analysis(tmp_path: Path) -> None:
         page.locator("#fileInput").set_input_files(STANDARD_FIXTURE)
         page.locator("#analyzeBtn").click()
         page.locator("#workspace.show").wait_for(timeout=30_000)
-        page.locator('.tab[data-view="settings"]').click()
+        page.locator("#settingsBtn").click()
         expect(page.locator("#rerunBtn")).to_have_text("Analyse opnieuw uitvoeren")
         page.locator("#set-activeAccessMinutes").fill("120")
         page.locator("#set-signalWeekend").check()
@@ -286,7 +286,7 @@ def test_import_does_not_modify_analysis(tmp_path: Path) -> None:
         page.locator("#analyzeBtn").click()
         page.locator("#workspace.show").wait_for(timeout=30_000)
         applied_access = page.evaluate("state.settings.activeAccessMinutes")
-        page.locator('.tab[data-view="settings"]').click()
+        page.locator("#settingsBtn").click()
         payload = _valid_payload({"activeAccessMinutes": 1})
         f = _write_settings_json(tmp_path, payload)
         page.locator("#settingsFileInput").set_input_files(f)
@@ -306,7 +306,7 @@ def test_import_then_rerun_applies_settings(tmp_path: Path) -> None:
         page.locator("#fileInput").set_input_files(STANDARD_FIXTURE)
         page.locator("#analyzeBtn").click()
         page.locator("#workspace.show").wait_for(timeout=30_000)
-        page.locator('.tab[data-view="settings"]').click()
+        page.locator("#settingsBtn").click()
         night_before = page.evaluate(
             "state.result.attention.filter(r=>r.signals.includes('NACHT')).length"
         )

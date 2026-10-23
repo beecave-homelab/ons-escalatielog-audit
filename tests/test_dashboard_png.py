@@ -163,7 +163,7 @@ def test_png_complete_offline_and_viewport_independent(page, tmp_path):
 def test_png_reanalysis_empty_and_failures(page, tmp_path):
     load_analysis(page)
     first = download_png(page, tmp_path / "first.png")
-    page.locator('.tab[data-view="settings"]').click()
+    page.locator("#settingsBtn").click()
     page.locator("#set-signalNight").uncheck()
     assert page.evaluate("dashboardPngModel().settings.signalNight") is True
     page.locator("#rerunBtn").click()
@@ -400,7 +400,7 @@ def test_curated_content_zero_counts_settings_and_full_labels(page):
         assert text.count("geen bewijs van dossierinzage") == 1
         assert text.count("persoonsgegevens") == 1
     # Values come from the last successful analysis, not unapplied form edits.
-    page.locator('.tab[data-view="settings"]').click()
+    page.locator("#settingsBtn").click()
     page.locator("#set-activationDelayThresholdMinutes").fill("9")
     assert (
         page.evaluate("overviewPngVisuals(dashboardPngModel())[1].context.join(' ')").find(

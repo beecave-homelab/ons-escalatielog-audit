@@ -4,6 +4,13 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+## [0.20.1] - 2026-10-22
+
+### Gewijzigd
+
+- Verwijder het dubbele tabblad **Instellingen** uit de hoofdtabbalk. De knop **Instellingen** in het uploadvak opent het instellingenpaneel en verbergt de analysepanelen zonder een tab te selecteren; iedere tabkeuze keert terug naar de analyse (#113).
+- Groepeer **Analyse (opnieuw) uitvoeren**, **Instellingen exporteren** en **Instellingen importeren** in het instellingenpaneel tot één uitgelijnde actiegroep, zodat de knoppen niet meer verspringen of over meerdere regels breken, ook op smalle schermen (#115).
+
 ## [0.20.0] - 2026-10-22
 
 ### Gewijzigd
