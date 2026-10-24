@@ -13,8 +13,11 @@ from zipfile import ZIP_STORED, ZipFile, ZipInfo
 
 from check_release_version import APP, VERSION, check_version
 
+TOUR = "escalatielog-audit-rondleiding.html"
+
 FILES = (
     APP,
+    TOUR,
     "README.md",
     "LICENSE",
     "docs/berekeningen-en-patroonherkenning.md",
@@ -80,7 +83,8 @@ def package(revision: str, version: str, output: Path) -> str:
     files = {name: git("show", f"{sha}:{name}") for name in FILES}
     check_links(files)
     output.mkdir(parents=True, exist_ok=False)
-    (output / APP).write_bytes(files[APP])
+    for name in (APP, TOUR):
+        (output / name).write_bytes(files[name])
     archive = output / f"ons-escalatielog-audit-{version}.zip"
     with ZipFile(archive, "w", compression=ZIP_STORED) as bundle:
         for name, content in files.items():
@@ -89,7 +93,7 @@ def package(revision: str, version: str, output: Path) -> str:
             bundle.writestr(info, content)
     sums = "".join(
         f"{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.name}\n"
-        for path in (output / APP, archive)
+        for path in (output / APP, output / TOUR, archive)
     )
     (output / "SHA256SUMS.txt").write_text(sums, encoding="utf-8")
     (output / "release-notes.md").write_text(notes + "\n", encoding="utf-8")
@@ -244,6 +248,7 @@ def main():
             name: args.output / name
             for name in (
                 APP,
+                TOUR,
                 f"ons-escalatielog-audit-{args.version}.zip",
                 "SHA256SUMS.txt",
             )

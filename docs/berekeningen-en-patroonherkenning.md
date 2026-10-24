@@ -2,7 +2,7 @@
 title: Berekeningen, tellingen en patroonherkenning
 applies_to: escalatielog-audit-webui.html
 tags: [escalatielogs, audit, functioneel-beheer]
-updated: 2026-10-22
+updated: 2026-10-24
 ---
 
 ## Berekeningen, tellingen en patroonherkenning
@@ -14,6 +14,8 @@ De HTML-code bepaalt het daadwerkelijke gedrag van de webui. Als de documentatie
 Een escalatieregel registreert een poging of gebeurtenis rond uitzonderlijke toegang. Een geregistreerde activatie bewijst niet dat iemand daarna dossiergegevens heeft bekeken. Een auditsignaal wijst op een gebeurtenis die nader onderzoek vraagt, maar bewijst geen onrechtmatige toegang.
 
 ## 1. Reikwijdte
+
+De afzonderlijke oefenvariant `escalatielog-audit-rondleiding.html` gebruikt dezelfde XLSX-lezer, normalisatie en analyse als de webui, met de ingebouwde synthetische referentiefixture uit §15. De tourlaag voegt uitsluitend begeleiding toe. Eigen bron- en instellingenbestanden importeren is daar uitgeschakeld. Instellingen aanpassen en opnieuw analyseren blijft mogelijk; opnieuw beginnen herstelt de standaardinstellingen uit §14 en Top-X=10.
 
 De webui verwerkt per analyse één Excelbestand. Het zoekt in de eerste tien rijen naar alle vereiste kolomkoppen en kiest het eerste passende werkblad. Meerdere werkbladen worden niet samengevoegd.
 

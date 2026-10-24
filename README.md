@@ -1,6 +1,6 @@
 # Ons Escalatielog Audit
 
-![Version: 0.20.3](https://img.shields.io/badge/version-0.20.3-00A0C8.svg)
+![Version: 0.21.0](https://img.shields.io/badge/version-0.21.0-00A0C8.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 
 Ons Escalatielog Audit is een zelfstandige webpagina voor het controleren van `.xlsx`-exports met escalatielogs uit Nedap Ons. De webui maakt opvallende patronen zichtbaar en laat je doorklikken naar de bijbehorende Excelregels. Grafieken en overzichten ondersteunen de controle van deze patronen en de bijbehorende bronregels.
@@ -39,6 +39,14 @@ De webui biedt de volgende mogelijkheden:
 Met het toetsenbord wissel je tussen tabbladen met de pijltjestoetsen, Home en End. Sorteer een tabel via de knop in een kolomkop; de pijl toont de richting. Meldingen staan ook bij de exportknoppen en instellingen. Bij ongeldige instellingen gaat de focus naar het veld en lees je welke waarden zijn toegestaan.
 
 De gebruikte berekeningen, definities en signaleringsregels staan in [Berekeningen, tellingen en patroonherkenning](docs/berekeningen-en-patroonherkenning.md).
+
+## Oefenen met de rondleiding
+
+Download [escalatielog-audit-rondleiding.html](escalatielog-audit-rondleiding.html) en open dit bestand rechtstreeks in je browser. Je hebt geen server, installatie of losse Excel-export nodig. De oefenvariant laadt bij openen en verversen automatisch de vaste synthetische gegevens en start op Overzicht. De permanente balk vermeldt de oefenomgeving, applicatieversie en bronfixture. De gewone webui blijft beschikbaar voor je eigen exports.
+
+De rondleiding behandelt de overzichten, bronregels, zoeken en filteren, context, tijdpatronen, datakwaliteit, instellingen en exports. Gebruik Vorige en Volgende, of Stoppen om zelfstandig te oefenen. Escape stopt de uitleg; Hervatten keert binnen dezelfde sessie terug naar de huidige stap. Opnieuw beginnen herstelt de standaardinstellingen, Top-X=10 en de synthetische analyse. Je kunt uitsluitend met de ingebouwde verzonnen gegevens werken: import van bron- en instellingenbestanden is uitgeschakeld. Downloads en klembordacties gebeuren alleen na je eigen klik.
+
+Het bestand wordt beheerd als gegenereerd gebruikersartefact in de repositoryhoofdmap. Ontwikkelaars voeren na wijzigingen aan de webui, fixture of tourlaag `uv run python scripts/generate_tour.py` uit; `--check` controleert of het resultaat actueel is. De tests doorlopen de echte bediening rechtstreeks via `file://` en controleren de DOM-ankers. Het bestaande releaseproces neemt het bestand mee als losse bijlage en in de ZIP met controlesommen. Publicatie blijft handmatig.
 
 ## Gebruik
 
