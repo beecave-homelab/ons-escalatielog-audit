@@ -4,6 +4,12 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+## [0.20.3] - 2026-10-24
+
+### Gewijzigd
+
+- Vervang de initialen EA in de applicatiekop door het gekozen R6-tijdheatmapicoon met twaalf paarse vakken. Het browsertabblad krijgt de bijbehorende vereenvoudigde variant met vier vakken; beide iconen blijven ingebouwd in de zelfstandige HTML. Het favicon bevat ook een PNG-fallback van 32×32 pixels voor browsers zonder SVG-faviconondersteuning.
+
 ### Onderhoud
 
 - Werk de ontwikkelafhankelijkheid pytest bij van 9.0.2 naar 9.0.3 (#120).
