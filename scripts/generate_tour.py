@@ -25,8 +25,8 @@ def build_tour() -> str:
     replacements = {
         "async function loadFile(file){": (
             "async function loadFile(file){\n"
-            "  if(file!==tourFixture){setStatus('Deze oefenomgeving gebruikt uitsluitend "
-            "de ingebouwde synthetische gegevens.','error');return;}"
+            "  if(file!==tourFixture){setStatus('Deze oefenomgeving gebruikt alleen "
+            "de ingebouwde verzonnen gegevens.','error');return;}"
         ),
         next(
             line for line in html.splitlines() if line.startswith("function importSettings(file){")
@@ -53,7 +53,7 @@ def build_tour() -> str:
     html = html.replace("  </body>", "    <script>\n" + script + "    </script>\n  </body>")
     html = html.replace(
         "<title>Ons Escalatielog Audit</title>",
-        "<title>Rondleiding — Ons Escalatielog Audit</title>",
+        "<title>Rondleiding bij Ons Escalatielog Audit</title>",
     )
     return subprocess.run(
         [sys.executable, "-m", "djlint", "-", "--reformat", "--quiet"],

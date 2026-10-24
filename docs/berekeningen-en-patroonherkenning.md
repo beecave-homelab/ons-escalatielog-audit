@@ -15,7 +15,7 @@ Een escalatieregel registreert een poging of gebeurtenis rond uitzonderlijke toe
 
 ## 1. Reikwijdte
 
-De afzonderlijke oefenvariant `escalatielog-audit-rondleiding.html` gebruikt dezelfde XLSX-lezer, normalisatie en analyse als de webui, met de ingebouwde synthetische referentiefixture uit §15. De tourlaag voegt uitsluitend begeleiding toe. Zij reserveert ruimte voor de oefenbalk, uitleg en vaste tourknoppen; bronregeldialogen gebruiken de resterende ruimte. Dit verandert geen berekeningen of bronregels. Eigen bron- en instellingenbestanden importeren is daar uitgeschakeld. Instellingen aanpassen en opnieuw analyseren blijft mogelijk; opnieuw beginnen herstelt de standaardinstellingen uit §14 en Top-X=10.
+De afzonderlijke oefenvariant `escalatielog-audit-rondleiding.html` gebruikt dezelfde XLSX-lezer, normalisatie en analyse als de webui, met de ingebouwde synthetische referentiefixture uit §15. De tourlaag voegt uitsluitend begeleiding toe. Zij legt de begrippen bronregel, auditpopulatie, signaal en activatievertraging uit en verbindt de bediening aan de betekenis en beperkingen van de cijfers. Zij reserveert ruimte voor de oefenbalk, uitleg en vaste tourknoppen; bronregeldialogen gebruiken de resterende ruimte. Dit verandert geen berekeningen of bronregels. Eigen bron- en instellingenbestanden importeren is daar uitgeschakeld. Instellingen aanpassen en opnieuw analyseren blijft mogelijk; opnieuw beginnen herstelt de standaardinstellingen uit §14 en Top-X=10.
 
 De webui verwerkt per analyse één Excelbestand. Het zoekt in de eerste tien rijen naar alle vereiste kolomkoppen en kiest het eerste passende werkblad. Meerdere werkbladen worden niet samengevoegd.
 
