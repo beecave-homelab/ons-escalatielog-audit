@@ -7,20 +7,26 @@
 </header>
 <aside id="tourPanel" aria-labelledby="tourTitle" hidden>
   <p id="tourProgress" role="status" aria-live="polite" aria-atomic="true"></p>
-  <h2 id="tourTitle" tabindex="-1">Rondleiding laden</h2>
-  <p id="tourText"></p>
-  <p id="tourHint" role="status" aria-live="polite"></p>
-  <button id="tourRestore" class="btn ghost" hidden>Toon onderdeel</button>
-  <button id="tourRelated" class="btn ghost" hidden>Toon verbanden</button>
-  <div class="tour-navigation">
-    <button id="tourPrev" class="btn ghost">Vorige</button>
-    <button id="tourNext" class="btn primary">Volgende</button>
+  <div class="tour-content">
+    <h2 id="tourTitle" tabindex="-1">Rondleiding laden</h2>
+    <p id="tourText"></p>
+    <p id="tourHint" role="status" aria-live="polite"></p>
+    <p class="tour-keyboard">Escape stopt de uitleg. Alle gegevens blijven beschikbaar om zelf te oefenen.</p>
   </div>
-  <div class="tour-navigation">
-    <button id="tourStop" class="btn ghost">Stoppen</button>
-    <button id="tourReset" class="btn ghost">Opnieuw beginnen</button>
+  <div class="tour-footer">
+    <div class="tour-context-actions" hidden>
+      <button id="tourRestore" class="btn ghost" hidden>Toon onderdeel</button>
+      <button id="tourRelated" class="btn ghost" hidden>Toon verbanden</button>
+    </div>
+    <div class="tour-navigation">
+      <button id="tourPrev" class="btn ghost">Vorige</button>
+      <button id="tourNext" class="btn primary">Volgende</button>
+    </div>
+    <div class="tour-navigation">
+      <button id="tourStop" class="btn ghost">Stoppen</button>
+      <button id="tourReset" class="btn ghost">Opnieuw beginnen</button>
+    </div>
   </div>
-  <p class="tour-keyboard">Escape stopt de uitleg. Alle gegevens blijven beschikbaar om zelf te oefenen.</p>
 </aside>
 <div id="tourMarker" aria-hidden="true" hidden>
   <span></span>

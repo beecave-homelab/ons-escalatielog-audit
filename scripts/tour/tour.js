@@ -29,23 +29,31 @@ tourDisableImports();
 tourSelect('#dropzone strong').textContent='Het synthetische voorbeeld staat klaar';
 tourSelect('#dropzone > span').textContent='Bestandsimport is uitgeschakeld. Je kunt veilig oefenen met verzonnen gegevens.';
 function tourQueue(){if(!tour.frame)tour.frame=requestAnimationFrame(()=>{tour.frame=0;tourPosition();});}
+function tourLayout(){
+  const root=document.documentElement,values={'--tour-banner-bottom':Math.ceil(tourSelect('#tourBanner').getBoundingClientRect().bottom),'--tour-viewport-height':window.visualViewport?.height||innerHeight};
+  for(const [name,value] of Object.entries(values)){const next=value+'px';if(root.style.getPropertyValue(name)!==next)root.style.setProperty(name,next);}
+  const height=tour.active?Math.ceil(tourPanel.getBoundingClientRect().height):0,next=height+'px';if(root.style.getPropertyValue('--tour-guide-height')!==next)root.style.setProperty('--tour-guide-height',next);
+}
 function tourMount(){
   // Keep the guidance inside the existing modal's keyboard scope while it is open.
   const modal=tourSelect('#drillOverlay.show .drill-panel');
-  const parent=modal||document.body;
+  const parent=tour.active&&modal?modal:document.body;
   if(tourPanel.parentElement!==parent)parent.appendChild(tourPanel);
 }
 function tourPosition(){
-  tourMount();
+  tourMount();tourLayout();
   if(!tour.active){tourMarker.hidden=true;return;}
   const step=tourSteps[tour.index],target=tourSelect(step.anchor),box=target?.getBoundingClientRect();
   const panel=tourPanel.getBoundingClientRect(),banner=tourSelect('#tourBanner').getBoundingClientRect();
   const narrow=innerWidth<=1100,right=narrow?innerWidth-8:panel.left-12,bottom=narrow?panel.top-8:innerHeight-8;
-  const visible=box&&box.width>0&&box.height>0&&box.bottom>banner.bottom+8&&box.top<bottom&&box.left<right&&!target.closest('[hidden]');
+  const covered=!!tourSelect('#drillOverlay.show')&&!target?.closest('#drillOverlay');
+  const visible=!covered&&box&&box.width>0&&box.height>0&&box.bottom>banner.bottom+8&&box.top<bottom&&box.left<right&&!target.closest('[hidden]');
   let message='';
   if(!target)message='Dit onderdeel ontbreekt. Je kunt verdergaan of opnieuw beginnen; meld dit bij de beheerder.';
+  else if(covered)message='Bronregels zijn geopend. Sluit ze met Sluiten of kies Toon onderdeel om terug te keren.';
   else if(!visible)message='Het onderdeel is nu buiten beeld of gesloten. Kies Toon onderdeel om terug te keren.';
   tourSelect('#tourRestore').hidden=!target||!!visible;
+  tourSelect('.tour-context-actions').hidden=tourSelect('#tourRestore').hidden&&tourSelect('#tourRelated').hidden;
   const hint=tourSelect('#tourHint');if(hint.textContent!==message)hint.textContent=message;
   tourMarker.hidden=!visible;
   if(visible){const left=Math.max(5,box.left),top=Math.max(banner.bottom+5,box.top),width=Math.min(box.right,right)-left,height=Math.min(box.bottom,bottom)-top;Object.assign(tourMarker.style,{left:left+'px',top:top+'px',width:Math.max(0,width)+'px',height:Math.max(0,height)+'px'});}
@@ -56,15 +64,15 @@ function tourPrepare(){
   tourSelect('#visualExports').hidden=true;tourSelect('#visualExportsBtn').setAttribute('aria-expanded','false');
   if(step.view==='settings'){openSettings();renderSettings();}
   else {const tab=document.querySelector(`.tab[data-view="${step.view}"]`);if(tab)tab.click();}
-  if(step.view==='attention')renderTables(state.result);
+  if(step.view==='attention'){renderTables(state.result);renderEvidenceLinks(state.result);}
   if(step.drill){
     const button=document.querySelector('#findingList [data-finding="0"]');
     if(button)button.click();
   }
   if(step.visuals){tourSelect('#visualExports').hidden=false;tourSelect('#visualExportsBtn').setAttribute('aria-expanded','true');}
-  tourMount();
+  tourMount();tourLayout();
   const target=tourSelect(step.anchor);
-  if(target){for(let parent=target.parentElement;parent;parent=parent.parentElement)if(parent.tagName==='DETAILS')parent.open=true;target.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'});}
+  if(target){for(let parent=target.parentElement;parent;parent=parent.parentElement)if(parent.tagName==='DETAILS')parent.open=true;target.scrollIntoView({block:'start',inline:'nearest',behavior:'instant'});}
 }
 function tourShow(index){
   if(tour.busy||!tour.ready)return;
@@ -78,11 +86,12 @@ function tourShow(index){
   tourSelect('#tourRelated').hidden=!['employees','clients','teams'].includes(step.view);
   tourSelect('#tourNext').textContent=tour.index===tourSteps.length-1?'Zelf oefenen':'Volgende';
   tourSelect('#tourResume').textContent='Toon huidige stap';
+  tourSelect('.tour-content').scrollTop=0;
   tourPrepare();tourSelect('#tourTitle').focus({preventScroll:true});tourQueue();
 }
 function tourStop(){
   tour.active=false;tourPanel.hidden=true;tourMarker.hidden=true;document.body.classList.remove('tour-active');
-  closeDrilldown();tourMount();tourSelect('#tourResume').textContent='Hervatten';tourSelect('#tourResume').focus();
+  closeDrilldown();tourMount();tourLayout();tourSelect('#tourResume').textContent='Hervatten';tourSelect('#tourResume').focus();
 }
 async function tourReset(){
   if(tour.busy||dashboardPngBusy||tourSelect('#loading').classList.contains('show'))return;
@@ -106,6 +115,9 @@ tourSelect('#tourReset').addEventListener('click',tourReset);
 tourSelect('#tourResume').addEventListener('click',()=>tourShow(tour.index));
 tourSelect('#tourRestore').addEventListener('click',()=>tourShow(tour.index));
 window.addEventListener('keydown',e=>{if(e.key==='Escape'&&tour.active){e.preventDefault();e.stopImmediatePropagation();tourStop();}},true);
+new ResizeObserver(tourQueue).observe(tourSelect('#tourBanner'));
+new ResizeObserver(tourQueue).observe(tourPanel);
+window.visualViewport?.addEventListener('resize',tourQueue);
 window.addEventListener('scroll',tourQueue,true);window.addEventListener('resize',tourQueue);
 new MutationObserver(tourQueue).observe(tourSelect('.app'),{subtree:true,childList:true,attributes:true,attributeFilter:['class','hidden','id']});
 new MutationObserver(tourQueue).observe(tourSelect('#drillOverlay'),{attributes:true,attributeFilter:['class']});

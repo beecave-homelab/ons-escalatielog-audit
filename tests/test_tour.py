@@ -77,17 +77,89 @@ def reference_counts(page) -> list[int]:
     )
 
 
-@pytest.mark.parametrize("width", [1440, 768, 375])
-def test_tour__complete_route_and_keyboard_controls(tour_page, width: int) -> None:
+def assert_controls_reachable(page, modal: bool = False, active: bool = True) -> None:
+    """Check complete button bounds and hit-test all edges without scrolling them into view."""
+    page.evaluate("() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))")
+    selectors = ["#tourResume"]
+    if active:
+        selectors.append(".tour-footer button:not([hidden])")
+    if modal:
+        selectors.extend(["#drillCloseBtn", "#drillCsvBtn"])
+    failures = page.evaluate(
+        """selectors => {
+          const banner=document.querySelector('#tourBanner').getBoundingClientRect();
+          return selectors.flatMap(selector=>[...document.querySelectorAll(selector)])
+            .filter(el=>el.getClientRects().length).flatMap(el=>{
+              const r=el.getBoundingClientRect();
+              const inside=r.left>=0 && r.right<=innerWidth && r.top>=0 && r.bottom<=innerHeight;
+              const points=[[r.left+r.width/2,r.top+2],[r.left+r.width/2,r.bottom-2],
+                [r.left+2,r.top+r.height/2],[r.right-2,r.top+r.height/2],
+                [r.left+r.width/2,r.top+r.height/2]];
+              const hit=points.every(([x,y])=>el.contains(document.elementFromPoint(x,y)));
+              const belowBanner=el.id==='tourResume'||r.top>=banner.bottom;
+              return inside&&hit&&belowBanner?[]:[{id:el.id,inside,hit,belowBanner,
+                top:r.top,bottom:r.bottom,viewport:innerHeight,banner:banner.bottom}];
+            });
+        }""",
+        selectors,
+    )
+    assert not failures, f"Knoppen zijn afgedekt, afgeknipt of buiten beeld: {failures}"
+
+
+def click_visible_example(page, selector: str) -> None:
+    """Click a visible part of wide table rows, whose geometric center can be offscreen."""
+    target = page.locator(selector).first
+    if "tbody" not in selector:
+        target.click()
+        return
+    target.evaluate(
+        """el => {
+          const wrap=el.closest('.table-wrap');
+          if(wrap){wrap.scrollTop=0;wrap.scrollIntoView({block:'start',inline:'nearest'});}
+        }"""
+    )
+    point = target.evaluate(
+        """el => {
+          const r=el.getBoundingClientRect();
+          const banner=document.querySelector('#tourBanner').getBoundingClientRect();
+          const top=Math.max(r.top,banner.bottom);
+          const bottom=Math.min(r.bottom,innerWidth<=1100?
+            document.querySelector('#tourPanel').getBoundingClientRect().top:innerHeight,
+            innerHeight);
+          for(let y=top+6;y<bottom-3;y+=12)
+            for(let x=Math.max(6,r.left+6);x<Math.min(r.right,innerWidth)-3;x+=24)
+              if(el.contains(document.elementFromPoint(x,y)))return {x,y};
+          return null;
+        }"""
+    )
+    assert point, f"Geen zichtbaar aanklikbaar deel van de tabelregel: {selector}"
+    page.mouse.click(point["x"], point["y"])
+
+
+@pytest.mark.parametrize(
+    "width,height",
+    [
+        (1440, 1000),
+        (1440, 780),
+        (1280, 720),
+        (1024, 768),
+        (768, 800),
+        (494, 779),
+        (375, 667),
+        (320, 568),
+        (844, 390),
+    ],
+)
+def test_tour__complete_route_and_keyboard_controls(tour_page, width: int, height: int) -> None:
     """Every real target remains usable at desktop, tablet and narrow mobile widths."""
     page, errors, requests, downloads = tour_page
-    page.set_viewport_size({"width": width, "height": 1000})
+    page.set_viewport_size({"width": width, "height": height})
     assert reference_counts(page) == [2000, 156, 42, 1802, 1790]
     steps = page.evaluate("tourSteps.length")
     for index in range(steps):
         expect(page.locator("#tourProgress")).to_have_text(f"Stap {index + 1} van {steps}")
         expect(page.locator("#tourTitle")).to_be_focused()
-        expect(page.locator("#tourMarker")).to_be_visible()
+        expect(page.locator("#tourMarker"), f"Markering bij stap {index + 1}").to_be_visible()
         assert page.locator("#tourHint").inner_text() == ""
         expect(page.locator("#tourRestore")).to_be_hidden()
         assert page.evaluate(
@@ -98,13 +170,44 @@ def test_tour__complete_route_and_keyboard_controls(tour_page, width: int) -> No
                 panel.right<=innerWidth && panel.bottom<=innerHeight;
             }"""
         ), "Markering en uitleg moeten binnen het venster blijven."
+        assert_controls_reachable(page)
+        examples = {
+            1: "#kpis .kpi",
+            2: "#findingList [data-finding]",
+            4: "#attentionTable tbody tr[data-row-index]",
+            5: "#employeesTable tbody tr[data-row-index]",
+            6: "#clientsTable tbody tr[data-row-index]",
+            7: "#teamsTable tbody tr[data-row-index]",
+            8: "#timeCards .bar-row",
+            9: "#qualityTable tbody tr[data-row-index]",
+        }
+        if index in examples:
+            click_visible_example(page, examples[index])
+            expect(
+                page.locator("#drillOverlay"), f"Bronregels vanuit stap {index + 1}"
+            ).to_have_class("drill-overlay show")
+            expect(page.locator("#tourHint")).to_contain_text("Bronregels zijn geopend")
+            expect(page.locator("#tourMarker")).to_be_hidden()
+            assert_controls_reachable(page, modal=True)
+            page.evaluate("document.querySelector('#drillBody').scrollTop=500")
+            assert_controls_reachable(page, modal=True)
+            page.locator("#drillCloseBtn").click()
+            expect(page.locator("#drillOverlay")).not_to_have_class("drill-overlay show")
+            if index == 1:
+                page.locator(examples[index]).first.click()
+                expect(page.locator("#tourRestore")).to_be_visible()
+                assert_controls_reachable(page, modal=True)
+                page.locator("#tourRestore").click()
+                expect(page.locator("#drillOverlay")).not_to_have_class("drill-overlay show")
         if index == 3:
+            assert_controls_reachable(page, modal=True)
             expect(page.locator("#drillOverlay")).to_have_class("drill-overlay show")
             page.locator("#drillCloseBtn").click()
             expect(page.locator("#tourRestore")).to_be_visible()
             page.locator("#tourRestore").click()
             expect(page.locator("#drillOverlay")).to_have_class("drill-overlay show")
             # Guidance controls participate in the existing dialog keyboard scope.
+            assert_controls_reachable(page, modal=True)
             page.locator("#tourReset").focus()
             page.keyboard.press("Tab")
             expect(page.locator("#drillCsvBtn")).to_be_focused()
@@ -121,6 +224,15 @@ def test_tour__complete_route_and_keyboard_controls(tour_page, width: int) -> No
             expect(page.locator("#tourRestore")).to_be_visible()
             page.locator("#tourRestore").click()
             expect(page.locator("#view-attention")).to_be_visible()
+        if index in (5, 6, 7):
+            page.locator("#tourRelated").click()
+            expect(page.locator("#view-deepdive")).to_be_visible()
+            expect(page.locator("#tourRestore")).to_be_visible()
+            assert_controls_reachable(page)
+            page.locator("#tourRestore").click()
+        # Long explanations scroll independently from the permanent navigation.
+        page.locator(".tour-content").evaluate("el => el.scrollTop=el.scrollHeight")
+        assert_controls_reachable(page, modal=index == 3)
         # Native keyboard activation of all forward navigation, including the final action.
         page.locator("#tourNext").focus()
         page.keyboard.press("Enter")
@@ -131,6 +243,9 @@ def test_tour__complete_route_and_keyboard_controls(tour_page, width: int) -> No
     page.keyboard.press("Escape")
     expect(page.locator("#tourPanel")).to_be_hidden()
     expect(page.locator("#tourResume")).to_be_focused()
+    page.locator("#kpis .kpi").first.click()
+    assert_controls_reachable(page, modal=True, active=False)
+    page.locator("#drillCloseBtn").click()
     assert not errors and not requests and not downloads
 
 
@@ -190,4 +305,23 @@ def test_tour__missing_anchor_and_scrolled_target_recover(tour_page) -> None:
     expect(page.locator("#tourRestore")).to_be_visible()
     page.locator("#tourRestore").click()
     expect(page.locator("#tourMarker")).to_be_visible()
+    assert not errors and not requests and not downloads
+
+
+def test_tour__open_dialog_follows_window_resize_and_stopped_keyboard_scope(tour_page) -> None:
+    """Resize an already open dialog and keep hidden guidance outside its focus cycle."""
+    page, errors, requests, downloads = tour_page
+    page.locator("#tourNext").click()
+    page.locator("#kpis .kpi").first.click()
+    for width, height in [(1440, 780), (375, 667), (844, 390), (320, 568), (1280, 720)]:
+        page.set_viewport_size({"width": width, "height": height})
+        assert_controls_reachable(page, modal=True)
+    page.locator("#tourStop").click()
+    page.locator("#kpis .kpi").first.click()
+    assert_controls_reachable(page, modal=True, active=False)
+    assert page.locator("#drillOverlay #tourPanel").count() == 0
+    page.locator("#drillBody .more-rows-btn").focus()
+    page.keyboard.press("Tab")
+    expect(page.locator("#drillCsvBtn")).to_be_focused()
+    page.locator("#drillCloseBtn").click()
     assert not errors and not requests and not downloads

@@ -6,6 +6,10 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [0.21.0] - 2026-10-24
 
+### Opgelost
+
+- Houd de tourknoppen bereikbaar wanneer de uitleg scrolt en plaats bronregeldialogen binnen de werkelijk beschikbare ruimte onder de oefenbalk, naast of boven de uitleg. Dit geldt ook bij handmatig geopende bronregels, lagere vensters, mobiele schermen en na stoppen. Markeer geen achterliggend onderdeel zolang een bronregeldialoog ervoor staat. Behoud de doorklik naar bronregels bij Datakwaliteit na het herstellen van de tabelfilters (#122).
+
 ### Toegevoegd
 
 - Voeg een zelfstandige HTML-rondleiding toe met vooraf geladen synthetische gegevens, veertien begeleide stappen en vrij oefenen. Bestandsimport is in deze oefenvariant uitgeschakeld. Stoppen, hervatten en opnieuw beginnen werken zonder browseropslag; opnieuw beginnen herstelt de standaardinstellingen en Top-X=10 (#122).
