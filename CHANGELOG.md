@@ -8,7 +8,7 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ### Gewijzigd
 
-- Vervang de initialen EA in de applicatiekop door het gekozen R6-tijdheatmapicoon met twaalf paarse vakken. Het browsertabblad krijgt de bijbehorende vereenvoudigde variant met vier vakken; beide iconen blijven ingebouwd in de zelfstandige HTML.
+- Vervang de initialen EA in de applicatiekop door het gekozen R6-tijdheatmapicoon met twaalf paarse vakken. Het browsertabblad krijgt de bijbehorende vereenvoudigde variant met vier vakken; beide iconen blijven ingebouwd in de zelfstandige HTML. Het favicon bevat ook een PNG-fallback van 32×32 pixels voor browsers zonder SVG-faviconondersteuning.
 
 ### Onderhoud
 

@@ -5,7 +5,7 @@
 
 Ons Escalatielog Audit is een zelfstandige webpagina voor het controleren van `.xlsx`-exports met escalatielogs uit Nedap Ons. De webui maakt opvallende patronen zichtbaar en laat je doorklikken naar de bijbehorende Excelregels. Grafieken en overzichten ondersteunen de controle van deze patronen en de bijbehorende bronregels.
 
-De applicatiekop gebruikt een paarse tijdheatmap als icoon. Het browsertabblad toont een vereenvoudigde variant met vier vakken. Beide iconen zijn ingebouwd in het HTML-bestand.
+De applicatiekop gebruikt een paarse tijdheatmap als icoon. Het browsertabblad toont een vereenvoudigde variant met vier vakken, als SVG met een PNG-fallback van 32×32 pixels. Alle iconen zijn ingebouwd in het HTML-bestand.
 
 De analyse draait volledig in de browser. Het Excelbestand wordt niet geüpload en de webui maakt geen verbinding met externe diensten.
 
