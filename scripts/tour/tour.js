@@ -26,12 +26,17 @@ function tourDisableImports(){
 for(const type of ['drop','dragover'])window.addEventListener(type,e=>{e.preventDefault();e.stopImmediatePropagation();},true);
 window.addEventListener('change',e=>{if(e.target.matches('#fileInput,#settingsFileInput')){e.preventDefault();e.stopImmediatePropagation();}},true);
 tourDisableImports();
+const tourTabs=tourSelect('#tabs');
+tourTabs.parentElement.before(tourTabs);
 tourSelect('#dropzone strong').textContent='Het oefenbestand is al geanalyseerd';
 tourSelect('#dropzone > span').textContent='Je oefent met verzonnen gegevens. Eigen bestanden openen kan alleen in de gewone webui.';
 function tourQueue(){if(!tour.frame)tour.frame=requestAnimationFrame(()=>{tour.frame=0;tourPosition();});}
 function tourLayout(){
-  const root=document.documentElement,values={'--tour-banner-bottom':Math.ceil(tourSelect('#tourBanner').getBoundingClientRect().bottom),'--tour-viewport-height':window.visualViewport?.height||innerHeight};
+  const root=document.documentElement,values={'--tour-banner-bottom':Math.ceil(tourSelect('#tourBanner').getBoundingClientRect().bottom),'--tour-tabs-height':tourTabs.getBoundingClientRect().height,'--tour-viewport-height':window.visualViewport?.height||innerHeight};
   for(const [name,value] of Object.entries(values)){const next=value+'px';if(root.style.getPropertyValue(name)!==next)root.style.setProperty(name,next);}
+  const activeTab=tourTabs.querySelector('.tab.active');
+  const tabKey=activeTab?.dataset.view+':'+innerWidth;
+  if(tour.active&&activeTab&&tour.tabKey!==tabKey){tour.tabKey=tabKey;const box=activeTab.getBoundingClientRect(),tabs=tourTabs.getBoundingClientRect();if(box.left<tabs.left||box.right>tabs.right)tourTabs.scrollLeft+=box.left-tabs.left-4;}
   const height=tour.active?Math.ceil(tourPanel.getBoundingClientRect().height):0,next=height+'px';if(root.style.getPropertyValue('--tour-guide-height')!==next)root.style.setProperty('--tour-guide-height',next);
 }
 function tourMount(){
@@ -45,9 +50,11 @@ function tourPosition(){
   if(!tour.active){tourMarker.hidden=true;return;}
   const step=tourSteps[tour.index],target=tourSelect(step.anchor),box=target?.getBoundingClientRect();
   const panel=tourPanel.getBoundingClientRect(),banner=tourSelect('#tourBanner').getBoundingClientRect();
+  const tabs=tourTabs.getBoundingClientRect();
+  const contentTop=target?.closest('#drillOverlay')||step.anchor==='#tabs'||tabs.top>banner.bottom+1?banner.bottom:Math.max(banner.bottom,tabs.bottom);
   const narrow=innerWidth<=1100,right=narrow?innerWidth-8:panel.left-12,bottom=narrow?panel.top-8:innerHeight-8;
   const covered=!!tourSelect('#drillOverlay.show')&&!target?.closest('#drillOverlay');
-  const visible=!covered&&box&&box.width>0&&box.height>0&&box.bottom>banner.bottom+8&&box.top<bottom&&box.left<right&&!target.closest('[hidden]');
+  const visible=!covered&&box&&box.width>0&&box.height>0&&box.bottom>contentTop+8&&box.top<bottom&&box.left<right&&!target.closest('[hidden]');
   let message='';
   if(!target)message='Dit onderdeel ontbreekt. Kies Volgende om verder te gaan of Opnieuw beginnen om de rondleiding te herstellen. Meld het probleem bij de beheerder.';
   else if(covered)message='Bronregels zijn geopend. Kies Sluiten om het venster te sluiten of Toon onderdeel om terug te keren naar deze stap.';
@@ -56,9 +63,10 @@ function tourPosition(){
   tourSelect('.tour-context-actions').hidden=tourSelect('#tourRestore').hidden&&tourSelect('#tourRelated').hidden;
   const hint=tourSelect('#tourHint');if(hint.textContent!==message)hint.textContent=message;
   tourMarker.hidden=!visible;
-  if(visible){const left=Math.max(5,box.left),top=Math.max(banner.bottom+5,box.top),width=Math.min(box.right,right)-left,height=Math.min(box.bottom,bottom)-top;Object.assign(tourMarker.style,{left:left+'px',top:top+'px',width:Math.max(0,width)+'px',height:Math.max(0,height)+'px'});}
+  if(visible){const left=Math.max(5,box.left),top=Math.max(contentTop+5,box.top),width=Math.min(box.right,right)-left,height=Math.min(box.bottom,bottom)-top;Object.assign(tourMarker.style,{left:left+'px',top:top+'px',width:Math.max(0,width)+'px',height:Math.max(0,height)+'px'});}
 }
 function tourPrepare(){
+  tour.tabKey='';
   const step=tourSteps[tour.index];
   closeDrilldown();
   tourSelect('#visualExports').hidden=true;tourSelect('#visualExportsBtn').setAttribute('aria-expanded','false');
@@ -117,6 +125,7 @@ tourSelect('#tourRestore').addEventListener('click',()=>tourShow(tour.index));
 window.addEventListener('keydown',e=>{if(e.key==='Escape'&&tour.active){e.preventDefault();e.stopImmediatePropagation();tourStop();}},true);
 new ResizeObserver(tourQueue).observe(tourSelect('#tourBanner'));
 new ResizeObserver(tourQueue).observe(tourPanel);
+new ResizeObserver(tourQueue).observe(tourTabs);
 window.visualViewport?.addEventListener('resize',tourQueue);
 window.addEventListener('scroll',tourQueue,true);window.addEventListener('resize',tourQueue);
 new MutationObserver(tourQueue).observe(tourSelect('.app'),{subtree:true,childList:true,attributes:true,attributeFilter:['class','hidden','id']});

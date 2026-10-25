@@ -171,6 +171,18 @@ def test_tour__complete_route_and_keyboard_controls(tour_page, width: int, heigh
             }"""
         ), "Markering en uitleg moeten binnen het venster blijven."
         assert_controls_reachable(page)
+        if index not in (0, 3, 10):
+            assert page.evaluate(
+                """() => {
+                  const tabs=document.querySelector('#tabs'), active=tabs.querySelector('.active');
+                  const r=(active||tabs).getBoundingClientRect();
+                  const banner=document.querySelector('#tourBanner').getBoundingClientRect();
+                  return r.top>=banner.bottom && r.bottom<=innerHeight && r.left>=0 &&
+                    r.right<=innerWidth && tabs.contains(document.elementFromPoint(
+                      r.left+r.width/2,r.top+r.height/2)) &&
+                    (!active||getComputedStyle(active).backgroundColor==='rgb(160, 42, 133)');
+                }"""
+            ), "Het actieve tabblad moet zichtbaar, aanklikbaar en gemarkeerd blijven."
         examples = {
             1: "#kpis .kpi",
             2: "#findingList [data-finding]",

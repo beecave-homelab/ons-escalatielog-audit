@@ -8,6 +8,8 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ### Opgelost
 
+- Plaats op Overzicht de populatie- en aandachtspuntenkaarten vóór **Opvallendheden om te onderzoeken**, ook in de gegenereerde rondleiding. Houd tijdens de rondleiding de tabbalk zichtbaar, markeer het actieve tabblad en schuif dat bij een tabwissel in beeld (#122).
+
 - Houd de tourknoppen bereikbaar wanneer de uitleg scrolt en plaats bronregeldialogen binnen de werkelijk beschikbare ruimte onder de oefenbalk, naast of boven de uitleg. Dit geldt ook bij handmatig geopende bronregels, lagere vensters, mobiele schermen en na stoppen. Markeer geen achterliggend onderdeel zolang een bronregeldialoog ervoor staat. Behoud de doorklik naar bronregels bij Datakwaliteit na het herstellen van de tabelfilters (#122).
 
 ### Gewijzigd
