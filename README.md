@@ -1,6 +1,6 @@
 # Ons Escalatielog Audit
 
-![Version: 0.20.3](https://img.shields.io/badge/version-0.20.3-00A0C8.svg)
+![Version: 0.21.0](https://img.shields.io/badge/version-0.21.0-00A0C8.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 
 Ons Escalatielog Audit is een zelfstandige webpagina voor het controleren van `.xlsx`-exports met escalatielogs uit Nedap Ons. De webui maakt opvallende patronen zichtbaar en laat je doorklikken naar de bijbehorende Excelregels. Grafieken en overzichten ondersteunen de controle van deze patronen en de bijbehorende bronregels.
@@ -40,6 +40,18 @@ Met het toetsenbord wissel je tussen tabbladen met de pijltjestoetsen, Home en E
 
 De gebruikte berekeningen, definities en signaleringsregels staan in [Berekeningen, tellingen en patroonherkenning](docs/berekeningen-en-patroonherkenning.md).
 
+## Oefenen met de rondleiding
+
+Download [escalatielog-audit-rondleiding.html](escalatielog-audit-rondleiding.html) en open dit bestand rechtstreeks in je browser. Je hebt geen server, installatie of losse Excel-export nodig. De oefenvariant laadt bij openen en verversen automatisch de vaste synthetische gegevens en start op Overzicht. De permanente balk vermeldt de oefenomgeving, applicatieversie en bronfixture. De gewone webui blijft beschikbaar voor je eigen exports.
+
+De rondleiding legt eerst uit wat een escalatielog, bronregel, auditpopulatie en signaal zijn. Op Overzicht staan de populatie- en aandachtspuntenkaarten vóór **Opvallendheden om te onderzoeken**. Tijdens de uitleg blijft de tabbalk in beeld en is het actieve tabblad gemarkeerd. Daarna oefen je met overzichten, bronregels, zoeken en filteren, context, tijdpatronen, datakwaliteit, instellingen en exports. De uitleg benoemt ook wat de cijfers niet aantonen en welke aanvullende informatie je nodig hebt voor een beoordeling.
+
+Onderstreepte knopnamen in de uitleg zijn aanwijsbaar: klik erop of gebruik Tab en Enter om de echte knop in beeld te brengen en te markeren. De actie wordt daarbij niet uitgevoerd. Ook een uitgeschakelde knop wordt gemarkeerd; de focus blijft dan op de verwijzing in de uitleg. De rondleiding meldt dat de knop uitgeschakeld is. Een gesloten knop geeft een beschikbaarheidsmelding. Aangewezen knoppen van de webui blijven ook op mobiel en na een vensterwijziging vrij van de uitleg. Verwijzingen naar tourknoppen wijzen de bediening binnen het uitlegvenster aan.
+
+De uitlegtekst scrolt afzonderlijk; de tourknoppen blijven in hun eigen gedeelte bereikbaar. Bronregeldialogen staan onder de oefenbalk en naast of boven de uitleg. Bij handmatig geopende bronregels kun je met Sluiten of Toon onderdeel terugkeren. Gebruik Vorige en Volgende, of Stoppen om zelfstandig te oefenen. Escape stopt de uitleg; Hervatten keert binnen dezelfde sessie terug naar de huidige stap. Opnieuw beginnen herstelt de standaardinstellingen, Top-X=10 en de synthetische analyse. Je kunt uitsluitend met de ingebouwde verzonnen gegevens werken: import van bron- en instellingenbestanden is uitgeschakeld. Downloads en klembordacties gebeuren alleen na je eigen klik.
+
+Het bestand wordt beheerd als gegenereerd gebruikersartefact in de repositoryhoofdmap. Ontwikkelaars voeren na wijzigingen aan de webui, fixture of tourlaag `uv run python scripts/generate_tour.py` uit; `--check` controleert of het resultaat actueel is. De tests doorlopen de echte bediening rechtstreeks via `file://` en controleren de DOM-ankers. Het bestaande releaseproces neemt het bestand mee als losse bijlage en in de ZIP met controlesommen. Publicatie blijft handmatig.
+
 ## Gebruik
 
 Je hoeft niets te installeren en hebt geen webserver nodig.
@@ -58,7 +70,7 @@ Je kunt de showcase uitproberen met het [synthetische voorbeeldbestand](https://
 
 [Download de nieuwste GitHub Release](https://github.com/beecave-homelab/ons-escalatielog-audit/releases/latest).
 
-Je kunt kiezen uit de losse HTML of een ZIP met de webui, uitleg en diagrammen. Pak de ZIP volledig uit en behoud de mapstructuur.
+Je kunt kiezen uit de losse webui-HTML, de losse rondleiding of een ZIP met de webui, uitleg en diagrammen. Pak de ZIP volledig uit en behoud de mapstructuur.
 
 Gebruik voor analyses een lokaal vastgestelde versie. Controleer de download met het meegeleverde `SHA256SUMS.txt`.
 
@@ -70,9 +82,9 @@ Op Linux:
 
 `sha256sum -c SHA256SUMS.txt`
 
-Download zowel de HTML als de ZIP om beide bestanden te kunnen controleren.
+Download de webui-HTML, de rondleiding en de ZIP in dezelfde map om alle bestanden te kunnen controleren; `SHA256SUMS.txt` verwacht ze alle drie.
 
-Beide varianten verwerken de ingelezen Excelgegevens uitsluitend in het geheugen van je browser.
+Alle varianten verwerken de ingelezen Excelgegevens uitsluitend in het geheugen van je browser.
 
 Bij het openen van de online showcase ontvangt GitHub het paginaverzoek en registreert het bezoekers-IP voor beveiligingsdoeleinden. De inhoud van je Excelbestand wordt niet verzonden.
 

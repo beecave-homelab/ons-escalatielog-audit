@@ -48,6 +48,10 @@ def test_overview_charts_three_rows_at_wide_viewport(width) -> None:
         page = browser.new_page(viewport={"width": width, "height": 900})
         page.goto(WEBUI.as_uri())
         analyze(page)
+        assert page.evaluate(
+            "document.querySelector('#kpis').getBoundingClientRect().bottom <= "
+            "document.querySelector('#topFindings').getBoundingClientRect().top"
+        ), "De populatie en aandachtspunten moeten vóór de opvallendheden staan."
         scatter, employees, teams, clients, reasons = chart_card_boxes(page)
         grid_width = page.evaluate(
             "document.querySelector('.overview-charts').getBoundingClientRect().width"

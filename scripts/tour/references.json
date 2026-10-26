@@ -1,0 +1,78 @@
+{
+  "choose": {
+    "label": "Bestand kiezen",
+    "selector": "#chooseBtn"
+  },
+  "analyze": {
+    "label": "Analyse uitvoeren",
+    "selector": "#analyzeBtn"
+  },
+  "next": {
+    "label": "Volgende",
+    "selector": "#tourNext"
+  },
+  "sources": {
+    "label": "Bronregels",
+    "selector": "#findingList [data-finding=\"0\"]"
+  },
+  "close": {
+    "label": "Sluiten",
+    "selector": "#drillCloseBtn"
+  },
+  "restore": {
+    "label": "Toon onderdeel",
+    "selector": "#tourRestore"
+  },
+  "related": {
+    "label": "Toon verbanden",
+    "selector": "#tourRelated"
+  },
+  "deepdive": {
+    "label": "Verdieping",
+    "selector": "#view-tab-deepdive"
+  },
+  "rerun": {
+    "label": "Analyse opnieuw uitvoeren",
+    "selector": "#rerunBtn"
+  },
+  "reset": {
+    "label": "Opnieuw beginnen",
+    "selector": "#tourReset"
+  },
+  "csv": {
+    "label": "Aandachtspunten CSV",
+    "selector": "#csvBtn"
+  },
+  "report": {
+    "label": "Rapport HTML",
+    "selector": "#reportBtn"
+  },
+  "dashboard": {
+    "label": "Dashboard als PNG",
+    "selector": "#pngBtn"
+  },
+  "zip": {
+    "label": "Acht PNG’s als ZIP",
+    "selector": "#visualsZipBtn"
+  },
+  "visuals": {
+    "label": "Eén afbeelding als PNG",
+    "selector": "#visualExportsBtn"
+  },
+  "image": {
+    "label": "Afbeelding downloaden",
+    "selector": "#visualPngBtn"
+  },
+  "practice": {
+    "label": "Zelf oefenen",
+    "selector": "#tourNext"
+  },
+  "resume": {
+    "label": "Toon huidige stap",
+    "selector": "#tourResume"
+  },
+  "quality": {
+    "label": "Datakwaliteit",
+    "selector": "#view-tab-quality"
+  }
+}

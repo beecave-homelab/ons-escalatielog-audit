@@ -1,0 +1,38 @@
+<header id="tourBanner">
+  <div>
+    <strong>Oefenomgeving met verzonnen gegevens</strong>
+    <span>Ons Escalatielog Audit <span class="app-version"></span> · Bron: tests/fixtures/synthetic-escalatielog.xlsx</span>
+  </div>
+  <button id="tourResume" class="btn ghost" disabled>Rondleiding laden…</button>
+</header>
+<aside id="tourPanel" aria-labelledby="tourTitle" hidden>
+  <p id="tourProgress" role="status" aria-live="polite" aria-atomic="true"></p>
+  <div class="tour-content">
+    <h2 id="tourTitle" tabindex="-1">Rondleiding laden</h2>
+    <p class="tour-pointer-help">Klik op een onderstreepte naam om de knop aan te wijzen. Je voert de actie daarmee niet uit.</p>
+    <p id="tourText"></p>
+    <p id="tourPointerStatus"
+       role="status"
+       aria-live="polite"
+       aria-atomic="true"></p>
+    <p id="tourHint" role="status" aria-live="polite"></p>
+    <p class="tour-keyboard">Druk op Escape of kies Stoppen om de uitleg te sluiten. Je kunt daarna zelf verder oefenen.</p>
+  </div>
+  <div class="tour-footer">
+    <div class="tour-context-actions" hidden>
+      <button id="tourRestore" class="btn ghost" hidden>Toon onderdeel</button>
+      <button id="tourRelated" class="btn ghost" hidden>Toon verbanden</button>
+    </div>
+    <div class="tour-navigation">
+      <button id="tourPrev" class="btn ghost">Vorige</button>
+      <button id="tourNext" class="btn primary">Volgende</button>
+    </div>
+    <div class="tour-navigation">
+      <button id="tourStop" class="btn ghost">Stoppen</button>
+      <button id="tourReset" class="btn ghost">Opnieuw beginnen</button>
+    </div>
+  </div>
+</aside>
+<div id="tourMarker" aria-hidden="true" hidden>
+  <span></span>
+</div>

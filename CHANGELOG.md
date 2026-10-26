@@ -4,6 +4,26 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+## [0.21.0] - 2026-10-24
+
+### Opgelost
+
+- Markeer ook de uitgeschakelde knop **Bestand kiezen** wanneer je die vanuit de rondleiding aanwijst. Benoem dat de knop uitgeschakeld blijft en behoud de focus op de verwijzing in de uitleg (#122).
+
+- Plaats op Overzicht de populatie- en aandachtspuntenkaarten vóór **Opvallendheden om te onderzoeken**, ook in de gegenereerde rondleiding. Houd tijdens de rondleiding de tabbalk zichtbaar, markeer het actieve tabblad en schuif dat bij een tabwissel in beeld (#122).
+
+- Houd de tourknoppen bereikbaar wanneer de uitleg scrolt en plaats bronregeldialogen binnen de werkelijk beschikbare ruimte onder de oefenbalk, naast of boven de uitleg. Dit geldt ook bij handmatig geopende bronregels, lagere vensters, mobiele schermen en na stoppen. Markeer geen achterliggend onderdeel zolang een bronregeldialoog ervoor staat. Behoud de doorklik naar bronregels bij Datakwaliteit na het herstellen van de tabelfilters (#122).
+
+### Gewijzigd
+
+- Leg in de rondleiding de begrippen bronregel, auditpopulatie, signaal en activatievertraging uit voor nieuwe gebruikers. Verbind elke stap aan de bediening en benoem wat de cijfers wel en niet aantonen, inclusief ontbrekende cliëntnummers, overlappende tellingen en de context die voor beoordeling nodig is (#122).
+
+### Toegevoegd
+
+- Maak knopnamen in de rondleiding aanwijsbaar zonder de bijbehorende actie uit te voeren. Houd de volledige aangewezen knop op mobiele schermen en na vensterwijzigingen vrij van de uitleg. Controleer de koppelingen bij generatie en test de nieuwe toetsenbordstops (#122).
+- Voeg een zelfstandige HTML-rondleiding toe met vooraf geladen synthetische gegevens, veertien begeleide stappen en vrij oefenen. Bestandsimport is in deze oefenvariant uitgeschakeld. Stoppen, hervatten en opnieuw beginnen werken zonder browseropslag; opnieuw beginnen herstelt de standaardinstellingen en Top-X=10 (#122).
+- Genereer de rondleiding reproduceerbaar uit de actuele webui en de vaste synthetische fixture. Neem het kant-en-klare bestand als losse download en in het bestaande releasepakket op. Noem in de downloadinstructie alle drie de releasebestanden, zodat de controlesomcontrole met precies de gedocumenteerde bestanden slaagt (#122).
+
 ## [0.20.3] - 2026-10-24
 
 ### Gewijzigd

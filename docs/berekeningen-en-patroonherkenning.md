@@ -2,7 +2,7 @@
 title: Berekeningen, tellingen en patroonherkenning
 applies_to: escalatielog-audit-webui.html
 tags: [escalatielogs, audit, functioneel-beheer]
-updated: 2026-10-22
+updated: 2026-10-26
 ---
 
 ## Berekeningen, tellingen en patroonherkenning
@@ -14,6 +14,10 @@ De HTML-code bepaalt het daadwerkelijke gedrag van de webui. Als de documentatie
 Een escalatieregel registreert een poging of gebeurtenis rond uitzonderlijke toegang. Een geregistreerde activatie bewijst niet dat iemand daarna dossiergegevens heeft bekeken. Een auditsignaal wijst op een gebeurtenis die nader onderzoek vraagt, maar bewijst geen onrechtmatige toegang.
 
 ## 1. Reikwijdte
+
+De afzonderlijke oefenvariant `escalatielog-audit-rondleiding.html` gebruikt dezelfde XLSX-lezer, normalisatie en analyse als de webui, met de ingebouwde synthetische referentiefixture uit §15. De tourlaag voegt uitsluitend begeleiding toe. Zij legt de begrippen bronregel, auditpopulatie, signaal en activatievertraging uit en verbindt de bediening aan de betekenis en beperkingen van de cijfers. Op Overzicht staan de populatie- en aandachtspuntenkaarten vóór de opvallendheden, in dezelfde volgorde als de uitleg. Tijdens de rondleiding blijft de tabbalk onder de oefenbalk zichtbaar; het actieve tabblad is gemarkeerd en schuift bij een tabwissel horizontaal in beeld. Zij reserveert ruimte voor de oefenbalk, tabbalk, uitleg en vaste tourknoppen; bronregeldialogen gebruiken de resterende ruimte.
+
+Onderstreepte knopnamen in de uitleg wijzen na klikken of toetsenbordbediening de echte knop aan met focus en een markering, zonder de actie uit te voeren. Een aangewezen knop blijft buiten het uitlegvenster zichtbaar, ook na een vensterwijziging; verwijzingen naar tourknoppen wijzen binnen dat venster aan. Ook een uitgeschakelde knop wordt gemarkeerd en als uitgeschakeld benoemd; de focus blijft dan op de verwijzing in de uitleg. De knop wordt niet ingeschakeld. Een gesloten knop levert een beschikbaarheidsmelding op. De generator controleert de vastgelegde knopnamen en doelen. Dit verandert geen berekeningen of bronregels. Eigen bron- en instellingenbestanden importeren is daar uitgeschakeld. Instellingen aanpassen en opnieuw analyseren blijft mogelijk; opnieuw beginnen herstelt de standaardinstellingen uit §14 en Top-X=10.
 
 De webui verwerkt per analyse één Excelbestand. Het zoekt in de eerste tien rijen naar alle vereiste kolomkoppen en kiest het eerste passende werkblad. Meerdere werkbladen worden niet samengevoegd.
 
