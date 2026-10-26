@@ -1538,13 +1538,13 @@ function tourPointerLayout(){
   const points=[[box.left+box.width/2,box.top+2],[box.left+box.width/2,box.bottom-2],[box.left+2,box.top+box.height/2],[box.right-2,box.top+box.height/2]];
   const visible=box.top>=(inside?0:top-1)&&box.bottom<=innerHeight&&box.left>=0&&box.right<=innerWidth&&(!overlap||inside)&&points.every(([x,y])=>target.contains(document.elementFromPoint(x,y)));
   target.classList.toggle('tour-pointed',visible);
-  setStatus(visible?name+' is aangewezen. De actie is niet uitgevoerd.':name+' kan hier niet volledig worden getoond. Kies Toon onderdeel of maak het venster groter.');
+  setStatus(visible?name+' is aangewezen. '+(target.disabled?'Deze knop is uitgeschakeld. ':'')+'De actie is niet uitgevoerd.':name+' kan hier niet volledig worden getoond. Kies Toon onderdeel of maak het venster groter.');
 }
 function tourPoint(key){
   tourClearPointer();const reference=tourReferences[key],target=tourSelect(reference.selector),status=tourSelect('#tourPointerStatus');
-  if(!target||!target.getClientRects().length||target.closest('[hidden]')||target.disabled){status.textContent=reference.label+' is in deze stap niet beschikbaar. De actie is niet uitgevoerd.';return;}
+  if(!target||!target.getClientRects().length||target.closest('[hidden]')){status.textContent=reference.label+' is in deze stap niet beschikbaar. De actie is niet uitgevoerd.';return;}
   tour.pointed=target;tour.pointerKey=key;
-  target.scrollIntoView({block:'nearest',inline:'nearest',behavior:'instant'});target.focus({preventScroll:true});tourLayout();tourQueue();
+  target.scrollIntoView({block:'nearest',inline:'nearest',behavior:'instant'});if(!target.disabled)target.focus({preventScroll:true});tourLayout();tourQueue();
 }
 function tourLayout(){
   const root=document.documentElement,values={'--tour-banner-bottom':Math.ceil(tourSelect('#tourBanner').getBoundingClientRect().bottom),'--tour-tabs-height':tourTabs.getBoundingClientRect().height,'--tour-viewport-height':window.visualViewport?.height||innerHeight};

@@ -360,7 +360,8 @@ def assert_pointer_reachable(page, selector: str) -> None:
     """The entire real control must be exposed; panel controls stay inside the panel."""
     target = page.locator(selector)
     expect(target).to_have_class(re.compile(r"\btour-pointed\b"))
-    expect(target).to_be_focused()
+    if target.is_enabled():
+        expect(target).to_be_focused()
     assert target.evaluate(
         """el => {
           const r=el.getBoundingClientRect(),panel=tourPanel.getBoundingClientRect();
@@ -392,7 +393,7 @@ def test_tour__references_point_without_executing_and_survive_resize(
             reference = page.locator(f'.tour-reference[data-reference="{key}"]')
             selector = page.evaluate("key => tourReferences[key].selector", key)
             target = page.locator(selector)
-            available = target.count() and target.is_visible() and target.is_enabled()
+            available = target.count() and target.is_visible()
             reference.focus()
             page.keyboard.press("Enter")
             if available:
@@ -447,3 +448,25 @@ def test_tour__pointer_keyboard_cycle_hidden_target_and_escape(tour_page) -> Non
     expect(page.locator("#tourPanel")).to_be_hidden()
     assert page.locator(".tour-pointed").count() == 0
     assert not errors and not requests and not downloads
+
+
+def test_tour__disabled_file_control_is_highlighted_without_opening_picker(tour_page) -> None:
+    """Pointing identifies a disabled import control without enabling or focusing it."""
+    page, errors, requests, downloads = tour_page
+    file_choosers = []
+    page.on("filechooser", lambda chooser: file_choosers.append(chooser))
+    reference = page.locator('.tour-reference[data-reference="choose"]')
+    reference.focus()
+    page.keyboard.press("Enter")
+    for width, height in [(1440, 1000), (375, 667), (320, 568)]:
+        page.set_viewport_size({"width": width, "height": height})
+        expect(page.locator("#chooseBtn")).to_be_disabled()
+        assert_pointer_reachable(page, "#chooseBtn")
+        expect(reference).to_be_focused()
+        expect(page.locator("#tourPointerStatus")).to_contain_text("is aangewezen")
+        expect(page.locator("#tourPointerStatus")).to_contain_text("knop is uitgeschakeld")
+    page.keyboard.press("Escape")
+    assert page.locator(".tour-pointed").count() == 0
+    expect(page.locator("#chooseBtn")).to_be_disabled()
+    assert reference_counts(page) == [2000, 156, 42, 1802, 1790]
+    assert not file_choosers and not errors and not requests and not downloads
