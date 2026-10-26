@@ -1,6 +1,7 @@
 """Exercise the generated training file through real controls, entirely offline."""
 
 import importlib.util
+import re
 from pathlib import Path
 
 import pytest
@@ -336,4 +337,113 @@ def test_tour__open_dialog_follows_window_resize_and_stopped_keyboard_scope(tour
     page.keyboard.press("Tab")
     expect(page.locator("#drillCsvBtn")).to_be_focused()
     page.locator("#drillCloseBtn").click()
+    assert not errors and not requests and not downloads
+
+
+@pytest.mark.parametrize("change", ["name", "target", "unknown"])
+def test_generator__rejects_broken_control_reference(change: str) -> None:
+    """An authored reference cannot silently drift away from its real control."""
+    html = '<button id="csvBtn">Aandachtspunten CSV</button>'
+    refs = {"csv": {"label": "Aandachtspunten CSV", "selector": "#csvBtn"}}
+    script = 'text:"[[csv]]"'
+    if change == "name":
+        html = html.replace("Aandachtspunten CSV", "Andere naam")
+    elif change == "target":
+        refs["csv"]["selector"] = "#missing"
+    else:
+        script = 'text:"[[unknown]]"'
+    with pytest.raises(ValueError, match=r"knopnaam of doel gewijzigd|onbekende knopverwijzing"):
+        generate_tour.validate_references(html, script, refs)
+
+
+def assert_pointer_reachable(page, selector: str) -> None:
+    """The entire real control must be exposed; panel controls stay inside the panel."""
+    target = page.locator(selector)
+    expect(target).to_have_class(re.compile(r"\btour-pointed\b"))
+    expect(target).to_be_focused()
+    assert target.evaluate(
+        """el => {
+          const r=el.getBoundingClientRect(),panel=tourPanel.getBoundingClientRect();
+          const inside=tourPanel.contains(el);
+          const separate=r.bottom<=panel.top || r.top>=panel.bottom ||
+            r.right<=panel.left || r.left>=panel.right;
+          return r.top>=0 && r.bottom<=innerHeight && r.left>=0 && r.right<=innerWidth &&
+            (inside||separate) && [[r.left+r.width/2,r.top+2],[r.left+r.width/2,r.bottom-2],
+              [r.left+2,r.top+r.height/2],[r.right-2,r.top+r.height/2]].every(([x,y])=>
+                el.contains(document.elementFromPoint(x,y)));
+        }"""
+    ), f"De volledige aangewezen knop moet zichtbaar blijven: {selector}"
+
+
+@pytest.mark.parametrize("width,height", [(1440, 1000), (375, 667), (320, 568)])
+def test_tour__references_point_without_executing_and_survive_resize(
+    tour_page, width: int, height: int
+) -> None:
+    """Every authored reference exposes its target without activating any app action."""
+    page, errors, requests, downloads = tour_page
+    page.set_viewport_size({"width": width, "height": height})
+    page.evaluate("window.pointerOriginalResult=state.result")
+    for index in range(page.evaluate("tourSteps.length")):
+        page.evaluate("index => tourShow(index)", index)
+        references = page.locator(".tour-reference").evaluate_all(
+            "nodes => nodes.map(el=>el.dataset.reference)"
+        )
+        for key in references:
+            reference = page.locator(f'.tour-reference[data-reference="{key}"]')
+            selector = page.evaluate("key => tourReferences[key].selector", key)
+            target = page.locator(selector)
+            available = target.count() and target.is_visible() and target.is_enabled()
+            reference.focus()
+            page.keyboard.press("Enter")
+            if available:
+                expect(page.locator("#tourPointerStatus")).to_contain_text("is aangewezen")
+                assert_pointer_reachable(page, selector)
+                # Resize with this exact mark active, including a desktop/mobile transition.
+                other = (
+                    {"width": 320, "height": 568} if width != 320 else {"width": 375, "height": 667}
+                )
+                page.set_viewport_size(other)
+                assert_pointer_reachable(page, selector)
+                page.set_viewport_size({"width": width, "height": height})
+                assert_pointer_reachable(page, selector)
+            else:
+                expect(page.locator("#tourPointerStatus")).to_contain_text("niet beschikbaar")
+                assert page.locator(".tour-pointed").count() == 0
+            assert page.evaluate("tour.index") == index, "Aanwijzen mag geen tourstap uitvoeren."
+            assert page.evaluate("state.result===window.pointerOriginalResult")
+            assert reference_counts(page) == [2000, 156, 42, 1802, 1790]
+            assert not downloads, "Een verwijzing mag geen download uitvoeren."
+        page.locator("#tourNext").focus()
+        page.keyboard.press("Enter")
+        assert page.locator(".tour-pointed").count() == 0
+    assert not errors and not requests and not downloads
+
+
+def test_tour__pointer_keyboard_cycle_hidden_target_and_escape(tour_page) -> None:
+    """Pointer tabstops participate in the modal cycle and never leave stale success."""
+    page, errors, requests, downloads = tour_page
+    page.evaluate("tourShow(3)")
+    page.locator("#tourTitle").focus()
+    page.keyboard.press("Tab")
+    expect(page.locator('.tour-reference[data-reference="close"]')).to_be_focused()
+    page.keyboard.press("Tab")
+    expect(page.locator('.tour-reference[data-reference="restore"]')).to_be_focused()
+    page.keyboard.press("Tab")
+    expect(page.locator('.tour-reference[data-reference="next"]')).to_be_focused()
+    page.locator("#tourReset").focus()
+    page.keyboard.press("Tab")
+    expect(page.locator("#drillCsvBtn")).to_be_focused()
+    page.keyboard.press("Shift+Tab")
+    expect(page.locator("#tourReset")).to_be_focused()
+    page.locator('.tour-reference[data-reference="close"]').click()
+    assert_pointer_reachable(page, "#drillCloseBtn")
+    page.locator("#drillCloseBtn").click()
+    expect(page.locator("#tourPointerStatus")).to_contain_text("niet zichtbaar")
+    assert page.locator(".tour-pointed").count() == 0
+    page.evaluate("tourShow(11)")
+    page.locator('.tour-reference[data-reference="csv"]').click()
+    assert_pointer_reachable(page, "#csvBtn")
+    page.keyboard.press("Escape")
+    expect(page.locator("#tourPanel")).to_be_hidden()
+    assert page.locator(".tour-pointed").count() == 0
     assert not errors and not requests and not downloads
