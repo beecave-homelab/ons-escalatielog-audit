@@ -22,7 +22,7 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 - Maak knopnamen in de rondleiding aanwijsbaar zonder de bijbehorende actie uit te voeren. Houd de volledige aangewezen knop op mobiele schermen en na vensterwijzigingen vrij van de uitleg. Controleer de koppelingen bij generatie en test de nieuwe toetsenbordstops (#122).
 - Voeg een zelfstandige HTML-rondleiding toe met vooraf geladen synthetische gegevens, veertien begeleide stappen en vrij oefenen. Bestandsimport is in deze oefenvariant uitgeschakeld. Stoppen, hervatten en opnieuw beginnen werken zonder browseropslag; opnieuw beginnen herstelt de standaardinstellingen en Top-X=10 (#122).
-- Genereer de rondleiding reproduceerbaar uit de actuele webui en de vaste synthetische fixture. Neem het kant-en-klare bestand als losse download en in het bestaande releasepakket op.
+- Genereer de rondleiding reproduceerbaar uit de actuele webui en de vaste synthetische fixture. Neem het kant-en-klare bestand als losse download en in het bestaande releasepakket op. Noem in de downloadinstructie alle drie de releasebestanden, zodat de controlesomcontrole met precies de gedocumenteerde bestanden slaagt (#122).
 
 ## [0.20.3] - 2026-10-24
 

@@ -70,7 +70,7 @@ Je kunt de showcase uitproberen met het [synthetische voorbeeldbestand](https://
 
 [Download de nieuwste GitHub Release](https://github.com/beecave-homelab/ons-escalatielog-audit/releases/latest).
 
-Je kunt kiezen uit de losse HTML of een ZIP met de webui, uitleg en diagrammen. Pak de ZIP volledig uit en behoud de mapstructuur.
+Je kunt kiezen uit de losse webui-HTML, de losse rondleiding of een ZIP met de webui, uitleg en diagrammen. Pak de ZIP volledig uit en behoud de mapstructuur.
 
 Gebruik voor analyses een lokaal vastgestelde versie. Controleer de download met het meegeleverde `SHA256SUMS.txt`.
 
@@ -82,9 +82,9 @@ Op Linux:
 
 `sha256sum -c SHA256SUMS.txt`
 
-Download zowel de HTML als de ZIP om beide bestanden te kunnen controleren.
+Download de webui-HTML, de rondleiding en de ZIP in dezelfde map om alle bestanden te kunnen controleren; `SHA256SUMS.txt` verwacht ze alle drie.
 
-Beide varianten verwerken de ingelezen Excelgegevens uitsluitend in het geheugen van je browser.
+Alle varianten verwerken de ingelezen Excelgegevens uitsluitend in het geheugen van je browser.
 
 Bij het openen van de online showcase ontvangt GitHub het paginaverzoek en registreert het bezoekers-IP voor beveiligingsdoeleinden. De inhoud van je Excelbestand wordt niet verzonden.
 
