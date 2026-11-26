@@ -27,7 +27,7 @@ jobs:
           ref: ${{ inputs.revision || github.sha }}
           fetch-depth: 0
           persist-credentials: false
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.11"
       - run: python scripts/check_release_version.py
@@ -46,10 +46,10 @@ jobs:
           ref: ${{ inputs.revision || github.sha }}
           fetch-depth: 0
           persist-credentials: false
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.11"
-      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
         with:
           version: "0.12.23"
       - run: uv sync --locked
@@ -57,11 +57,15 @@ jobs:
       - name: Kies de aparte Chromium-testbrowser
         run: |
           uv run python - <<'PY' >> "$GITHUB_ENV"
+          from pathlib import Path
           from playwright.sync_api import sync_playwright
           with sync_playwright() as pw:
-              from pathlib import Path
               root = Path(pw.chromium.executable_path).parents[2]
-              executable = next(root.glob("chromium_headless_shell-*/chrome-linux/headless_shell"))
+              candidates = (
+                  *root.glob("chromium_headless_shell-*/chrome-headless-shell-linux64/chrome-headless-shell"),
+                  *root.glob("chromium_headless_shell-*/chrome-linux/headless_shell"),
+              )
+              executable = next(iter(candidates))
               print(f"PLAYWRIGHT_CHROMIUM_EXECUTABLE={executable}")
           PY
       - run: scripts/run-checks.sh
