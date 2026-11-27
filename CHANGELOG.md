@@ -4,6 +4,12 @@ Alle noemenswaardige wijzigingen aan dit project worden in dit bestand vastgeleg
 
 ## [Nog niet uitgebracht]
 
+### Onderhoud
+
+- Werk `playwright` bij van `1.52.0` naar `1.65.2` en ondersteun het nieuwe headless-shell-pad in `ci.yml`, zodat `Volledige CI` en `SVG-tekstcontrole` weer slagen op `ubuntu-latest` (Ubuntu 26.04) (#128).
+- Werk `actions/setup-python` bij van `7.0.0` naar `7.1.0` in de GitHub Actions-workflows (#124).
+- Werk `astral-sh/setup-uv` bij van `10.3.0` naar `10.4.0` in de CI- en SVG-tekstcontroleworkflows (#127).
+
 ## [0.21.0] - 2026-10-24
 
 ### Opgelost
